@@ -6,15 +6,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../Config.dart';
 
 
-class GetUsersByHubIdcontroller extends GetConnect{
+class GetOrderByHubIdcontroller extends GetConnect{
 
-  RxList<dynamic> getallhubdata=[].obs;
-  Future <dynamic> GetUserByHubIdApi(BuildContext context,id)async{
+  RxList<dynamic> getallorderhubdata=[].obs;
+  Future <dynamic> GetOrderByHubIdApi(BuildContext context,id)async{
     final SharedPreferences pref=await SharedPreferences.getInstance();
     String ?service;
 
     service=Config.LOGIN_API;
-    final url=Uri.parse("${service}user/getAllUsersHub?hubuserId=$id");
+    final url=Uri.parse("${service}checkout/getHubAssignedCheckoutHistory?hubuserId=$id");
     print(url);
 
     final header={
@@ -29,8 +29,8 @@ class GetUsersByHubIdcontroller extends GetConnect{
     final data=jsonDecode(responce.body);
 
     if(responce.statusCode==200){
-      final value=(data['users']);
-      getallhubdata.assignAll(value);
+      final value=(data['checkoutHistory']);
+      getallorderhubdata.assignAll(value);
       return responce;
 
     }

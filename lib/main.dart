@@ -12,7 +12,9 @@ import 'package:agaram_admin/Service/Deliverpartners_service/AddDeliverPartner_C
 import 'package:agaram_admin/Service/Deliverpartners_service/DeleteDeliverPartner_Controller.dart';
 import 'package:agaram_admin/Service/Deliverpartners_service/GetallDelivery.dart';
 import 'package:agaram_admin/Service/Deliverpartners_service/UpdateDeliveryUsers_Controller.dart';
+import 'package:agaram_admin/Service/GetByHubId/GetDeliverbyHubId.dart';
 import 'package:agaram_admin/Service/GetByHubId/GetUsersByHubId.dart';
+import 'package:agaram_admin/Service/GetByHubId/GetallOrdersbyHubId.dart';
 import 'package:agaram_admin/Service/Getall_Service/GetallOrder.dart';
 import 'package:agaram_admin/Service/Hub_Service/AddHubController.dart';
 import 'package:agaram_admin/Service/Hub_Service/DeleteHubController.dart';
@@ -74,6 +76,8 @@ void main() {
   Get.put(GetCmsPagebyIdController());
   Get.put(GetSepratedateController());
   Get.put(GetUsersByHubIdcontroller());
+  Get.put(GetDeliveryByHubIdcontroller());
+  Get.put(GetOrderByHubIdcontroller());
   runApp(const MyApp());
 }
 

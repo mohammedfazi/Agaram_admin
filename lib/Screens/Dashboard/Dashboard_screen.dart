@@ -2,7 +2,10 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:math';
 import 'dart:html' as html;
+import 'package:agaram_admin/Service/GetByHubId/GetDeliverbyHubId.dart';
+import 'package:agaram_admin/Service/GetByHubId/GetDeliverbyHubId.dart';
 import 'package:agaram_admin/Service/GetByHubId/GetUsersByHubId.dart';
+import 'package:agaram_admin/Service/GetByHubId/GetallOrdersbyHubId.dart';
 import 'package:pdf/pdf.dart';
 import 'package:agaram_admin/Screens/Login/Loginscreen.dart';
 import 'package:agaram_admin/Service/Admin-Service/Getadmin_Controller.dart';
@@ -52,6 +55,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:side_sheet/side_sheet.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../Service/Dashboard_Count/Getproductscount_Controller.dart';
+import '../../Service/GetByHubId/GetDeliverbyHubId.dart';
 import '../../Service/Product-Service/GetallProduct_Controller.dart';
 import '../../Service/Users_service/AddUsersController.dart';
 
@@ -71,11 +75,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Uint8List? _customerimageBytes;
   String? _imageName;
-  int ontaphub=2;
+  int ontaphub=1;
   int ontapinsidehub=1;
   String?filesize;
   String?filetype;
   String ?SelectedHubtoUsers;
+  int ?gethubtapdata;
+  int ?selectedhubid;
   //PASSWORD
   final ForgetpasswordController forgetpasswordController=Get.find<ForgetpasswordController>();
   final ChangepasswordController changepasswordController=Get.find<ChangepasswordController>();
@@ -86,6 +92,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void refreshuserdata()async{
     await getallusersController.GetAllUsersApi(context);
   }
+
+
+
   void _pickImage() async {
     final html.FileUploadInputElement uploadInput = html.FileUploadInputElement()
       ..accept = 'image/*'
@@ -348,6 +357,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final GetCmsPagebyIdController getCmsPagebyIdControllerTermsandconditions=Get.find<GetCmsPagebyIdController>();
   final GetSepratedateController getSepratedateController=Get.find<GetSepratedateController>();
   final GetUsersByHubIdcontroller getUsersByHubIdcontroller=Get.find<GetUsersByHubIdcontroller>();
+  final GetDeliveryByHubIdcontroller getDeliveryByHubIdcontroller=Get.find<GetDeliveryByHubIdcontroller>();
+  final GetOrderByHubIdcontroller getOrderByHubIdcontroller=Get.find<GetOrderByHubIdcontroller>();
 
 
   //UPDATE
@@ -371,6 +382,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   String?SelectedPaymentStatus;
   List<String> paymentlist=['COMPLETED','PENDING','CANCELED'];
+
+
+  void refreshuserbyhubiddata() async {
+    await getUsersByHubIdcontroller.GetUserByHubIdApi(context, gethubtapdata);
+  }
 
 
   String?SelectedSubscriptionStatus;
@@ -539,6 +555,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
       throw Exception('Failed to load products');
     }
   }
+  Future<List<dynamic>> fetchusers() async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 1)); // Simulated delay
+      return searchUsersController.searchuserdata;
+    } catch (e) {
+      throw Exception('Failed to load products');
+    }
+  }
+
+  Future<List<dynamic>> fetchusersbyHubId() async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 1)); // Simulated delay
+      return getUsersByHubIdcontroller.getallhubdata;
+    } catch (e) {
+      throw Exception('Failed to load products');
+    }
+  }
+
+  Future<List<dynamic>> fetchdeliverybyHubId() async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 1)); // Simulated delay
+      return getDeliveryByHubIdcontroller.getalldeliveryhubdata;
+    } catch (e) {
+      throw Exception('Failed to load products');
+    }
+  }
 
   Future<List<dynamic>> fetchDeliveryboy() async {
     try {
@@ -572,6 +614,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   ];
   late TooltipBehavior _tooltipBehavior;
   late TooltipBehavior _tooltipBehavior2;
+
 
   List<dynamic> dashboardgridview=[
     {
@@ -622,6 +665,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
       "title":"Total Visitors",
       "amount":"20"
     },
+    {
+      "icon":Icons.fact_check_sharp,
+      "title":"Total Subscription",
+      "amount":"20"
+    },
   ];
 
   final List<ChartData3> chartData3 = <ChartData3>[
@@ -666,6 +714,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Responsive(
+
       desktop: Scaffold(
         backgroundColor: Color_Constant.primarycolr,
         body: Row(
@@ -914,6 +963,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     OrderHistory():
                     container==6&&ordercontainer==2?
                     ViewOrderHistory():
+                    container==2&&ontaphub==1&&ordercontainer==2?
+                    ViewOrderHistory():
                     container==12?
                     Aboutuscms():
                     container==13?
@@ -1068,7 +1119,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
-
 
   Widget mobiledashboard(){
     return SingleChildScrollView(
@@ -3204,8 +3254,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         mainAxisSpacing: 5.0,
                         crossAxisSpacing: 5.0,
-                        mainAxisExtent: displayheight(context)*0.20,
-                        crossAxisCount: 3),
+                        mainAxisExtent: displayheight(context)*0.15,
+                        crossAxisCount: 4),
                     itemCount: hubdashboardgridview.length,
                     itemBuilder: (BuildContext context,int index){
                       return Padding(
@@ -3258,7 +3308,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     children: [
                                       Text("${hubdashboardgridview[index]['title']??""}",style: commonstyle(color: Colors.grey.shade600,size: 18),),
 
-                                      Text("${hubdashboardgridview[index]['amount']??""}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                      index==2?
+                                      Obx(()=>
+                                      getUsersByHubIdcontroller.getallhubdata.isEmpty?
+                                      Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                          :
+                                          Text("${getUsersByHubIdcontroller.getallhubdata.length}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                          index==1?
+                                      Obx(()=>
+                                      getDeliveryByHubIdcontroller.getalldeliveryhubdata.isEmpty?
+                                      Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                          :
+                                      Text("${getDeliveryByHubIdcontroller.getalldeliveryhubdata.length}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                         index==0?
+                                         Obx(()=>
+                                          getOrderByHubIdcontroller.getallorderhubdata.isEmpty?
+                                          Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                              :
+                                          Text("${getOrderByHubIdcontroller.getallorderhubdata.length}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                      Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+
                                     ],
                                   ),
                                 )
@@ -3273,7 +3342,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
-                  width: displaywidth(context)*0.40,
+                  width: displaywidth(context)*0.50,
                   decoration: BoxDecoration(
                     color: Color_Constant.primarycolr,
                     borderRadius: BorderRadius.circular(30)
@@ -3343,6 +3412,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ),
                             ),
                           ),
+                        ),
+                        InkWell(
+                          onTap: (){
+                            setState(() {
+                              ontapinsidehub=4;
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color:ontapinsidehub==4?Colors.white:Colors.transparent,
+                                borderRadius: BorderRadius.circular(30.0)
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                                child: Text("Subscription History",style: commonstyle(color: ontapinsidehub==4?Colors.black:Colors.white,size: 15,weight: FontWeight.w500),),
+                              ),
+                            ),
+                          ),
                         )
                       ],
                     ),
@@ -3350,6 +3439,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
             ),
+            ontapinsidehub==1?
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -3441,125 +3531,662 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                       ),
                       SizedBox(
+                        height: displayheight(context) * 0.69,
+                        width: double.infinity,
+                        child: FutureBuilder<List<dynamic>>(
+                          future: fetchusersbyHubId(), // Replace with your actual Future method
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(child: Text('Error: ${snapshot.error}'));
+                            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return const Center(child: Text('Customers Not Found'));
+                            } else {
+                              // var allHubData = snapshot.data!;
+                              return ListView.builder(
+                                itemCount: getUsersByHubIdcontroller.getallhubdata.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  var data = getUsersByHubIdcontroller.getallhubdata[index];
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(10)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.08,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text(
+                                                        "${index + 1}",
+                                                        style: commonstyleweb(color: Colors.black),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.08,
+                                                  child: const Center(
+                                                    child: Padding(
+                                                        padding: EdgeInsets.all(8.0),
+                                                        child: CircleAvatar(
+                                                          backgroundColor: Colors.white,
+                                                          backgroundImage:
+                                                          AssetImage(Asset_Constant.logo),
+                                                        )),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.10,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: SelectableText(
+                                                        "${data['username'] ?? ""}",
+                                                        style: commonstyleweb(color: Colors.black),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.15,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: SelectableText(
+                                                        "${data['email'] ?? ""}",
+                                                        style: commonstyleweb(color: Colors.black),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.10,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text(
+                                                        "${data['phone'] ?? ""}",
+                                                        style: commonstyleweb(color: Colors.black),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.16,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text(
+                                                        "${data['address'] ?? ""}",
+                                                        style: commonstyleweb(color: Colors.black),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.14,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        children: [
+                                                          IconButton(
+                                                              onPressed: () {},
+                                                              icon: const Icon(
+                                                                CupertinoIcons.eye,
+                                                                color: Colors.grey,
+                                                                size: 20,
+                                                              )),
+                                                          IconButton(
+                                                              onPressed: () {
+                                                                // Map<String, dynamic> data = allHubData[index];
+                                                                // updateuserssidesheet(data: data);
+                                                              },
+                                                              icon: const Icon(
+                                                                CupertinoIcons.pen,
+                                                                color: Colors.grey,
+                                                                size: 20,
+                                                              )),
+                                                          IconButton(
+                                                              onPressed: () {
+                                                                // DeleteHub();
+                                                              },
+                                                              icon: const Icon(
+                                                                CupertinoIcons.delete,
+                                                                color: Colors.grey,
+                                                                size: 20,
+                                                              ))
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        Divider(
+                                          color: Colors.grey.shade200,
+                                          thickness: 0.5,
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                          },
+                        ),
+                      )
+
+                    ],
+                  ),
+                ),
+              ),
+            ):
+            ontapinsidehub==2?
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10)
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            color: Color_Constant.primarycolr,
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: displaywidth(context)*0.08,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("S.No",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: displaywidth(context)*0.08,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("User Profile",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: displaywidth(context)*0.10,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("User Name",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: displaywidth(context)*0.15,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Email Id",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: displaywidth(context)*0.10,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Mobile Number",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: displaywidth(context)*0.16,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("User Address",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: displaywidth(context)*0.14,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Actions",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: displayheight(context) * 0.69,
+                        width: double.infinity,
+                        child: FutureBuilder<List<dynamic>>(
+                          future: fetchdeliverybyHubId(), // Replace with your actual Future method
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(child: Text('Error: ${snapshot.error}'));
+                            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return const Center(child: Text('Customers Not Found'));
+                            } else {
+                              // var allHubData = snapshot.data!;
+                              return ListView.builder(
+                                itemCount: getDeliveryByHubIdcontroller.getalldeliveryhubdata.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  var data = getDeliveryByHubIdcontroller.getalldeliveryhubdata[index];
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(10)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.08,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text(
+                                                        "${index + 1}",
+                                                        style: commonstyleweb(color: Colors.black),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.08,
+                                                  child: const Center(
+                                                    child: Padding(
+                                                        padding: EdgeInsets.all(8.0),
+                                                        child: CircleAvatar(
+                                                          backgroundColor: Colors.white,
+                                                          backgroundImage:
+                                                          AssetImage(Asset_Constant.logo),
+                                                        )),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.10,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: SelectableText(
+                                                        "${data['username'] ?? ""}",
+                                                        style: commonstyleweb(color: Colors.black),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.15,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: SelectableText(
+                                                        "${data['email'] ?? ""}",
+                                                        style: commonstyleweb(color: Colors.black),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.10,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text(
+                                                        "${data['phone'] ?? ""}",
+                                                        style: commonstyleweb(color: Colors.black),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.16,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text(
+                                                        "${data['address'] ?? ""}",
+                                                        style: commonstyleweb(color: Colors.black),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.14,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        children: [
+                                                          IconButton(
+                                                              onPressed: () {},
+                                                              icon: const Icon(
+                                                                CupertinoIcons.eye,
+                                                                color: Colors.grey,
+                                                                size: 20,
+                                                              )),
+                                                          IconButton(
+                                                              onPressed: () {
+                                                                // Map<String, dynamic> data = allHubData[index];
+                                                                // updateuserssidesheet(data: data);
+                                                              },
+                                                              icon: const Icon(
+                                                                CupertinoIcons.pen,
+                                                                color: Colors.grey,
+                                                                size: 20,
+                                                              )),
+                                                          IconButton(
+                                                              onPressed: () {
+                                                                // DeleteHub();
+                                                              },
+                                                              icon: const Icon(
+                                                                CupertinoIcons.delete,
+                                                                color: Colors.grey,
+                                                                size: 20,
+                                                              ))
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        Divider(
+                                          color: Colors.grey.shade200,
+                                          thickness: 0.5,
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                          },
+                        ),
+                      )
+
+                    ],
+                  ),
+                ),
+              ),
+            ):
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10)
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            color: Color_Constant.primarycolr,
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: displaywidth(context)*0.10,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("S.No",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: displaywidth(context)*0.15,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Order Id",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: displaywidth(context)*0.15,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Payment Id",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: displaywidth(context)*0.10,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Payment Type",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: displaywidth(context)*0.10,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Total Price",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: displaywidth(context)*0.10,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Payment Status",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: displaywidth(context)*0.10,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Actions",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
                         height: displayheight(context)*0.69,
                         width: double.infinity,
-                        child: ListView.builder(
-                            itemCount: searchUsersController.searchuserdata.length,
-                            itemBuilder: (BuildContext context,int index){
-                              var data=searchUsersController.searchuserdata[index];
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(10)
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            SizedBox(
-                                              width: displaywidth(context)*0.08,
-                                              child: Center(
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: Text("${index+1}",style: commonstyleweb(color: Colors.black),),
+                        child: Obx(
+                              ()=> getOrderByHubIdcontroller.getallorderhubdata.isEmpty?
+                          const Center(
+                            child: CupertinoActivityIndicator(),
+                          )
+                              :ListView.builder(
+                              itemCount: getOrderByHubIdcontroller.getallorderhubdata.length,
+                              itemBuilder: (BuildContext context,int index){
+                                var data=getOrderByHubIdcontroller.getallorderhubdata[index];
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Column(
+                                    children: [
+                                      InkWell(
+                                        onTap:(){
+                                          setState(() {
+                                            ordercontainer=2;
+                                            Vieworderdata=getOrderByHubIdcontroller.getallorderhubdata[index];
+                                            print(Vieworderdata);
+                                          });
+                                        },
+                                        child: Container(
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(10)
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                SizedBox(
+                                                  width: displaywidth(context)*0.10,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text("${index+1}",style: commonstyleweb(color: Colors.black),),
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: displaywidth(context)*0.08,
-                                              child: const Center(
-                                                child: Padding(
-                                                    padding: EdgeInsets.all(8.0),
-                                                    child: CircleAvatar(
-                                                      backgroundColor: Colors.white,
-                                                      backgroundImage: AssetImage(Asset_Constant.logo),
-                                                    )
+                                                SizedBox(
+                                                  width: displaywidth(context)*0.15,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: SelectableText("${data['orderId']??""}",style: commonstyleweb(color: Colors.black),),
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: displaywidth(context)*0.10,
-                                              child: Center(
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: SelectableText("${data['username']??""}",style: commonstyleweb(color: Colors.black),),
+                                                SizedBox(
+                                                  width: displaywidth(context)*0.15,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: SelectableText("${data['paymentId']??""}",style: commonstyleweb(color: Colors.black),),
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: displaywidth(context)*0.15,
-                                              child: Center(
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: SelectableText("${data['email']??""}",style: commonstyleweb(color: Colors.black),),
+                                                SizedBox(
+                                                  width: displaywidth(context)*0.10,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text("${data['paymentType']??""}",style: commonstyleweb(color: Colors.black),),
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: displaywidth(context)*0.10,
-                                              child: Center(
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: Text("${data['phone']??""}",style: commonstyleweb(color: Colors.black),),
+                                                SizedBox(
+                                                  width: displaywidth(context)*0.10,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(Icons.currency_rupee,size: 15,),
+                                                          Text("${data['totalPrice']??""}",style: commonstyleweb(color: Colors.black),),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: displaywidth(context)*0.16,
-                                              child: Center(
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: Text("${data['address']??""}",style: commonstyleweb(color: Colors.black),),
+                                                Container(
+                                                  width: displaywidth(context)*0.10,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(10),
+                                                      color: data['paymentStatus']=="PENDING"?Colors.red.shade50:data['paymentStatus']=="COMPLETED"?Colors.green.shade50:Colors.orange.shade50
+                                                  ),
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text("${data['paymentStatus']??""}",style: commonstyleweb(color:
+                                                      data['paymentStatus']=="PENDING"?Colors.red:data['paymentStatus']=="COMPLETED"?Colors.green:Colors.orange,weight: FontWeight.w600),),
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: displaywidth(context)*0.14,
-                                              child: Center(
-                                                child: Padding(
-                                                    padding: const EdgeInsets.all(8.0),
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      children: [
-                                                        IconButton(onPressed: (){}, icon: const Icon(CupertinoIcons.eye,color: Colors.grey,size: 20,)),
-                                                        IconButton(onPressed: (){
-                                                          Map<String,dynamic> data=getallusersController.getallusersdata[index];
-                                                          updateuserssidesheet(data:data);
-                                                        }, icon: const Icon(CupertinoIcons.pen,color: Colors.grey,size: 20,)),
-                                                        IconButton(onPressed: (){
-                                                          // DeleteHub();
-                                                        }, icon: const Icon(CupertinoIcons.delete,color: Colors.grey,size: 20,))
-                                                      ],
-                                                    )
+                                                SizedBox(
+                                                  width: displaywidth(context)*0.10,
+                                                  child: Center(
+                                                    child: Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                          children: [
+                                                            IconButton(onPressed: (){
+
+                                                            }, icon: const Icon(CupertinoIcons.eye,color: Colors.grey,size: 20,)),
+                                                            IconButton(onPressed: (){
+                                                              setState(() {
+
+                                                              });
+                                                            }, icon: const Icon(CupertinoIcons.delete,color: Colors.grey,size: 20,))
+                                                          ],
+                                                        )
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
+                                              ],
                                             ),
-                                          ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    Divider(color: Colors.grey.shade200,thickness: 0.5,)
-                                  ],
-                                ),
-                              );
+                                      Divider(color: Colors.grey.shade200,thickness: 0.5,)
+                                    ],
+                                  ),
+                                );
 
-                            }),
+                              }),
+                        ),
                       )
                     ],
                   ),
                 ),
               ),
             )
-
-
           ],
         ),
       ),
@@ -5731,6 +6358,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 SizedBox(
                     width: displaywidth(context)*0.40,
                     child: commontextfield("Enter Pincode", userpincodecontroller)),
+
                 Padding(
                   padding: const EdgeInsets.only(left:4.0),
                   child: Row(
@@ -5745,7 +6373,95 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           SizedBox(
                               width: displaywidth(context)*0.40,
-                              child: commontextfield("Enter Address", useraddresscontroller,lines: 3))
+                              child: commontextfield("Enter Address", useraddresscontroller,lines: 3)),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text("Assign Customer to Hub",style: commonstyle(color: Colors.black),),
+                                    ),
+                                    SizedBox(
+                                      width:displaywidth(context)*0.39,
+                                      child: DropdownButtonFormField(
+                                        decoration: InputDecoration(
+                                          hintText: "Select Hub",
+                                          hintStyle: commonstyle(),
+                                          fillColor: Colors.grey.shade400,
+                                          filled: true,
+                                          enabledBorder: OutlineInputBorder(
+                                              borderSide: const BorderSide(color: Color(0xFFD9D9D9)),
+                                              borderRadius: BorderRadius.circular(10)),
+                                          focusedBorder: OutlineInputBorder(
+                                              borderSide: const BorderSide(color: Color(0xFFD9D9D9)),
+                                              borderRadius: BorderRadius.circular(10)),
+                                          border: const OutlineInputBorder(),
+                                        ),
+                                        value: selectedhubid, // Ensure this is the ID, not concatenated text
+                                        onChanged: (newValue) {
+                                          setState(() {
+                                            selectedhubid = newValue as int?; // Update with the selected ID
+                                          });
+                                        },
+                                        items: getallhubcontroller.getallhubdata.map((item) {
+                                          final hubId = item['id'];
+                                          final hubDisplay = "${item['username']} - ${item['address']}";
+                                          return DropdownMenuItem(
+                                            value: hubId, // Use ID as value for uniqueness
+                                            child: Text(hubDisplay, style: commonstyle(color: Colors.black)),
+                                          );
+                                        }).toList(),
+                                        dropdownColor: Colors.white,
+                                      ),
+                                    ),
+
+                                    // SizedBox(
+                                    //   // height:displayheight(context)*0.10,
+                                    //   width: displaywidth(context) * 0.39,
+                                    //   child: DropdownButtonFormField(
+                                    //     decoration: InputDecoration(
+                                    //       hintText: "Select Hub",
+                                    //       hintStyle: commonstyle(),
+                                    //       fillColor: Colors.grey.shade400,
+                                    //       filled: true,
+                                    //       enabledBorder: OutlineInputBorder(
+                                    //           borderSide: const BorderSide(color: Color(0xFFD9D9D9)),
+                                    //           borderRadius: BorderRadius.circular(10)),
+                                    //       focusedBorder: OutlineInputBorder(
+                                    //           borderSide: const BorderSide(color: Color(0xFFD9D9D9)),
+                                    //           borderRadius: BorderRadius.circular(10)),
+                                    //       border: const OutlineInputBorder(),
+                                    //     ),
+                                    //     value: SelectedHubtoUsers,
+                                    //     onChanged: (newValue) {
+                                    //       setState(() {
+                                    //         SelectedHubtoUsers = newValue.toString();
+                                    //       });
+                                    //     },
+                                    //     items: getallhubcontroller.getallhubdata.map((item) {
+                                    //       return DropdownMenuItem(
+                                    //         value: item['id'],
+                                    //         child: Text("${item['username']+"-"+item['address']}", style: commonstyle(color: Colors.black)),
+                                    //         onTap: () => setState(() {
+                                    //           SelectedHubtoUsers = item['username'];
+                                    //             selectedhubid=item['id'];
+                                    //           print("Hub id - ${item['id']}");
+                                    //         }),
+                                    //       );
+                                    //     }).toList(),
+                                    //     dropdownColor: Colors.white,
+                                    //   ),
+                                    // ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ],
@@ -5761,11 +6477,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               borderRadius: BorderRadius.circular(10)
                           )),
                           onPressed: ()async{
-                            if(usernamecontroller.text.isEmpty||useremailcontroller.text.isEmpty||usernumbercontroller.text.isEmpty||userpasswordcontroller.text.isEmpty||useraddresscontroller.text.isEmpty){
-                              alertToastRed(context, "Required Field is Empty");
+                            if(usernamecontroller.text.isEmpty||useremailcontroller.text.isEmpty||usernumbercontroller.text.isEmpty||userpasswordcontroller.text.isEmpty||useraddresscontroller.text.isEmpty||SelectedHubtoUsers.toString().isEmpty){
+                              alertToastRed(context,"Required Field is Empty");
                             }else{
                               showloadingdialog(context);
-                              addUsersController.AddUserAPI(context, useremailcontroller.text, userpasswordcontroller.text, usernamecontroller.text, usernumbercontroller.text, useraddresscontroller.text, _customerimageBytes.toString(),usercitycontroller.text,userstatecontroller.text,userpincodecontroller.text);
+                              addUsersController.AddUserAPI(context, useremailcontroller.text, userpasswordcontroller.text, usernamecontroller.text, usernumbercontroller.text, useraddresscontroller.text, _customerimageBytes.toString(),usercitycontroller.text,userstatecontroller.text,userpincodecontroller.text,selectedhubid);
                               await getallusersController.GetAllUsersApi(context);
                             }
                           },
@@ -5786,6 +6502,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     updateuseremailcontroller.text=data['email']??"";
     updateusernumbercontroller.text=data['phone']??"";
     updateuseraddresscontroller.text=data['address']??"";
+    // selectedhubid=data['id'];
+    // SelectedHubtoUsers=data['username']+"-"+data['address']??"";
     return SideSheet.right(
         sheetColor: Colors.white,
         width: displaywidth(context)*0.42,
@@ -5921,8 +6639,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             child: Text("Assign Customer to Hub",style: commonstyle(color: Colors.black),),
                           ),
                           SizedBox(
-                            height:displayheight(context)*0.10,
-                            width: displaywidth(context) * 0.39,
+                            width:displaywidth(context)*0.39,
                             child: DropdownButtonFormField(
                               decoration: InputDecoration(
                                 hintText: "Select Hub",
@@ -5937,25 +6654,61 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     borderRadius: BorderRadius.circular(10)),
                                 border: const OutlineInputBorder(),
                               ),
-                              value: SelectedHubtoUsers,
+                              value: selectedhubid, // Ensure this is the ID, not concatenated text
                               onChanged: (newValue) {
                                 setState(() {
-                                  SelectedHubtoUsers = newValue.toString();
+                                  selectedhubid = newValue as int?; // Update with the selected ID
                                 });
                               },
                               items: getallhubcontroller.getallhubdata.map((item) {
+                                final hubId = item['id'];
+                                final hubDisplay = "${item['username']} - ${item['address']}";
                                 return DropdownMenuItem(
-                                  value: item['id'],
-                                  child: Text("${item['username']+"-"+item['address']}", style: commonstyle(color: Colors.black)),
-                                  onTap: () => setState(() {
-                                    SelectedHubtoUsers = item['username'];
-                                    print("Hub id - ${item['id']}");
-                                  }),
+                                  value: hubId, // Use ID as value for uniqueness
+                                  child: Text(hubDisplay, style: commonstyle(color: Colors.black)),
                                 );
                               }).toList(),
                               dropdownColor: Colors.white,
                             ),
                           ),
+
+                          // SizedBox(
+                          //   // height:displayheight(context)*0.10,
+                          //   width: displaywidth(context) * 0.39,
+                          //   child: DropdownButtonFormField(
+                          //     decoration: InputDecoration(
+                          //       hintText: "Select Hub",
+                          //       hintStyle: commonstyle(),
+                          //       fillColor: Colors.grey.shade400,
+                          //       filled: true,
+                          //       enabledBorder: OutlineInputBorder(
+                          //           borderSide: const BorderSide(color: Color(0xFFD9D9D9)),
+                          //           borderRadius: BorderRadius.circular(10)),
+                          //       focusedBorder: OutlineInputBorder(
+                          //           borderSide: const BorderSide(color: Color(0xFFD9D9D9)),
+                          //           borderRadius: BorderRadius.circular(10)),
+                          //       border: const OutlineInputBorder(),
+                          //     ),
+                          //     value: SelectedHubtoUsers,
+                          //     onChanged: (newValue) {
+                          //       setState(() {
+                          //         SelectedHubtoUsers = newValue.toString();
+                          //       });
+                          //     },
+                          //     items: getallhubcontroller.getallhubdata.map((item) {
+                          //       return DropdownMenuItem(
+                          //         value: item['id'],
+                          //         child: Text("${item['username']+"-"+item['address']}", style: commonstyle(color: Colors.black)),
+                          //         onTap: () => setState(() {
+                          //           SelectedHubtoUsers = item['username'];
+                          //             selectedhubid=item['id'];
+                          //           print("Hub id - ${item['id']}");
+                          //         }),
+                          //       );
+                          //     }).toList(),
+                          //     dropdownColor: Colors.white,
+                          //   ),
+                          // ),
                         ],
                       ),
                     ],
@@ -6212,8 +6965,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     onTap:(){
                                       setState(() {
                                         getUsersByHubIdcontroller.GetUserByHubIdApi(context,data['id']);
+                                        getDeliveryByHubIdcontroller.GetDeliveryByHubIdApi(context,data['id']);
+                                        getOrderByHubIdcontroller.GetOrderByHubIdApi(context,data['id']);
                                         ontaphub=2;
-                                        print("Hub Id : ${data['id']}");
+                                        gethubtapdata=data['id']??1;
+                                        print("Hub Id : $gethubtapdata");
                                       });
                                     },
                                     child: Container(
@@ -6489,7 +7245,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           SizedBox(
-                            width: displaywidth(context)*0.15,
+                            width: displaywidth(context)*0.13,
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -6507,7 +7263,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           SizedBox(
-                            width: displaywidth(context)*0.16,
+                            width: displaywidth(context)*0.13,
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -6516,7 +7272,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           SizedBox(
-                            width: displaywidth(context)*0.14,
+                            width: displaywidth(context)*0.09,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Assigned \nStatus",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),textAlign: TextAlign.center,),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context)*0.10,
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -6529,118 +7294,171 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   ),
                   SizedBox(
-                    height: displayheight(context)*0.69,
+                    height: displayheight(context) * 0.69,
                     width: double.infinity,
-                    child: ListView.builder(
-                      itemCount: searchUsersController.searchuserdata.length,
-                        itemBuilder: (BuildContext context,int index){
-                        var data=searchUsersController.searchuserdata[index];
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
+                    child: FutureBuilder(
+                      future: fetchusers(),
+                      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          // While data is being fetched, show a loader or placeholder
+                          return const Center(child: CupertinoActivityIndicator());
+                        } else if (snapshot.hasError) {
+                          // If there was an error fetching the data
+                          return Center(child: Text("Error: ${snapshot.error}"));
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          // If the data is empty
+                          return  Center(child: Text("No Users found.",style: commonstyle(),));
+                        }
+
+                        // Data is available; proceed with ListView.builder
+                        final searchuserdata = snapshot.data!;
+                        return ListView.builder(
+                          itemCount: searchuserdata.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            var data = searchuserdata[index];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
                                       color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10)
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          width: displaywidth(context)*0.08,
-                                          child: Center(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Text("${data['id']??""}",style: commonstyleweb(color: Colors.black),),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          // Index
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.08,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text("${index + 1}", style: commonstyleweb(color: Colors.black)),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: displaywidth(context)*0.08,
-                                          child: const Center(
-                                            child: Padding(
+                                          // Profile Picture
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.08,
+                                            child: const Center(
+                                              child: Padding(
                                                 padding: EdgeInsets.all(8.0),
                                                 child: CircleAvatar(
                                                   backgroundColor: Colors.white,
                                                   backgroundImage: AssetImage(Asset_Constant.logo),
-                                                )
+                                                ),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: displaywidth(context)*0.10,
-                                          child: Center(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: SelectableText("${data['username']??""}",style: commonstyleweb(color: Colors.black),),
+                                          // Username
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.10,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: SelectableText("${data['username'] ?? ""}", style: commonstyleweb(color: Colors.black)),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: displaywidth(context)*0.15,
-                                          child: Center(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: SelectableText("${data['email']??""}",style: commonstyleweb(color: Colors.black),),
+                                          // Email
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.13,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: SelectableText("${data['email'] ?? ""}", style: commonstyleweb(color: Colors.black)),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: displaywidth(context)*0.10,
-                                          child: Center(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Text("${data['phone']??""}",style: commonstyleweb(color: Colors.black),),
+                                          // Phone
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.10,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text("${data['phone'] ?? ""}", style: commonstyleweb(color: Colors.black)),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: displaywidth(context)*0.16,
-                                          child: Center(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Text("${data['address']??""}",style: commonstyleweb(color: Colors.black),),
+                                          // Address
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.13,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text("${data['address'] ?? ""}", style: commonstyleweb(color: Colors.black)),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: displaywidth(context)*0.14,
-                                          child: Center(
-                                            child: Padding(
+                                          // Hub User ID Status
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.09,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(5),
+                                                    color: data['hubuserId'] == null ? Colors.red.shade100 : Colors.green.shade100,
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: data['hubuserId'] == null
+                                                        ? Text("Not Assigned", style: commonstyleweb(color: Colors.red))
+                                                        : Text("Assigned", style: commonstyleweb(color: Colors.green)),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          // Actions
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.10,
+                                            child: Center(
+                                              child: Padding(
                                                 padding: const EdgeInsets.all(8.0),
                                                 child: Row(
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   crossAxisAlignment: CrossAxisAlignment.center,
                                                   children: [
-                                                    IconButton(onPressed: (){}, icon: const Icon(CupertinoIcons.eye,color: Colors.grey,size: 20,)),
-                                                    IconButton(onPressed: (){
-                                                      Map<String,dynamic> data=getallusersController.getallusersdata[index];
-                                                      updateuserssidesheet(data:data);
-                                                    }, icon: const Icon(CupertinoIcons.pen,color: Colors.grey,size: 20,)),
-                                                    IconButton(onPressed: (){
-                                                      // DeleteHub();
-                                                    }, icon: const Icon(CupertinoIcons.delete,color: Colors.grey,size: 20,))
+                                                    IconButton(onPressed: () {}, icon: const Icon(CupertinoIcons.eye, color: Colors.grey, size: 20)),
+                                                    IconButton(
+                                                      onPressed: () {
+                                                        Map<String, dynamic> data = getallusersController.getallusersdata[index];
+                                                        updateuserssidesheet(data: data);
+                                                      },
+                                                      icon: const Icon(CupertinoIcons.pen, color: Colors.grey, size: 20),
+                                                    ),
+                                                    IconButton(
+                                                      onPressed: () {
+                                                        // DeleteHub();
+                                                      },
+                                                      icon: const Icon(CupertinoIcons.delete, color: Colors.grey, size: 20),
+                                                    ),
                                                   ],
-                                                )
+                                                ),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Divider(color: Colors.grey.shade200,thickness: 0.5,)
-                              ],
-                            ),
-                          );
-
-                        }),
+                                  Divider(color: Colors.grey.shade200, thickness: 0.5),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
                   )
+
                 ],
               ),
             ),
@@ -6765,7 +7583,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           SizedBox(
-                            width: displaywidth(context)*0.15,
+                            width: displaywidth(context)*0.13,
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -6783,11 +7601,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           SizedBox(
-                            width: displaywidth(context)*0.16,
+                            width: displaywidth(context)*0.13,
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text("Driver Address",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context)*0.10,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Assigned Status",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
                               ),
                             ),
                           ),
@@ -8711,7 +9538,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
 }
-
 class ChartData {
   ChartData(this.x, this.y, this.color);
   final String x;
