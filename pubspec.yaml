@@ -42,12 +42,15 @@ dependencies:
   geolocator: ^10.0.1
   image_picker: ^0.8.5+3
   image: ^4.0.19
+  pdf: ^3.10.0
   shared_preferences:
   side_sheet: ^1.0.4
   syncfusion_flutter_charts: ^27.1.58
   html_editor_enhanced: ^2.6.0
   image_network: ^2.5.6
   image_picker_for_web: ^2.0.0
+  printing: ^5.10.0
+
 
 dev_dependencies:
   flutter_test:

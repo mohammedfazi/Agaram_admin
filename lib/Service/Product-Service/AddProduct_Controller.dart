@@ -33,7 +33,7 @@ class AddProductController extends GetConnect{
     final data=jsonDecode(responce.body);
 
     if(responce.statusCode==201){
-      await getallProductController.GetAllProductAPI(context);
+      await getallProductController.GetAllProductAPI(context,"","");
       Get.back();
       StackDialog.show("Successfully", "Product Added Successfully", Icons.verified, Colors.green);
     }else if(responce.statusCode==409){

@@ -30,7 +30,7 @@ class DeleteProductController extends GetConnect{
     final data=jsonDecode(responce.body);
 
     if(responce.statusCode==200){
-      await getallProductController.GetAllProductAPI(context);
+      await getallProductController.GetAllProductAPI(context,"","");
       StackDialog.show("Deleted Successfully", "Delivery Partner Deleted Successfully", Icons.verified, Colors.green);
     }else if(responce.statusCode==500){
       Get.back();

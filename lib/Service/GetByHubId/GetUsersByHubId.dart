@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../Config.dart';
 
-class GetallProductController extends GetConnect{
 
-  RxList<dynamic> getdata=[].obs;
-  Future <dynamic> GetAllProductAPI(BuildContext context,productname,price)async{
+class GetUsersByHubIdcontroller extends GetConnect{
+
+  RxList<dynamic> getallhubdata=[].obs;
+  Future <dynamic> GetUserByHubIdApi(BuildContext context,id)async{
     final SharedPreferences pref=await SharedPreferences.getInstance();
     String ?service;
 
     service=Config.LOGIN_API;
-    final url=Uri.parse("${service}product/getProducts?productName=$productname&price=$price");
+    final url=Uri.parse("${service}hub/user/getSingleHubUser/$id");
     print(url);
 
     final header={
@@ -29,8 +29,8 @@ class GetallProductController extends GetConnect{
     final data=jsonDecode(responce.body);
 
     if(responce.statusCode==200){
-      final value=(data['products']);
-      getdata.assignAll(value);
+      final value=(data['users']);
+      getallhubdata.assignAll(value);
       return responce;
 
     }

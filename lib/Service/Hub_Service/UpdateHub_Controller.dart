@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:agaram_admin/Service/Hub_Service/GetallHubController.dart';
 import 'package:agaram_admin/Service/Product-Service/GetallProduct_Controller.dart';
 import 'package:agaram_admin/Service/Getall_Service/GetallUsers.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ import '../../Widget/Snackbar.dart';
 
 class UpdateHubController extends GetConnect{
 
-  final GetallProductController getallProductController=Get.find<GetallProductController>();
+  final Getallhubcontroller getallhubcontroller=Get.find<Getallhubcontroller>();
 
   Future <dynamic> UpdateProductAPI(BuildContext context,id,username,emailid,password,phone,address,pincode,city)async{
     String service;
@@ -33,7 +34,7 @@ class UpdateHubController extends GetConnect{
     final data=jsonDecode(responce.body);
 
     if(responce.statusCode==200){
-      await getallProductController.GetAllProductAPI(context);
+      await getallhubcontroller.GetAllHubApi(context,"","");
       Get.back();
       StackDialog.show("Successfully", "Hub Updated Successfully", Icons.verified, Colors.green);
     }

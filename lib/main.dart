@@ -12,6 +12,7 @@ import 'package:agaram_admin/Service/Deliverpartners_service/AddDeliverPartner_C
 import 'package:agaram_admin/Service/Deliverpartners_service/DeleteDeliverPartner_Controller.dart';
 import 'package:agaram_admin/Service/Deliverpartners_service/GetallDelivery.dart';
 import 'package:agaram_admin/Service/Deliverpartners_service/UpdateDeliveryUsers_Controller.dart';
+import 'package:agaram_admin/Service/GetByHubId/GetUsersByHubId.dart';
 import 'package:agaram_admin/Service/Getall_Service/GetallOrder.dart';
 import 'package:agaram_admin/Service/Hub_Service/AddHubController.dart';
 import 'package:agaram_admin/Service/Hub_Service/DeleteHubController.dart';
@@ -24,6 +25,7 @@ import 'package:agaram_admin/Service/Product-Service/AddProduct_Controller.dart'
 import 'package:agaram_admin/Service/Product-Service/DeleteProduct_Controller.dart';
 import 'package:agaram_admin/Service/Product-Service/UpdateProduct_Controller.dart';
 import 'package:agaram_admin/Service/Subscription_Service/GetSubscriptionHistory_Controller.dart';
+import 'package:agaram_admin/Service/Subscription_Service/Getseprate_Subscription_Controller.dart';
 import 'package:agaram_admin/Service/Users_service/UpdateUsers_Controller.dart';
 import 'package:agaram_admin/Testing.dart';
 import 'package:flutter/material.dart';
@@ -70,6 +72,8 @@ void main() {
   Get.put(DeleteProductController());
   Get.put(DeleteHubController());
   Get.put(GetCmsPagebyIdController());
+  Get.put(GetSepratedateController());
+  Get.put(GetUsersByHubIdcontroller());
   runApp(const MyApp());
 }
 

@@ -12,7 +12,7 @@ import '../../Widget/Snackbar.dart';
 class AddUsersController extends GetConnect{
 
   final GetallusersController getallusersController=Get.find<GetallusersController>();
-  Future <dynamic> AddUserAPI(BuildContext context,email,password,username,phone,address,profileimage)async{
+  Future <dynamic> AddUserAPI(BuildContext context,email,password,username,phone,address,profileimage,city,state,pincode)async{
     String service;
     service=Config.LOGIN_API;
 
@@ -20,7 +20,7 @@ class AddUsersController extends GetConnect{
 
     final header=Config.Header;
 
-    final json='{"username":"$username","email":"$email","password":"$password","phone":"$phone","address":"$address","profileImage":"$profileimage","roleId":"2"}';
+    final json='{"username":"$username","email":"$email","password":"$password","phone":"$phone","address":"$address","profileImage":"$profileimage","roleId":"2","city":"$city","state":"$state","pincode":"$pincode"}';
 
     final responce=await http.post(url,headers:header,body: json.toString());
 

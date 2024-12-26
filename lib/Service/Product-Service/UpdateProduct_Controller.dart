@@ -33,7 +33,7 @@ class UpdateProductController extends GetConnect{
     final data=jsonDecode(responce.body);
 
     if(responce.statusCode==200){
-      await getallProductController.GetAllProductAPI(context);
+      await getallProductController.GetAllProductAPI(context,"","");
       Get.back();
       StackDialog.show("Successfully", "Product Updated Successfully", Icons.verified, Colors.green);
     }else if(responce.statusCode==500){

@@ -6,15 +6,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Config.dart';
 
-class GetallProductController extends GetConnect{
+class GetSepratedateController extends GetConnect{
 
-  RxList<dynamic> getdata=[].obs;
-  Future <dynamic> GetAllProductAPI(BuildContext context,productname,price)async{
+  RxList<dynamic> getsepratedata=[].obs;
+  Future <dynamic> GetSeprateDateApi(BuildContext context,subscriptionid)async{
     final SharedPreferences pref=await SharedPreferences.getInstance();
     String ?service;
-
-    service=Config.LOGIN_API;
-    final url=Uri.parse("${service}product/getProducts?productName=$productname&price=$price");
+    int userId;
+    var getid=pref.getInt("userid");
+    userId=getid??0;
+    service=Config.API;
+    final url=Uri.parse("${service}vacation/getDeliveryHistorySeperate?userId=$userId&subscriptionId=$subscriptionid");
     print(url);
 
     final header={
@@ -29,8 +31,8 @@ class GetallProductController extends GetConnect{
     final data=jsonDecode(responce.body);
 
     if(responce.statusCode==200){
-      final value=(data['products']);
-      getdata.assignAll(value);
+      final value=(data['getDeliveryHistory']);
+      getsepratedata.assignAll(value);
       return responce;
 
     }
@@ -39,3 +41,5 @@ class GetallProductController extends GetConnect{
     }
   }
 }
+
+
