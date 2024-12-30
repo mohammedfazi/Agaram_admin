@@ -10,7 +10,7 @@ import '../../Widget/Snackbar.dart';
 
 class AddDeliverpartnerController extends GetConnect{
  final GetalldeliveryController getalldeliveryController=Get.find<GetalldeliveryController>();
-  Future <dynamic> AddDeliverPartnerApi(BuildContext context,email,password,username,phone,address,profileimage,kycverified,holdername,accountnumber,ifsccode,branchname,city,state,pincode)async{
+  Future <dynamic> AddDeliverPartnerApi(BuildContext context,email,password,username,phone,address,profileimage,kycverified,holdername,accountnumber,ifsccode,branchname,city,state,pincode,hubid)async{
     String service;
     service=Config.DRIVER_API;
 
@@ -18,7 +18,7 @@ class AddDeliverpartnerController extends GetConnect{
 
     final header=Config.Header;
 
-    final json='{"username":"$username","email":"$email","password":"$password","phone":"$phone","address":"$address","profileImage":"$profileimage","roleId":"3","kycIsVerified":"$kycverified","accountHolderName":"$holdername","accountNo":"$accountnumber","IFSCNO":"$ifsccode","branchName":"$branchname","city":"$city","state":"$state","pincode":"$pincode"}';
+    final json='{"username":"$username","email":"$email","password":"$password","phone":"$phone","address":"$address","profileImage":"$profileimage","roleId":"3","kycIsVerified":"$kycverified","accountHolderName":"$holdername","accountNo":"$accountnumber","IFSCNO":"$ifsccode","branchName":"$branchname","city":"$city","state":"$state","pincode":"$pincode","hubuserId":"$hubid"}';
 
     final responce=await http.post(url,headers:header,body: json.toString());
 
@@ -26,7 +26,6 @@ class AddDeliverpartnerController extends GetConnect{
 
     if(responce.statusCode==201){
       await getalldeliveryController.GetAllDeliveryApi(context);
-      Get.back();
       StackDialog.show("Successfully", "Deliver Partner Created Successfully", Icons.verified, Colors.green);
 
     }else if(responce.statusCode==400){

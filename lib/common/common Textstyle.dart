@@ -11,7 +11,7 @@ TextStyle commonstyle({double size=12,Color color=Colors.white,FontWeight weight
     letterSpacing: 0.21
   );
 }
-TextStyle commonstyleweb({double size=15,Color color=Colors.white,FontWeight weight=FontWeight.w400}){
+TextStyle commonstyleweb({double size=14,Color color=Colors.white,FontWeight weight=FontWeight.w400}){
   return GoogleFonts.poppins(
       fontSize: size,
       color: color,

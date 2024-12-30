@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:agaram_admin/Service/Getall_Service/GetallUsers.dart';
+import 'package:agaram_admin/Service/Users_service/SearchUsers_Controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../Config.dart';
@@ -8,7 +9,7 @@ import '../../Widget/Snackbar.dart';
 
 class AddUsersController extends GetConnect{
 
-  final GetallusersController getallusersController=Get.find<GetallusersController>();
+  // final SearchUsersController searchUsersController=Get.find<SearchUsersController>();
   Future <dynamic> AddUserAPI(BuildContext context,email,password,username,phone,address,profileimage,city,state,pincode,hubid)async{
     String service;
     service=Config.LOGIN_API;
@@ -24,8 +25,7 @@ class AddUsersController extends GetConnect{
     final data=jsonDecode(responce.body);
 
     if(responce.statusCode==201){
-      await getallusersController.GetAllUsersApi(context);
-      Get.back();
+      // await searchUsersController.SearchUserAPI(context,"","");
       StackDialog.show("Successfully", "User Created Successfully", Icons.verified, Colors.green);
     }else if(responce.statusCode==409){
       StackDialog.show("Already Exists", "Enter Id Already Exists", Icons.info, Colors.red);

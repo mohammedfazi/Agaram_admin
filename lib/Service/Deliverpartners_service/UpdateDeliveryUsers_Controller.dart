@@ -12,7 +12,7 @@ import '../../Widget/Snackbar.dart';
 class DeliveryUpdate_Controller extends GetConnect{
 
   final GetalldeliveryController getalldeliveryController=Get.find<GetalldeliveryController>();
-  Future <dynamic> DeliverUpdateApi(BuildContext context,id,email,password,username,phone,address,profileimage,kycverified,holdername,accountnumber,ifsccode,branchname)async{
+  Future <dynamic> DeliverUpdateApi(BuildContext context,id,email,password,username,phone,address,profileimage,kycverified,holdername,accountnumber,ifsccode,branchname,hubid)async{
     String service;
     service=Config.DRIVER_API;
     final SharedPreferences pref=await SharedPreferences.getInstance();
@@ -26,7 +26,7 @@ class DeliveryUpdate_Controller extends GetConnect{
     };
 
 
-    final json='{"id":"$id","username":"$username","email":"$email","password":"$password","phone":"$phone","address":"$address","profileImage":"$profileimage","roleId":"3","kycIsVerified":"$kycverified","accountHolderName":"$holdername","accountNo":"$accountnumber","IFSCNO":"$ifsccode","branchName":"$branchname"}';
+    final json='{"id":"$id","username":"$username","email":"$email","password":"$password","phone":"$phone","address":"$address","profileImage":"$profileimage","roleId":"3","kycIsVerified":"$kycverified","accountHolderName":"$holdername","accountNo":"$accountnumber","IFSCNO":"$ifsccode","branchName":"$branchname","hubuserId":"$hubid"}';
 
     final responce=await http.post(url,headers:header,body: json.toString());
 
@@ -35,7 +35,7 @@ class DeliveryUpdate_Controller extends GetConnect{
     if(responce.statusCode==200){
       await getalldeliveryController.GetAllDeliveryApi(context);
       Get.back();
-      StackDialog.show("Successfully", "Account Created Successfully", Icons.verified, Colors.green);
+      StackDialog.show("Successfully", "Account Updated Successfully", Icons.verified, Colors.green);
 
     }else if(responce.statusCode==400){
       StackDialog.show("Already Exists", "Enter Id Already Exists", Icons.info, Colors.red);

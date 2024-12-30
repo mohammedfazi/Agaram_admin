@@ -2,10 +2,12 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:math';
 import 'dart:html' as html;
-import 'package:agaram_admin/Service/GetByHubId/GetDeliverbyHubId.dart';
+import 'package:agaram_admin/Service/Assign_service/AssignCheckout_Controller.dart';
+import 'package:agaram_admin/Service/Assign_service/AssignSubscription_Controller.dart';
 import 'package:agaram_admin/Service/GetByHubId/GetDeliverbyHubId.dart';
 import 'package:agaram_admin/Service/GetByHubId/GetUsersByHubId.dart';
 import 'package:agaram_admin/Service/GetByHubId/GetallOrdersbyHubId.dart';
+import 'package:agaram_admin/Service/Users_service/DeleteUser_Controller.dart';
 import 'package:pdf/pdf.dart';
 import 'package:agaram_admin/Screens/Login/Loginscreen.dart';
 import 'package:agaram_admin/Service/Admin-Service/Getadmin_Controller.dart';
@@ -55,10 +57,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:side_sheet/side_sheet.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../Service/Dashboard_Count/Getproductscount_Controller.dart';
-import '../../Service/GetByHubId/GetDeliverbyHubId.dart';
+import '../../Service/GetByHubId/GetallSubscriptionbyHubId.dart';
 import '../../Service/Product-Service/GetallProduct_Controller.dart';
 import '../../Service/Users_service/AddUsersController.dart';
-
 
 
 class DashboardScreen extends StatefulWidget {
@@ -82,6 +83,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String ?SelectedHubtoUsers;
   int ?gethubtapdata;
   int ?selectedhubid;
+  int ?selecteddeliveryhubid;
   //PASSWORD
   final ForgetpasswordController forgetpasswordController=Get.find<ForgetpasswordController>();
   final ChangepasswordController changepasswordController=Get.find<ChangepasswordController>();
@@ -359,6 +361,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final GetUsersByHubIdcontroller getUsersByHubIdcontroller=Get.find<GetUsersByHubIdcontroller>();
   final GetDeliveryByHubIdcontroller getDeliveryByHubIdcontroller=Get.find<GetDeliveryByHubIdcontroller>();
   final GetOrderByHubIdcontroller getOrderByHubIdcontroller=Get.find<GetOrderByHubIdcontroller>();
+  final GetSubscriptionByHubIdcontroller getSubscriptionByHubIdcontroller=Get.find<GetSubscriptionByHubIdcontroller>();
 
 
   //UPDATE
@@ -366,6 +369,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final UpdateAdminController updateAdminController=Get.find<UpdateAdminController>();
   final DeliveryUpdate_Controller deliveryUpdate_Controller=Get.find<DeliveryUpdate_Controller>();
   final UpdateHubController updateHubController=Get.find<UpdateHubController>();
+  final AssigncheckoutController assigncheckoutController=Get.find<AssigncheckoutController>();
+  final AssignSubscriptionController assignSubscriptionController=Get.find<AssignSubscriptionController>();
 
   //POST
   final AddUsersController addUsersController=Get.find<AddUsersController>();
@@ -377,8 +382,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final DeleteDeliveryPartnerController deleteDeliveryPartnerController=Get.find<DeleteDeliveryPartnerController>();
   final DeleteProductController deleteProductController=Get.find<DeleteProductController>();
   final DeleteHubController deleteHubController=Get.find<DeleteHubController>();
+  final DeleteUserController deleteUserController=Get.find<DeleteUserController>();
 
-  int container = 2;
+  int container = 1;
 
   String?SelectedPaymentStatus;
   List<String> paymentlist=['COMPLETED','PENDING','CANCELED'];
@@ -401,7 +407,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   final TextEditingController hubsearchcontroller=TextEditingController();
 
-
   //search controller
   final TextEditingController subscriptionstatuscontroller=TextEditingController();
   final TextEditingController orderpaymentidcontroller=TextEditingController();
@@ -412,8 +417,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final TextEditingController searchhubemailidcontroller=TextEditingController();
   final TextEditingController productsearchnamecontroller=TextEditingController();
   final TextEditingController productsearchpricecontroller=TextEditingController();
-
-
 
 
 //add hub controller
@@ -546,7 +549,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-
   Future<List<dynamic>> fetchProducts() async {
     try {
       await Future.delayed(const Duration(milliseconds: 1)); // Simulated delay
@@ -555,6 +557,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       throw Exception('Failed to load products');
     }
   }
+
   Future<List<dynamic>> fetchusers() async {
     try {
       await Future.delayed(const Duration(milliseconds: 1)); // Simulated delay
@@ -590,8 +593,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       throw Exception('Failed to load Delivery Boys Data');
     }
   }
-
-
 
   List<ChartData> getChartData() {
     return [
@@ -714,8 +715,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Responsive(
-
-      desktop: Scaffold(
+      desktop:Scaffold(
         backgroundColor: Color_Constant.primarycolr,
         body: Row(
           children: [
@@ -986,7 +986,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       ),
 
-      mobile: Scaffold(
+      mobile:Scaffold(
         backgroundColor: Colors.grey.shade100,
         appBar: AppBar(
           backgroundColor: Color_Constant.primarycolr,
@@ -1091,7 +1091,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: container==1?
           dashboard():
           container==2?
-          hubwidget():
+          hubwidgetmobile():
           container==3?
           deliverywidget():
           container==4?
@@ -1626,6 +1626,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget dashboard(){
+    getalluserscountController.GetAllusercountAPI(context);
+    getalldeliveryuserscountController.GetAlldeliveryuserscountAPI(context);
+    getProductcountController.GetProductcountAPI(context);
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SingleChildScrollView(
@@ -1733,7 +1737,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         getSubscriptioncountController.getdata.isEmpty?
                                         Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
                                             :
-                                        Text("${getSubscriptioncountController.getdata[0]['productCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                        Text("${getSubscriptioncountController.getdata[0]['subscriptionCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
                                         index==5?
                                         Obx(()=>
                                         getProductcountController.getdata.isEmpty?
@@ -2060,45 +2064,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   SizedBox(
                       width:displaywidth(context)*0.30,
                       child: commontextfield("Search By Payment Order Id..", orderpaymentidcontroller)),
-                  // Padding(
-                  //   padding: const EdgeInsets.only(left:8.0),
-                  //   child: SizedBox(
-                  //     height: displayheight(context)*0.07,
-                  //     width: displaywidth(context)*0.30,
-                  //     child: DropdownButtonFormField(
-                  //       decoration:  InputDecoration(
-                  //         enabledBorder: const OutlineInputBorder(
-                  //             borderSide: BorderSide(color: Colors.transparent)
-                  //         ),
-                  //         focusedBorder:const OutlineInputBorder(
-                  //             borderSide: BorderSide(color: Colors.transparent)
-                  //         ),
-                  //         fillColor: Colors.grey.shade400,
-                  //         filled: true,
-                  //       ),
-                  //
-                  //       value: SelectedPaymentStatus,
-                  //       items: paymentlist.map((item) {
-                  //         return DropdownMenuItem(
-                  //           value: item,
-                  //           child: Text(item,style: commonstyle(color: Colors.black),),
-                  //           onTap: (){
-                  //             setState(() {
-                  //               SelectedPaymentStatus=item;
-                  //             });
-                  //           },
-                  //         );
-                  //       }).toList(),
-                  //       dropdownColor: Colors.white,
-                  //       onChanged: (newValue) {
-                  //         setState(() {
-                  //           SelectedPaymentStatus = newValue as String;
-                  //         });
-                  //       },
-                  //
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
 
@@ -2180,7 +2145,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           SizedBox(
-                            width: displaywidth(context)*0.10,
+                            width: displaywidth(context)*0.08,
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -2189,7 +2154,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           SizedBox(
-                            width: displaywidth(context)*0.15,
+                            width: displaywidth(context)*0.12,
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -2198,11 +2163,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           SizedBox(
-                            width: displaywidth(context)*0.15,
+                            width: displaywidth(context)*0.12,
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text("Payment Id",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context)*0.09,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Assigned\nStatus",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),textAlign: TextAlign.center,),
                               ),
                             ),
                           ),
@@ -2216,7 +2190,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           SizedBox(
-                            width: displaywidth(context)*0.10,
+                            width: displaywidth(context)*0.08,
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -2283,7 +2257,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
                                             SizedBox(
-                                              width: displaywidth(context)*0.10,
+                                              width: displaywidth(context)*0.08,
                                               child: Center(
                                                 child: Padding(
                                                   padding: const EdgeInsets.all(8.0),
@@ -2292,7 +2266,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                               ),
                                             ),
                                             SizedBox(
-                                              width: displaywidth(context)*0.15,
+                                              width: displaywidth(context)*0.12,
                                               child: Center(
                                                 child: Padding(
                                                   padding: const EdgeInsets.all(8.0),
@@ -2301,11 +2275,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                               ),
                                             ),
                                             SizedBox(
-                                              width: displaywidth(context)*0.15,
+                                              width: displaywidth(context)*0.12,
                                               child: Center(
                                                 child: Padding(
                                                   padding: const EdgeInsets.all(8.0),
                                                   child: SelectableText("${data['paymentId']??""}",style: commonstyleweb(color: Colors.black),),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.09,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(5),
+                                                      color: data['hubuserId'] == null ? Colors.red.shade100 : Colors.green.shade100,
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: data['hubuserId'] == null
+                                                          ? Text("Not Assigned", style: commonstyleweb(color: Colors.red,weight: FontWeight.w600,size: 12))
+                                                          : Text("Assigned", style: commonstyleweb(color: Colors.green,weight: FontWeight.w600,size:12)),
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -2319,11 +2313,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                               ),
                                             ),
                                             SizedBox(
-                                              width: displaywidth(context)*0.10,
+                                              width: displaywidth(context)*0.08,
                                               child: Center(
                                                 child: Padding(
                                                   padding: const EdgeInsets.all(8.0),
                                                   child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
                                                     children: [
                                                       Icon(Icons.currency_rupee,size: 15,),
                                                       Text("${data['totalPrice']??""}",style: commonstyleweb(color: Colors.black),),
@@ -2356,12 +2352,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                       children: [
                                                         IconButton(onPressed: (){
-
-                                                        }, icon: const Icon(CupertinoIcons.eye,color: Colors.grey,size: 20,)),
-                                                        IconButton(onPressed: (){
                                                           setState(() {
-
+                                                            Assignordertohubdialog(data['id']);
                                                           });
+                                                        }, icon: const Icon(Icons.edit_outlined,color: Colors.grey,size: 20,)),
+                                                        IconButton(onPressed: (){
+
                                                         }, icon: const Icon(CupertinoIcons.delete,color: Colors.grey,size: 20,))
                                                       ],
                                                     )
@@ -2535,7 +2531,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           SizedBox(
-                            width: displaywidth(context)*0.15,
+                            width: displaywidth(context)*0.12,
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -2562,7 +2558,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           SizedBox(
-                            width: displaywidth(context)*0.10,
+                            width: displaywidth(context)*0.08,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Assigned \nStatus",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),textAlign: TextAlign.center,),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context)*0.08,
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -2571,7 +2576,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           SizedBox(
-                            width: displaywidth(context)*0.10,
+                            width: displaywidth(context)*0.08,
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -2648,7 +2653,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                               ),
                                             ),
                                             SizedBox(
-                                              width: displaywidth(context)*0.15,
+                                              width: displaywidth(context)*0.12,
                                               child: Center(
                                                 child: Padding(
                                                   padding: const EdgeInsets.all(8.0),
@@ -2697,7 +2702,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                               ),
                                             ),
                                             SizedBox(
-                                              width: displaywidth(context)*0.10,
+                                              width: displaywidth(context) * 0.08,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(5),
+                                                      color: data['hubuserId'] == null ? Colors.red.shade100 : Colors.green.shade100,
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: data['hubuserId'] == null
+                                                          ? Text("Not Assigned", style: commonstyleweb(color: Colors.red,weight: FontWeight.w600,size: 12))
+                                                          : Text("Assigned", style: commonstyleweb(color: Colors.green,weight: FontWeight.w600,size:12)),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: displaywidth(context)*0.08,
                                               child: Center(
                                                 child: Padding(
                                                   padding: const EdgeInsets.all(8.0),
@@ -2706,7 +2731,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                               ),
                                             ),
                                             SizedBox(
-                                              width: displaywidth(context)*0.10,
+                                              width: displaywidth(context)*0.08,
                                               child: Center(
                                                 child: Padding(
                                                   padding: const EdgeInsets.all(8.0),
@@ -2734,17 +2759,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                 child: Padding(
                                                     padding: const EdgeInsets.all(8.0),
                                                     child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      mainAxisAlignment: MainAxisAlignment.center,
                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                       children: [
                                                         IconButton(onPressed: (){
-
-                                                        }, icon: const Icon(CupertinoIcons.eye,color: Colors.grey,size: 20,)),
-                                                        IconButton(onPressed: (){
                                                           setState(() {
+                                                            AssignSubscriptiontohubdialog(data['id']);
 
                                                           });
-                                                        }, icon: const Icon(CupertinoIcons.delete,color: Colors.grey,size: 20,))
+                                                        }, icon: const Icon(Icons.edit_outlined,color: Colors.grey,size: 20,)),
+                                                        // IconButton(onPressed: (){
+                                                        //   setState(() {
+                                                        //
+                                                        //   });
+                                                        // }, icon: const Icon(CupertinoIcons.delete,color: Colors.grey,size: 20,))
                                                       ],
                                                     )
                                                 ),
@@ -3307,7 +3335,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Text("${hubdashboardgridview[index]['title']??""}",style: commonstyle(color: Colors.grey.shade600,size: 18),),
-
                                       index==2?
                                       Obx(()=>
                                       getUsersByHubIdcontroller.getallhubdata.isEmpty?
@@ -3326,6 +3353,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                           Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
                                               :
                                           Text("${getOrderByHubIdcontroller.getallorderhubdata.length}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                         index==3?
+                                         Obx(()=>
+                                         getSubscriptionByHubIdcontroller.getallsubscriptionhubdata.isEmpty?
+                                         Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                             :
+                                         Text("${getSubscriptionByHubIdcontroller.getallsubscriptionhubdata.length}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
                                       Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
 
                                     ],
@@ -3957,6 +3990,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
             ):
+            ontapinsidehub==3?
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -4159,6 +4193,301 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                             IconButton(onPressed: (){
 
                                                             }, icon: const Icon(CupertinoIcons.eye,color: Colors.grey,size: 20,)),
+                                                            IconButton(onPressed: (){
+                                                              setState(() {
+
+                                                              });
+                                                            }, icon: const Icon(CupertinoIcons.delete,color: Colors.grey,size: 20,))
+                                                          ],
+                                                        )
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Divider(color: Colors.grey.shade200,thickness: 0.5,)
+                                    ],
+                                  ),
+                                );
+
+                              }),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ):
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10)
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            color: Color_Constant.primarycolr,
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: displaywidth(context)*0.05,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("S.No",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: displaywidth(context)*0.12,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Subscription Order Id",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: displaywidth(context)*0.10,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Product Profile",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: displaywidth(context)*0.10,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Product Name",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: displaywidth(context)*0.08,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Assigned \nStatus",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),textAlign: TextAlign.center,),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: displaywidth(context)*0.08,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Start Date",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: displaywidth(context)*0.08,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("End Date",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: displaywidth(context)*0.10,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Payment Status",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: displaywidth(context)*0.10,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Actions",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: displayheight(context)*0.69,
+                        width: double.infinity,
+                        child: Obx(
+                              ()=> getSubscriptionByHubIdcontroller.getallsubscriptionhubdata.isEmpty?
+                          const Center(
+                            child: CupertinoActivityIndicator(),
+                          )
+                              :ListView.builder(
+                              itemCount: getSubscriptionByHubIdcontroller.getallsubscriptionhubdata.length,
+                              itemBuilder: (BuildContext context,int index){
+                                var data=getSubscriptionByHubIdcontroller.getallsubscriptionhubdata[index];
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Column(
+                                    children: [
+                                      InkWell(
+                                        onTap:(){
+                                          setState(() {
+                                            getSepratedateController.GetSeprateDateApi(context,data['id']);
+                                            subscriptioncontainer=2;
+                                            Viewsubscriptiondata=getSubscriptionHistoryController.getsubscriptiondata[index];
+                                            print(Viewsubscriptiondata);
+                                          });
+                                        },
+                                        child: Container(
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(10)
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                SizedBox(
+                                                  width: displaywidth(context)*0.05,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text("${index+1}",style: commonstyleweb(color: Colors.black),),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context)*0.12,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: SelectableText("${data['subscriptionOrderId']??""}",style: commonstyleweb(color: Colors.black),),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.10,
+                                                  child: Center(
+                                                    child: Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: ImageNetwork(
+                                                          image: "${data['product']['productImages']}",
+                                                          height: 50,
+                                                          width: 50,
+                                                          duration: 200,
+                                                          curve: Curves.easeIn,
+                                                          onPointer: true,
+                                                          debugPrint: false,
+                                                          fullScreen: true,
+                                                          fitAndroidIos: BoxFit.cover,
+                                                          fitWeb: BoxFitWeb.cover,
+                                                          borderRadius: BorderRadius.circular(5),
+                                                          onLoading:  const CupertinoActivityIndicator(
+                                                            color: Colors.indigoAccent,
+                                                          ),
+                                                          onError: const Icon(
+                                                            Icons.error,
+                                                            color: Colors.red,
+                                                          ),
+                                                          onTap: () {
+                                                            debugPrint("©gabriel_patrick_souza");
+                                                          },
+                                                        )
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context)*0.10,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text("${data['product']['productName']??""}",style: commonstyleweb(color: Colors.black),),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.08,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Container(
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(5),
+                                                          color: data['hubuserId'] == null ? Colors.red.shade100 : Colors.green.shade100,
+                                                        ),
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: data['hubuserId'] == null
+                                                              ? Text("Not Assigned", style: commonstyleweb(color: Colors.red,weight: FontWeight.w600,size: 12))
+                                                              : Text("Assigned", style: commonstyleweb(color: Colors.green,weight: FontWeight.w600,size:12)),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context)*0.08,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text("${data['startDate']??""}",style: commonstyleweb(color: Colors.black),),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context)*0.08,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text("${data['endDate']??""}",style: commonstyleweb(color: Colors.black),),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  width: displaywidth(context)*0.10,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(10),
+                                                      color: data['status']=="PENDING"?Colors.red.shade50:data['status']=="COMPLETED"?Colors.green.shade50:Colors.orange.shade50
+                                                  ),
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text("${data['status']??""}",style: commonstyleweb(color:
+                                                      data['status']=="PENDING"?Colors.red:data['status']=="COMPLETED"?Colors.green:Colors.orange,weight: FontWeight.w600),),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context)*0.10,
+                                                  child: Center(
+                                                    child: Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                          children: [
+                                                            IconButton(onPressed: (){
+
+                                                            }, icon: const Icon(Icons.edit_outlined,color: Colors.grey,size: 20,)),
                                                             IconButton(onPressed: (){
                                                               setState(() {
 
@@ -5330,28 +5659,116 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("Personal Documentation Upload",style: commonstyle(size: 18,weight: FontWeight.w600,color: Colors.black),),
+                  child: Row(
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Assign Customer to Hub",style: commonstyle(color: Colors.black),),
+                          ),
+                          SizedBox(
+                            width:displaywidth(context)*0.39,
+                            child: DropdownButtonFormField(
+                              decoration: InputDecoration(
+                                hintText: "Select Hub",
+                                hintStyle: commonstyle(),
+                                fillColor: Colors.grey.shade400,
+                                filled: true,
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(color: Color(0xFFD9D9D9)),
+                                    borderRadius: BorderRadius.circular(10)),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(color: Color(0xFFD9D9D9)),
+                                    borderRadius: BorderRadius.circular(10)),
+                                border: const OutlineInputBorder(),
+                              ),
+                              value: selecteddeliveryhubid, // Ensure this is the ID, not concatenated text
+                              onChanged: (newValue) {
+                                setState(() {
+                                  selecteddeliveryhubid = newValue as int?; // Update with the selected ID
+                                });
+                              },
+                              items: getallhubcontroller.getallhubdata.map((item) {
+                                final hubId = item['id'];
+                                final hubDisplay = "${item['username']} - ${item['address']}";
+                                return DropdownMenuItem(
+                                  value: hubId, // Use ID as value for uniqueness
+                                  child: Text(hubDisplay, style: commonstyle(color: Colors.black)),
+                                );
+                              }).toList(),
+                              dropdownColor: Colors.white,
+                            ),
+                          ),
+
+                          // SizedBox(
+                          //   // height:displayheight(context)*0.10,
+                          //   width: displaywidth(context) * 0.39,
+                          //   child: DropdownButtonFormField(
+                          //     decoration: InputDecoration(
+                          //       hintText: "Select Hub",
+                          //       hintStyle: commonstyle(),
+                          //       fillColor: Colors.grey.shade400,
+                          //       filled: true,
+                          //       enabledBorder: OutlineInputBorder(
+                          //           borderSide: const BorderSide(color: Color(0xFFD9D9D9)),
+                          //           borderRadius: BorderRadius.circular(10)),
+                          //       focusedBorder: OutlineInputBorder(
+                          //           borderSide: const BorderSide(color: Color(0xFFD9D9D9)),
+                          //           borderRadius: BorderRadius.circular(10)),
+                          //       border: const OutlineInputBorder(),
+                          //     ),
+                          //     value: SelectedHubtoUsers,
+                          //     onChanged: (newValue) {
+                          //       setState(() {
+                          //         SelectedHubtoUsers = newValue.toString();
+                          //       });
+                          //     },
+                          //     items: getallhubcontroller.getallhubdata.map((item) {
+                          //       return DropdownMenuItem(
+                          //         value: item['id'],
+                          //         child: Text("${item['username']+"-"+item['address']}", style: commonstyle(color: Colors.black)),
+                          //         onTap: () => setState(() {
+                          //           SelectedHubtoUsers = item['username'];
+                          //             selectedhubid=item['id'];
+                          //           print("Hub id - ${item['id']}");
+                          //         }),
+                          //       );
+                          //     }).toList(),
+                          //     dropdownColor: Colors.white,
+                          //   ),
+                          // ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: buildImageContainer("Upload Aadhaar Front", 0),
-                ),
-                const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: buildImageContainer("Upload Aadhaar Back", 1),
-                ),
-                const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: buildImageContainer("Upload PAN Card", 2),
-                ),
-                const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: buildImageContainer("Upload Driving License", 3),
-                ),
-                const SizedBox(height: 12),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: Text("Personal Documentation Upload",style: commonstyle(size: 18,weight: FontWeight.w600,color: Colors.black),),
+                // ),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: buildImageContainer("Upload Aadhaar Front", 0),
+                // ),
+                // const SizedBox(height: 12),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: buildImageContainer("Upload Aadhaar Back", 1),
+                // ),
+                // const SizedBox(height: 12),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: buildImageContainer("Upload PAN Card", 2),
+                // ),
+                // const SizedBox(height: 12),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: buildImageContainer("Upload Driving License", 3),
+                // ),
+                // const SizedBox(height: 12),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
@@ -5368,7 +5785,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   deliverypasswordcontroller.text, deliverynamecontroller.text, deliverynumbercontroller.text,
                                   deliveryaddresscontroller.text, "", "false", deliverybanknamecontroller.text,
                                   deliveryaccountnumbercontroller.text, deliveryifsccodecontroller.text,
-                                  deliverybranchcontroller.text,deliverycitycontroller.text,deliverystatecontroller.text,deliverypincodecontroller.text);
+                                  deliverybranchcontroller.text,deliverycitycontroller.text,deliverystatecontroller.text,deliverypincodecontroller.text,selecteddeliveryhubid.toString());
                               await getalldeliveryController.GetAllDeliveryApi(context);
                               Get.back();
                             });
@@ -5590,28 +6007,116 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("Upload Documentation",style: commonstyle(size: 18,weight: FontWeight.w600,color: Colors.black),),
+                  child: Row(
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Assign Customer to Hub",style: commonstyle(color: Colors.black),),
+                          ),
+                          SizedBox(
+                            width:displaywidth(context)*0.39,
+                            child: DropdownButtonFormField(
+                              decoration: InputDecoration(
+                                hintText: "Select Hub",
+                                hintStyle: commonstyle(),
+                                fillColor: Colors.grey.shade400,
+                                filled: true,
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(color: Color(0xFFD9D9D9)),
+                                    borderRadius: BorderRadius.circular(10)),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(color: Color(0xFFD9D9D9)),
+                                    borderRadius: BorderRadius.circular(10)),
+                                border: const OutlineInputBorder(),
+                              ),
+                              value: selecteddeliveryhubid, // Ensure this is the ID, not concatenated text
+                              onChanged: (newValue) {
+                                setState(() {
+                                  selecteddeliveryhubid = newValue as int?; // Update with the selected ID
+                                });
+                              },
+                              items: getallhubcontroller.getallhubdata.map((item) {
+                                final hubId = item['id'];
+                                final hubDisplay = "${item['username']} - ${item['address']}";
+                                return DropdownMenuItem(
+                                  value: hubId, // Use ID as value for uniqueness
+                                  child: Text(hubDisplay, style: commonstyle(color: Colors.black)),
+                                );
+                              }).toList(),
+                              dropdownColor: Colors.white,
+                            ),
+                          ),
+
+                          // SizedBox(
+                          //   // height:displayheight(context)*0.10,
+                          //   width: displaywidth(context) * 0.39,
+                          //   child: DropdownButtonFormField(
+                          //     decoration: InputDecoration(
+                          //       hintText: "Select Hub",
+                          //       hintStyle: commonstyle(),
+                          //       fillColor: Colors.grey.shade400,
+                          //       filled: true,
+                          //       enabledBorder: OutlineInputBorder(
+                          //           borderSide: const BorderSide(color: Color(0xFFD9D9D9)),
+                          //           borderRadius: BorderRadius.circular(10)),
+                          //       focusedBorder: OutlineInputBorder(
+                          //           borderSide: const BorderSide(color: Color(0xFFD9D9D9)),
+                          //           borderRadius: BorderRadius.circular(10)),
+                          //       border: const OutlineInputBorder(),
+                          //     ),
+                          //     value: SelectedHubtoUsers,
+                          //     onChanged: (newValue) {
+                          //       setState(() {
+                          //         SelectedHubtoUsers = newValue.toString();
+                          //       });
+                          //     },
+                          //     items: getallhubcontroller.getallhubdata.map((item) {
+                          //       return DropdownMenuItem(
+                          //         value: item['id'],
+                          //         child: Text("${item['username']+"-"+item['address']}", style: commonstyle(color: Colors.black)),
+                          //         onTap: () => setState(() {
+                          //           SelectedHubtoUsers = item['username'];
+                          //             selectedhubid=item['id'];
+                          //           print("Hub id - ${item['id']}");
+                          //         }),
+                          //       );
+                          //     }).toList(),
+                          //     dropdownColor: Colors.white,
+                          //   ),
+                          // ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: buildImageContainer("Upload Aadhaar Front", 0),
-                ),
-                const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: buildImageContainer("Upload Aadhaar Back", 1),
-                ),
-                const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: buildImageContainer("Upload PAN Card", 2),
-                ),
-                const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: buildImageContainer("Upload Driving License", 3),
-                ),
-                const SizedBox(height: 12),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: Text("Upload Documentation",style: commonstyle(size: 18,weight: FontWeight.w600,color: Colors.black),),
+                // ),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: buildImageContainer("Upload Aadhaar Front", 0),
+                // ),
+                // const SizedBox(height: 12),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: buildImageContainer("Upload Aadhaar Back", 1),
+                // ),
+                // const SizedBox(height: 12),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: buildImageContainer("Upload PAN Card", 2),
+                // ),
+                // const SizedBox(height: 12),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: buildImageContainer("Upload Driving License", 3),
+                // ),
+                // const SizedBox(height: 12),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
@@ -5621,19 +6126,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           style: ElevatedButton.styleFrom(backgroundColor: Color_Constant.primarycolr,shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)
                           )),
-                          onPressed: ()async{
+                          onPressed: (){
                             // if(deliveryupdatenamecontroller.text.isEmpty||deliveryupdateemailcontroller.text.isEmpty||deliveryupdatenumbercontroller.text.isEmpty||
                             // deliveryupdateaddresscontroller.text.isEmpty||deliveryupdatebanknamecontroller.text.isEmpty||deliveryupdateaccountnumbercontroller.text.isEmpty||
                             // deliveryupdateifsccodecontroller.text.isEmpty||deliveryupdatebranchcontroller.text.isEmpty){
                             //   alertToastRed(context, "Required Field is Empty");
                             //
                             // }else{
-                              showloadingdialog(context);
-                              deliveryUpdate_Controller.DeliverUpdateApi(context, data['id']??1, deliveryupdateemailcontroller.text, data['password']??"",
-                                  deliverynamecontroller.text, deliveryupdatenumbercontroller.text, deliveryupdateaddresscontroller.text,
-                                  data['profileImage']??"", data['kycIsVerified'], deliveryupdatenamecontroller.text, deliveryupdateaccountnumbercontroller.text,
-                                  deliveryupdateifsccodecontroller.text, deliveryupdatebranchcontroller.text);
-                              await getalldeliveryController.GetAllDeliveryApi(context);
+                                  showloadingdialog(context);
+                                  setState(()async{
+                                    deliveryUpdate_Controller.DeliverUpdateApi(context, data['id']??1, deliveryupdateemailcontroller.text, data['password']??"",
+                                        deliverynamecontroller.text, deliveryupdatenumbercontroller.text, deliveryupdateaddresscontroller.text,
+                                        data['profileImage']??"", data['kycIsVerified'], deliveryupdatenamecontroller.text, deliveryupdateaccountnumbercontroller.text,
+                                        deliveryupdateifsccodecontroller.text, deliveryupdatebranchcontroller.text,selecteddeliveryhubid.toString());
+                                    await getalldeliveryController.GetAllDeliveryApi(context);
+                                  });
+
+                                  Get.back();
                             // }
 
                           },
@@ -5700,225 +6209,228 @@ class _DashboardScreenState extends State<DashboardScreen> {
         width: displaywidth(context)*0.42,
         body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    color: Color_Constant.primarycolr,
-                    borderRadius: BorderRadius.circular(10)
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      color: Color_Constant.primarycolr,
+                      borderRadius: BorderRadius.circular(10)
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text("Add Product",style: commonstyleweb(color: Colors.white,size: 18,weight: FontWeight.w500),),
+                        InkWell(
+                          onTap: (){
+                            Get.back();
+                          },
+                          child: const CircleAvatar(
+                            backgroundColor: Colors.white,
+                            child: Center(
+                              child: Icon(Icons.clear,color: Color_Constant.primarycolr,),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
-                child: Padding(
+                Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text("Add Product",style: commonstyleweb(color: Colors.white,size: 18,weight: FontWeight.w500),),
-                      InkWell(
-                        onTap: (){
-                          Get.back();
-                        },
-                        child: const CircleAvatar(
-                          backgroundColor: Colors.white,
-                          child: Center(
-                            child: Icon(Icons.clear,color: Color_Constant.primarycolr,),
+                  child: Text("Product Image",style: commonstyle(color: Colors.black),),
+                ),
+                InkWell(
+                  onTap: () => _pickImage(), // Add parentheses to call the function
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Container(
+                      child: _customerimageBytes != null
+                          ? InkWell(
+                        onTap: () => _pickImage(), // Add parentheses here too
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.memory(
+                            _customerimageBytes!,
+                            width: displaywidth(context) * 0.10,
+                            height: displayheight(context)*0.10,
                           ),
                         ),
+                      )
+                          : InkWell(
+                        onTap: () => setState(() {
+                          _pickImage();
+                        }), // Add parentheses here as well
+                        child: Image.asset(
+                          Asset_Constant.logo,
+                          width: displaywidth(context) * 0.10,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: displaywidth(context)*0.40,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Product Name",style: commonstyle(color: Colors.black),),
+                          ),
+                          SizedBox(
+                              width: displaywidth(context)*0.20,
+                              child: commontextfield("Enter Product Name", productnamecontroller))
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Price",style: commonstyle(color: Colors.black),),
+                          ),
+                          SizedBox(
+                              width: displaywidth(context)*0.20,
+                              child: commontextfield("Enter Product Price", productpricecontroller))
+                        ],
                       )
                     ],
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("Product Image",style: commonstyle(color: Colors.black),),
-              ),
-              InkWell(
-                onTap: () => _pickImage(), // Add parentheses to call the function
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Container(
-                    child: _customerimageBytes != null
-                        ? InkWell(
-                      onTap: () => _pickImage(), // Add parentheses here too
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.memory(
-                          _customerimageBytes!,
-                          width: displaywidth(context) * 0.10,
-                          height: displayheight(context)*0.10,
-                        ),
+                SizedBox(
+                  width: displaywidth(context)*0.40,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Quantity",style: commonstyle(color: Colors.black),),
+                          ),
+                          SizedBox(
+                              width: displaywidth(context)*0.20,
+                              child: commontextfield("Enter Product Quantity", productqtycontroller))
+                        ],
                       ),
-                    )
-                        : InkWell(
-                      onTap: () => setState(() {
-                        _pickImage();
-                      }), // Add parentheses here as well
-                      child: Image.asset(
-                        Asset_Constant.logo,
-                        width: displaywidth(context) * 0.10,
-                      ),
-                    ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Subscription Status",style: commonstyle(color: Colors.black),),
+                          ),
+                          SizedBox(
+                            height: displayheight(context) * 0.07,
+                            width: displaywidth(context) * 0.20,
+                            child: DropdownButtonFormField(
+                              decoration: InputDecoration(
+                                enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.transparent),
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.transparent),
+                                ),
+                                fillColor: Colors.grey.shade400,
+                                filled: true,
+                              ),
+                              value: SelectedSubscriptionStatus,
+                              items: subscriptionlist.map((item) {
+                                return DropdownMenuItem(
+                                  value: item,
+                                  child: Text(
+                                    item,
+                                    style: commonstyle(color: Colors.black),
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      SelectedSubscriptionStatus = item;
+                                    });
+                                  },
+                                );
+                              }).toList(),
+                              dropdownColor: Colors.white,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  SelectedSubscriptionStatus = newValue as String;
+                                  // Print the status based on the selected value
+                                  if (SelectedSubscriptionStatus == "Subscription Available") {
+                                    subscriptionstatusbool=true;
+                                    print(0); // Status 0
+                                  } else {
+                                    subscriptionstatusbool=false;
+                                    print(1); // Status 1
+                                  }
+                                });
+                              },
+                            ),
+                          ),
+            
+                        ],
+                      )
+                    ],
                   ),
                 ),
-              ),
-              SizedBox(
-                width: displaywidth(context)*0.40,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Product Name",style: commonstyle(color: Colors.black),),
-                        ),
-                        SizedBox(
-                            width: displaywidth(context)*0.20,
-                            child: commontextfield("Enter Product Name", productnamecontroller))
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Price",style: commonstyle(color: Colors.black),),
-                        ),
-                        SizedBox(
-                            width: displaywidth(context)*0.20,
-                            child: commontextfield("Enter Product Price", productpricecontroller))
-                      ],
-                    )
-                  ],
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("Product Description",style: commonstyle(color: Colors.black),),
+                      ),
+                      commontextfield("Enter Product Description", productdescriptioncontroller,lines: 4)
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: displaywidth(context)*0.40,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Quantity",style: commonstyle(color: Colors.black),),
-                        ),
-                        SizedBox(
-                            width: displaywidth(context)*0.20,
-                            child: commontextfield("Enter Product Quantity", productqtycontroller))
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Subscription Status",style: commonstyle(color: Colors.black),),
-                        ),
-                        SizedBox(
-                          height: displayheight(context) * 0.07,
-                          width: displaywidth(context) * 0.20,
-                          child: DropdownButtonFormField(
-                            decoration: InputDecoration(
-                              enabledBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.transparent),
-                              ),
-                              focusedBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.transparent),
-                              ),
-                              fillColor: Colors.grey.shade400,
-                              filled: true,
-                            ),
-                            value: SelectedSubscriptionStatus,
-                            items: subscriptionlist.map((item) {
-                              return DropdownMenuItem(
-                                value: item,
-                                child: Text(
-                                  item,
-                                  style: commonstyle(color: Colors.black),
-                                ),
-                                onTap: () {
-                                  setState(() {
-                                    SelectedSubscriptionStatus = item;
-                                  });
-                                },
-                              );
-                            }).toList(),
-                            dropdownColor: Colors.white,
-                            onChanged: (newValue) {
-                              setState(() {
-                                SelectedSubscriptionStatus = newValue as String;
-                                // Print the status based on the selected value
-                                if (SelectedSubscriptionStatus == "Subscription Available") {
-                                  subscriptionstatusbool=true;
-                                  print(0); // Status 0
-                                } else {
-                                  subscriptionstatusbool=false;
-                                  print(1); // Status 1
-                                }
-                              });
-                            },
-                          ),
-                        ),
-
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text("Product Description",style: commonstyle(color: Colors.black),),
-                    ),
-                    commontextfield("Enter Product Description", productdescriptioncontroller,lines: 4)
-                  ],
-                ),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                    width: double.infinity,
-                    height: displayheight(context)*0.06,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(backgroundColor: Color_Constant.primarycolr,shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)
-                        )),
-                        onPressed: ()async{
-                          final outputData = {
-                            "fieldname": "productImages",
-                            "originalname": _imageName.toString(),
-                            "encoding": "7bit", // Default for file inputs
-                            "mimetype":filetype,
-                            "buffer": _customerimageBytes,
-                            "size": filesize,
-                          };
-                          showloadingdialog(context);
-                          addProductController.AddProductAPI(context, productnamecontroller.text, productdescriptioncontroller.text,
-                              productpricecontroller.text, productqtycontroller.text, subscriptionstatusbool.toString(),
-                              outputData);
-                          await getallProductController.GetAllProductAPI(context,"","");
-                        },
-                        child: Text("SUBMIT",style: commonstyle(),))),
-              )
-            ],
+            
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                      width: double.infinity,
+                      height: displayheight(context)*0.06,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(backgroundColor: Color_Constant.primarycolr,shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)
+                          )),
+                          onPressed: ()async{
+                            final outputData = {
+                              "fieldname": "productImages",
+                              "originalname": _imageName.toString(),
+                              "encoding": "7bit", // Default for file inputs
+                              "mimetype":filetype,
+                              "buffer": _customerimageBytes,
+                              "size": filesize,
+                            };
+                            showloadingdialog(context);
+                            addProductController.AddProductAPI(context, productnamecontroller.text, productdescriptioncontroller.text,
+                                productpricecontroller.text, productqtycontroller.text, subscriptionstatusbool.toString(),
+                                outputData);
+                            await getallProductController.GetAllProductAPI(context,"","");
+                            Get.back();
+                          },
+                          child: Text("SUBMIT",style: commonstyle(),))),
+                )
+              ],
+            ),
           ),
         ),
         context: context);
@@ -5935,223 +6447,225 @@ class _DashboardScreenState extends State<DashboardScreen> {
         width: displaywidth(context)*0.42,
         body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    color: Color_Constant.primarycolr,
-                    borderRadius: BorderRadius.circular(10)
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      color: Color_Constant.primarycolr,
+                      borderRadius: BorderRadius.circular(10)
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text("Update Product",style: commonstyleweb(color: Colors.white,size: 18,weight: FontWeight.w500),),
+                        InkWell(
+                          onTap: (){
+                            Get.back();
+                          },
+                          child: const CircleAvatar(
+                            backgroundColor: Colors.white,
+                            child: Center(
+                              child: Icon(Icons.clear,color: Color_Constant.primarycolr,),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
-                child: Padding(
+                Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text("Update Product",style: commonstyleweb(color: Colors.white,size: 18,weight: FontWeight.w500),),
-                      InkWell(
-                        onTap: (){
-                          Get.back();
-                        },
-                        child: const CircleAvatar(
-                          backgroundColor: Colors.white,
-                          child: Center(
-                            child: Icon(Icons.clear,color: Color_Constant.primarycolr,),
+                  child: Text("Product Image",style: commonstyle(color: Colors.black),),
+                ),
+                InkWell(
+                  onTap: () => _pickImage(), // Add parentheses to call the function
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Container(
+                      child: _customerimageBytes != null
+                          ? InkWell(
+                        onTap: () => _pickImage(), // Add parentheses here too
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.memory(
+                            _customerimageBytes!,
+                            width: displaywidth(context) * 0.10,
+                            height: displayheight(context)*0.10,
                           ),
                         ),
+                      )
+                          : InkWell(
+                        onTap: () => setState(() {
+                          _pickImage();
+                        }), // Add parentheses here as well
+                        child: Image.asset(
+                          Asset_Constant.logo,
+                          width: displaywidth(context) * 0.10,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: displaywidth(context)*0.40,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Product Name",style: commonstyle(color: Colors.black),),
+                          ),
+                          SizedBox(
+                              width: displaywidth(context)*0.20,
+                              child: commontextfield("Enter Product Name", updateproductnamecontroller))
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Price",style: commonstyle(color: Colors.black),),
+                          ),
+                          SizedBox(
+                              width: displaywidth(context)*0.20,
+                              child: commontextfield("Enter Product Price", updateproductpricecontroller))
+                        ],
                       )
                     ],
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("Product Image",style: commonstyle(color: Colors.black),),
-              ),
-              InkWell(
-                onTap: () => _pickImage(), // Add parentheses to call the function
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Container(
-                    child: _customerimageBytes != null
-                        ? InkWell(
-                      onTap: () => _pickImage(), // Add parentheses here too
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.memory(
-                          _customerimageBytes!,
-                          width: displaywidth(context) * 0.10,
-                          height: displayheight(context)*0.10,
-                        ),
+                SizedBox(
+                  width: displaywidth(context)*0.40,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Quantity",style: commonstyle(color: Colors.black),),
+                          ),
+                          SizedBox(
+                              width: displaywidth(context)*0.20,
+                              child: commontextfield("Enter Product Quantity", updateproductqtycontroller))
+                        ],
                       ),
-                    )
-                        : InkWell(
-                      onTap: () => setState(() {
-                        _pickImage();
-                      }), // Add parentheses here as well
-                      child: Image.asset(
-                        Asset_Constant.logo,
-                        width: displaywidth(context) * 0.10,
-                      ),
-                    ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Subscription Status",style: commonstyle(color: Colors.black),),
+                          ),
+                          SizedBox(
+                            height: displayheight(context) * 0.07,
+                            width: displaywidth(context) * 0.20,
+                            child: DropdownButtonFormField(
+                              decoration: InputDecoration(
+                                enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.transparent),
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.transparent),
+                                ),
+                                fillColor: Colors.grey.shade400,
+                                filled: true,
+                              ),
+                              value: SelectedSubscriptionStatus,
+                              items: subscriptionlist.map((item) {
+                                return DropdownMenuItem(
+                                  value: item,
+                                  child: Text(
+                                    item,
+                                    style: commonstyle(color: Colors.black),
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      SelectedSubscriptionStatus = item;
+                                    });
+                                  },
+                                );
+                              }).toList(),
+                              dropdownColor: Colors.white,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  SelectedSubscriptionStatus = newValue as String;
+                                  // Print the status based on the selected value
+                                  if (SelectedSubscriptionStatus == "Subscription Available") {
+                                    subscriptionstatusbool=true;
+                                    print(0); // Status 0
+                                  } else {
+                                    subscriptionstatusbool=false;
+                                    print(1); // Status 1
+                                  }
+                                });
+                              },
+                            ),
+                          ),
+            
+                        ],
+                      )
+                    ],
                   ),
                 ),
-              ),
-              SizedBox(
-                width: displaywidth(context)*0.40,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Product Name",style: commonstyle(color: Colors.black),),
-                        ),
-                        SizedBox(
-                            width: displaywidth(context)*0.20,
-                            child: commontextfield("Enter Product Name", updateproductnamecontroller))
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Price",style: commonstyle(color: Colors.black),),
-                        ),
-                        SizedBox(
-                            width: displaywidth(context)*0.20,
-                            child: commontextfield("Enter Product Price", updateproductpricecontroller))
-                      ],
-                    )
-                  ],
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("Product Description",style: commonstyle(color: Colors.black),),
+                      ),
+                      commontextfield("Enter Product Description", updateproductdescriptioncontroller,lines: 4)
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: displaywidth(context)*0.40,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Quantity",style: commonstyle(color: Colors.black),),
-                        ),
-                        SizedBox(
-                            width: displaywidth(context)*0.20,
-                            child: commontextfield("Enter Product Quantity", updateproductqtycontroller))
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Subscription Status",style: commonstyle(color: Colors.black),),
-                        ),
-                        SizedBox(
-                          height: displayheight(context) * 0.07,
-                          width: displaywidth(context) * 0.20,
-                          child: DropdownButtonFormField(
-                            decoration: InputDecoration(
-                              enabledBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.transparent),
-                              ),
-                              focusedBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.transparent),
-                              ),
-                              fillColor: Colors.grey.shade400,
-                              filled: true,
-                            ),
-                            value: SelectedSubscriptionStatus,
-                            items: subscriptionlist.map((item) {
-                              return DropdownMenuItem(
-                                value: item,
-                                child: Text(
-                                  item,
-                                  style: commonstyle(color: Colors.black),
-                                ),
-                                onTap: () {
-                                  setState(() {
-                                    SelectedSubscriptionStatus = item;
-                                  });
-                                },
-                              );
-                            }).toList(),
-                            dropdownColor: Colors.white,
-                            onChanged: (newValue) {
-                              setState(() {
-                                SelectedSubscriptionStatus = newValue as String;
-                                // Print the status based on the selected value
-                                if (SelectedSubscriptionStatus == "Subscription Available") {
-                                  subscriptionstatusbool=true;
-                                  print(0); // Status 0
-                                } else {
-                                  subscriptionstatusbool=false;
-                                  print(1); // Status 1
-                                }
-                              });
-                            },
-                          ),
-                        ),
-
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text("Product Description",style: commonstyle(color: Colors.black),),
-                    ),
-                    commontextfield("Enter Product Description", updateproductdescriptioncontroller,lines: 4)
-                  ],
-                ),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                    width: double.infinity,
-                    height: displayheight(context)*0.06,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(backgroundColor: Color_Constant.primarycolr,shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)
-                        )),
-                        onPressed: ()async{
-                          final outputData = {
-                            "fieldname": "productImages",
-                            "originalname": _imageName.toString(),
-                            "encoding": "7bit", // Default for file inputs
-                            "mimetype":filetype,
-                            "buffer": _customerimageBytes,
-                            "size": filesize,
-                          };
-                          showloadingdialog(context);
-
-                          await getallProductController.GetAllProductAPI(context,"","");
-                        },
-                        child: Text("SUBMIT",style: commonstyle(),))),
-              )
-            ],
+            
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                      width: double.infinity,
+                      height: displayheight(context)*0.06,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(backgroundColor: Color_Constant.primarycolr,shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)
+                          )),
+                          onPressed: ()async{
+                            final outputData = {
+                              "fieldname": "productImages",
+                              "originalname": _imageName.toString(),
+                              "encoding": "7bit", // Default for file inputs
+                              "mimetype":filetype,
+                              "buffer": _customerimageBytes,
+                              "size": filesize,
+                            };
+                            showloadingdialog(context);
+            
+                            await getallProductController.GetAllProductAPI(context,"","");
+                          },
+                          child: Text("SUBMIT",style: commonstyle(),))),
+                )
+              ],
+            ),
           ),
         ),
         context: context);
@@ -6481,8 +6995,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               alertToastRed(context,"Required Field is Empty");
                             }else{
                               showloadingdialog(context);
-                              addUsersController.AddUserAPI(context, useremailcontroller.text, userpasswordcontroller.text, usernamecontroller.text, usernumbercontroller.text, useraddresscontroller.text, _customerimageBytes.toString(),usercitycontroller.text,userstatecontroller.text,userpincodecontroller.text,selectedhubid);
-                              await getallusersController.GetAllUsersApi(context);
+                              setState(()async{
+                                addUsersController.AddUserAPI(context, useremailcontroller.text, userpasswordcontroller.text, usernamecontroller.text, usernumbercontroller.text, useraddresscontroller.text, _customerimageBytes.toString(),usercitycontroller.text,userstatecontroller.text,userpincodecontroller.text,selectedhubid??null);
+                                await searchUsersController.SearchUserAPI(context,"","");
+                              });
+                              Get.back();
+
                             }
                           },
                           child: Text("SUBMIT",style: commonstyle(),))),
@@ -6723,15 +7241,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           style: ElevatedButton.styleFrom(backgroundColor: Color_Constant.primarycolr,shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)
                           )),
-                          onPressed: (){
+                          onPressed: ()async{
                             if(updateusernamecontroller.text.isEmpty||updateuseremailcontroller.text.isEmpty||updateusernumbercontroller.text.isEmpty||updateuseraddresscontroller.text.isEmpty){
                               alertToastRed(context, "Required Field is Empty");
                             }else{
-                              updateUsersController.UpdateUserAPI(context, data['id']??1, updateuseremailcontroller.text,
-                                  data['password']??"", updateusernamecontroller.text, updateusernumbercontroller.text,
-                                  updateuseraddresscontroller.text, data['profileImage']??"");
-                              getallusersController.GetAllUsersApi(context);
-                              Get.back();
+                              showloadingdialog(context);
+                              setState(() async{
+                                updateUsersController.UpdateUserAPI(context, data['id']??1, updateuseremailcontroller.text,
+                                    data['password']??"", updateusernamecontroller.text, updateusernumbercontroller.text,
+                                    updateuseraddresscontroller.text, data['profileImage']??"",selectedhubid.toString());
+                                await searchUsersController.SearchUserAPI(context,"","");
+                              });
+
+                                  Get.back();
                             }
                           },
                           child: Text("UPDATE",style: commonstyle(),))),
@@ -6744,6 +7266,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
   
   Widget hubwidget(){
+    getallhubcontroller.GetAllHubApi(context, "", "");
     return Column(
       children: [
         Padding(
@@ -6967,9 +7490,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         getUsersByHubIdcontroller.GetUserByHubIdApi(context,data['id']);
                                         getDeliveryByHubIdcontroller.GetDeliveryByHubIdApi(context,data['id']);
                                         getOrderByHubIdcontroller.GetOrderByHubIdApi(context,data['id']);
+                                        getSubscriptionByHubIdcontroller.GetSubscriptionByHubIdApi(context,data['id']);
                                         ontaphub=2;
-                                        gethubtapdata=data['id']??1;
-                                        print("Hub Id : $gethubtapdata");
                                       });
                                     },
                                     child: Container(
@@ -7085,6 +7607,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget customerwidget(){
+    getallusersController.GetAllUsersApi(context);
     return Column(
       children: [
         Padding(
@@ -7312,148 +7835,153 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                         // Data is available; proceed with ListView.builder
                         final searchuserdata = snapshot.data!;
-                        return ListView.builder(
-                          itemCount: searchuserdata.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            var data = searchuserdata[index];
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          // Index
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.08,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text("${index + 1}", style: commonstyleweb(color: Colors.black)),
-                                              ),
-                                            ),
-                                          ),
-                                          // Profile Picture
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.08,
-                                            child: const Center(
-                                              child: Padding(
-                                                padding: EdgeInsets.all(8.0),
-                                                child: CircleAvatar(
-                                                  backgroundColor: Colors.white,
-                                                  backgroundImage: AssetImage(Asset_Constant.logo),
+                        return RefreshIndicator(
+                          onRefresh: ()async{
+                            await searchuserdata;
+                          },
+                          child: ListView.builder(
+                            itemCount: searchuserdata.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              var data = searchuserdata[index];
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            // Index
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.08,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Text("${index + 1}", style: commonstyleweb(color: Colors.black)),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                          // Username
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.10,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: SelectableText("${data['username'] ?? ""}", style: commonstyleweb(color: Colors.black)),
-                                              ),
-                                            ),
-                                          ),
-                                          // Email
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.13,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: SelectableText("${data['email'] ?? ""}", style: commonstyleweb(color: Colors.black)),
-                                              ),
-                                            ),
-                                          ),
-                                          // Phone
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.10,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text("${data['phone'] ?? ""}", style: commonstyleweb(color: Colors.black)),
-                                              ),
-                                            ),
-                                          ),
-                                          // Address
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.13,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text("${data['address'] ?? ""}", style: commonstyleweb(color: Colors.black)),
-                                              ),
-                                            ),
-                                          ),
-                                          // Hub User ID Status
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.09,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(5),
-                                                    color: data['hubuserId'] == null ? Colors.red.shade100 : Colors.green.shade100,
-                                                  ),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(8.0),
-                                                    child: data['hubuserId'] == null
-                                                        ? Text("Not Assigned", style: commonstyleweb(color: Colors.red))
-                                                        : Text("Assigned", style: commonstyleweb(color: Colors.green)),
+                                            // Profile Picture
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.08,
+                                              child: const Center(
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(8.0),
+                                                  child: CircleAvatar(
+                                                    backgroundColor: Colors.white,
+                                                    backgroundImage: AssetImage(Asset_Constant.logo),
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                          // Actions
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.10,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    IconButton(onPressed: () {}, icon: const Icon(CupertinoIcons.eye, color: Colors.grey, size: 20)),
-                                                    IconButton(
-                                                      onPressed: () {
-                                                        Map<String, dynamic> data = getallusersController.getallusersdata[index];
-                                                        updateuserssidesheet(data: data);
-                                                      },
-                                                      icon: const Icon(CupertinoIcons.pen, color: Colors.grey, size: 20),
-                                                    ),
-                                                    IconButton(
-                                                      onPressed: () {
-                                                        // DeleteHub();
-                                                      },
-                                                      icon: const Icon(CupertinoIcons.delete, color: Colors.grey, size: 20),
-                                                    ),
-                                                  ],
+                                            // Username
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.10,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: SelectableText("${data['username'] ?? ""}", style: commonstyleweb(color: Colors.black)),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                            // Email
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.13,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: SelectableText("${data['email'] ?? ""}", style: commonstyleweb(color: Colors.black)),
+                                                ),
+                                              ),
+                                            ),
+                                            // Phone
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.10,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Text("${data['phone'] ?? ""}", style: commonstyleweb(color: Colors.black)),
+                                                ),
+                                              ),
+                                            ),
+                                            // Address
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.13,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Text("${data['address'] ?? ""}", style: commonstyleweb(color: Colors.black)),
+                                                ),
+                                              ),
+                                            ),
+                                            // Hub User ID Status
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.09,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(5),
+                                                      color: data['hubuserId'] == null ? Colors.red.shade100 : Colors.green.shade100,
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: data['hubuserId'] == null
+                                                          ? Text("Not Assigned", style: commonstyleweb(color: Colors.red,weight: FontWeight.w600))
+                                                          : Text("Assigned", style: commonstyleweb(color: Colors.green,weight: FontWeight.w600)),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            // Actions
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.10,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      // IconButton(onPressed: () {}, icon: const Icon(CupertinoIcons.eye, color: Colors.grey, size: 20)),
+                                                      IconButton(
+                                                        onPressed: () {
+                                                          Map<String, dynamic> data = getallusersController.getallusersdata[index];
+                                                          updateuserssidesheet(data: data);
+                                                        },
+                                                        icon: const Icon(CupertinoIcons.pen, color: Colors.grey, size: 20),
+                                                      ),
+                                                      IconButton(
+                                                        onPressed: () {
+                                                          DeleteCustomer(data['id']);
+                                                        },
+                                                        icon: const Icon(CupertinoIcons.delete, color: Colors.grey, size: 20),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Divider(color: Colors.grey.shade200, thickness: 0.5),
-                                ],
-                              ),
-                            );
-                          },
+                                    Divider(color: Colors.grey.shade200, thickness: 0.5),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
                         );
                       },
                     ),
@@ -7469,6 +7997,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget deliverywidget(){
+    getalldeliveryController.GetAllDeliveryApi(context);
     return Column(
       children: [
         Padding(
@@ -7583,7 +8112,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           SizedBox(
-                            width: displaywidth(context)*0.13,
+                            width: displaywidth(context)*0.12,
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -7601,7 +8130,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           SizedBox(
-                            width: displaywidth(context)*0.13,
+                            width: displaywidth(context)*0.12,
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -7619,7 +8148,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           SizedBox(
-                            width: displaywidth(context)*0.14,
+                            width: displaywidth(context)*0.11,
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -7716,7 +8245,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             ),
                                           ),
                                           SizedBox(
-                                            width: displaywidth(context) * 0.15,
+                                            width: displaywidth(context) * 0.12,
                                             child: Center(
                                               child: Padding(
                                                 padding: const EdgeInsets.all(8.0),
@@ -7740,7 +8269,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             ),
                                           ),
                                           SizedBox(
-                                            width: displaywidth(context) * 0.16,
+                                            width: displaywidth(context) * 0.12,
                                             child: Center(
                                               child: Padding(
                                                 padding: const EdgeInsets.all(8.0),
@@ -7752,7 +8281,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             ),
                                           ),
                                           SizedBox(
-                                            width: displaywidth(context) * 0.14,
+                                            width: displaywidth(context) * 0.10,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(5),
+                                                    color: data['hubuserId'] == null ? Colors.red.shade100 : Colors.green.shade100,
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: data['hubuserId'] == null
+                                                        ? Text("Not Assigned", style: commonstyleweb(color: Colors.red,weight: FontWeight.w600))
+                                                        : Text("Assigned", style: commonstyleweb(color: Colors.green,weight: FontWeight.w600)),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.11,
                                             child: Center(
                                               child: Padding(
                                                 padding: const EdgeInsets.all(8.0),
@@ -7820,6 +8369,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget productwidget(){
+    getallProductController.GetAllProductAPI(context, "", "");
     return Column(
       children: [
         Padding(
@@ -8169,6 +8719,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         actions: [
           TextButton(onPressed: ()async{
+            Get.back();
             showloadingdialog(context);
             deleteHubController.DeleteHubApi(context, id);
             await getallhubcontroller.GetAllHubApi(context, "", "");
@@ -8222,6 +8773,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Get.back();
             showloadingdialog(context);
             deleteProductController.DeleteProductApi(context, id);
+            Get.back();
+          }, child: Text("Yes",style: commonstyleweb(color: Colors.black),)),
+          TextButton(onPressed: (){
+            Get.back();
+          }, child: Text("No",style: commonstyleweb(color: Colors.black),))
+        ],
+      );
+    });
+  }
+
+  Future<void> DeleteCustomer(int id)async{
+    return showDialog(context: context, builder: (BuildContext context){
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        title: const Icon(CupertinoIcons.delete,color: Colors.red,size: 30,),
+        content: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text("Are you sure you want to Delete the Customer",style: commonstyleweb(color: Colors.black,size: 18,weight: FontWeight.w600),textAlign: TextAlign.center,),
+        ),
+        actions: [
+          TextButton(onPressed: ()async{
+            Get.back();
+            showloadingdialog(context);
+            deleteUserController.DeleteUserApi(context, id);
+            await searchUsersController.SearchUserAPI(context, "", "");
             Get.back();
           }, child: Text("Yes",style: commonstyleweb(color: Colors.black),)),
           TextButton(onPressed: (){
@@ -9537,7 +10114,161 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  Future Assignordertohubdialog(orderid){
+    return showDialog(context: context, builder: (BuildContext context){
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        title: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Assign Checkout Orders To Hub",style: commonstyleweb(weight: FontWeight.w600,color: Colors.black),),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  width:displaywidth(context)*0.39,
+                  child: DropdownButtonFormField(
+                    decoration: InputDecoration(
+                      hintText: "Select Hub",
+                      hintStyle: commonstyle(),
+                      fillColor: Colors.grey.shade400,
+                      filled: true,
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Color(0xFFD9D9D9)),
+                          borderRadius: BorderRadius.circular(10)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Color(0xFFD9D9D9)),
+                          borderRadius: BorderRadius.circular(10)),
+                      border: const OutlineInputBorder(),
+                    ),
+                    value: selectedhubid, // Ensure this is the ID, not concatenated text
+                    onChanged: (newValue) {
+                      setState(() {
+                        selectedhubid = newValue as int?; // Update with the selected ID
+                      });
+                    },
+                    items: getallhubcontroller.getallhubdata.map((item) {
+                      final hubId = item['id'];
+                      final hubDisplay = "${item['username']} - ${item['address']}";
+                      return DropdownMenuItem(
+                        value: hubId, // Use ID as value for uniqueness
+                        child: Text(hubDisplay, style: commonstyle(color: Colors.black)),
+                      );
+                    }).toList(),
+                    dropdownColor: Colors.white,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                    width:displaywidth(context)*0.39,
+                    height: displayheight(context)*0.06,
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(backgroundColor: Color_Constant.primarycolr,
+                            shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)
+                        )),
+                        onPressed: ()async{
+                          Get.back();
+                          showloadingdialog(context);
+                          assigncheckoutController.AssignCheckoutApi(context, selectedhubid, orderid);
+                          await getOrderHistoryController.GetOrderHistoryAPI(context,"","");
+                          Get.back();
+                        },
+                        child: Text("SUBMIT",style: commonstyle(),))),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+  Future AssignSubscriptiontohubdialog(subscriptionid){
+    return showDialog(context: context, builder: (BuildContext context){
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        title: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Assign Subscription Orders To Hub",style: commonstyleweb(weight: FontWeight.w600,color: Colors.black),),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  width:displaywidth(context)*0.39,
+                  child: DropdownButtonFormField(
+                    decoration: InputDecoration(
+                      hintText: "Select Hub",
+                      hintStyle: commonstyle(),
+                      fillColor: Colors.grey.shade400,
+                      filled: true,
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Color(0xFFD9D9D9)),
+                          borderRadius: BorderRadius.circular(10)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Color(0xFFD9D9D9)),
+                          borderRadius: BorderRadius.circular(10)),
+                      border: const OutlineInputBorder(),
+                    ),
+                    value: selectedhubid, // Ensure this is the ID, not concatenated text
+                    onChanged: (newValue) {
+                      setState(() {
+                        selectedhubid = newValue as int?; // Update with the selected ID
+                      });
+                    },
+                    items: getallhubcontroller.getallhubdata.map((item) {
+                      final hubId = item['id'];
+                      final hubDisplay = "${item['username']} - ${item['address']}";
+                      return DropdownMenuItem(
+                        value: hubId, // Use ID as value for uniqueness
+                        child: Text(hubDisplay, style: commonstyle(color: Colors.black)),
+                      );
+                    }).toList(),
+                    dropdownColor: Colors.white,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                    width:displaywidth(context)*0.39,
+                    height: displayheight(context)*0.06,
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(backgroundColor: Color_Constant.primarycolr,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)
+                            )),
+                        onPressed: ()async{
+                          Get.back();
+                          showloadingdialog(context);
+                          assignSubscriptionController.AssignSubscriptionApi(context, selectedhubid, subscriptionid);
+                          await getSubscriptionHistoryController.GetSubscriptionHistoryAPI(context,"","");
+                          Get.back();
+                        },
+                        child: Text("SUBMIT",style: commonstyle(),))),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
 }
+
 class ChartData {
   ChartData(this.x, this.y, this.color);
   final String x;

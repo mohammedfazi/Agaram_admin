@@ -12,7 +12,7 @@ class UpdateUsersController extends GetConnect{
 
   final GetallusersController getallusersController=Get.find<GetallusersController>();
 
-  Future <dynamic> UpdateUserAPI(BuildContext context,id,email,password,username,phone,address,profileimage)async{
+  Future <dynamic> UpdateUserAPI(BuildContext context,id,email,password,username,phone,address,profileimage,hubuserid)async{
     String service;
     service=Config.LOGIN_API;
     final SharedPreferences pref=await SharedPreferences.getInstance();
@@ -25,16 +25,15 @@ class UpdateUsersController extends GetConnect{
       "Authorization":"Bearer ${pref.getString("token")}"
     };
 
-    final json='{"id":"$id","username":"$username","email":"$email","password":"$password","phone":"$phone","address":"$address","profileImage":"$profileimage","roleId":"1"}';
+    final json='{"id":"$id","username":"$username","email":"$email","password":"$password","phone":"$phone","address":"$address","profileImage":"$profileimage","roleId":"1","hubuserId":"$hubuserid"}';
 
     final responce=await http.post(url,headers:header,body: json.toString());
 
     final data=jsonDecode(responce.body);
 
     if(responce.statusCode==200){
-      await getallusersController.GetAllUsersApi(context);
-      Get.back();
       StackDialog.show("Successfully", "User Updated Successfully", Icons.verified, Colors.green);
+      await getallusersController.GetAllUsersApi(context);
     }else if(responce.statusCode==400){
       StackDialog.show("Already Exists", "Enter Id Already Exists", Icons.info, Colors.red);
     }else if(responce.statusCode==500){

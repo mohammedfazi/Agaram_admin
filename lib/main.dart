@@ -2,6 +2,8 @@ import 'package:agaram_admin/Screens/Login/Login_Controller.dart';
 import 'package:agaram_admin/Screens/Splash_screen.dart';
 import 'package:agaram_admin/Service/Admin-Service/Getadmin_Controller.dart';
 import 'package:agaram_admin/Service/Admin-Service/UpdateAdmin_Controller.dart';
+import 'package:agaram_admin/Service/Assign_service/AssignCheckout_Controller.dart';
+import 'package:agaram_admin/Service/Assign_service/AssignSubscription_Controller.dart';
 import 'package:agaram_admin/Service/CMS/GetcmspagebyIdController.dart';
 import 'package:agaram_admin/Service/Dashboard_Count/GetOrderCount_Controller.dart';
 import 'package:agaram_admin/Service/Dashboard_Count/GetSubscriptioncount_Controller.dart';
@@ -15,6 +17,7 @@ import 'package:agaram_admin/Service/Deliverpartners_service/UpdateDeliveryUsers
 import 'package:agaram_admin/Service/GetByHubId/GetDeliverbyHubId.dart';
 import 'package:agaram_admin/Service/GetByHubId/GetUsersByHubId.dart';
 import 'package:agaram_admin/Service/GetByHubId/GetallOrdersbyHubId.dart';
+import 'package:agaram_admin/Service/GetByHubId/GetallSubscriptionbyHubId.dart';
 import 'package:agaram_admin/Service/Getall_Service/GetallOrder.dart';
 import 'package:agaram_admin/Service/Hub_Service/AddHubController.dart';
 import 'package:agaram_admin/Service/Hub_Service/DeleteHubController.dart';
@@ -28,6 +31,7 @@ import 'package:agaram_admin/Service/Product-Service/DeleteProduct_Controller.da
 import 'package:agaram_admin/Service/Product-Service/UpdateProduct_Controller.dart';
 import 'package:agaram_admin/Service/Subscription_Service/GetSubscriptionHistory_Controller.dart';
 import 'package:agaram_admin/Service/Subscription_Service/Getseprate_Subscription_Controller.dart';
+import 'package:agaram_admin/Service/Users_service/DeleteUser_Controller.dart';
 import 'package:agaram_admin/Service/Users_service/UpdateUsers_Controller.dart';
 import 'package:agaram_admin/Testing.dart';
 import 'package:flutter/material.dart';
@@ -78,6 +82,10 @@ void main() {
   Get.put(GetUsersByHubIdcontroller());
   Get.put(GetDeliveryByHubIdcontroller());
   Get.put(GetOrderByHubIdcontroller());
+  Get.put(AssigncheckoutController());
+  Get.put(AssignSubscriptionController());
+  Get.put(GetSubscriptionByHubIdcontroller());
+  Get.put(DeleteUserController());
   runApp(const MyApp());
 }
 
