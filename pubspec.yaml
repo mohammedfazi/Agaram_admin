@@ -50,6 +50,7 @@ dependencies:
   image_network: ^2.5.6
   image_picker_for_web: ^2.0.0
   printing: ^5.10.0
+  intl:
 
 
 dev_dependencies:

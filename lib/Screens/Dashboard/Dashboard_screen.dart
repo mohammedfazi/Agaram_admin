@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:math';
 import 'dart:html' as html;
+import 'package:intl/intl.dart';
 import 'package:agaram_admin/Service/Assign_service/AssignCheckout_Controller.dart';
 import 'package:agaram_admin/Service/Assign_service/AssignSubscription_Controller.dart';
 import 'package:agaram_admin/Service/GetByHubId/GetDeliverbyHubId.dart';
@@ -384,7 +385,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final DeleteHubController deleteHubController=Get.find<DeleteHubController>();
   final DeleteUserController deleteUserController=Get.find<DeleteUserController>();
 
-  int container = 1;
+  int container = 15;
 
   String?SelectedPaymentStatus;
   List<String> paymentlist=['COMPLETED','PENDING','CANCELED'];
@@ -508,7 +509,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String?Selectedsubscription;
   List<dynamic> Subscriptionlists=["Subscription Available,Subscription Not Available"];
 
-
   //bool password
   bool oldpassword=true;
   bool newpassword=true;
@@ -617,6 +617,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   late TooltipBehavior _tooltipBehavior2;
 
 
+  String formattedDate="";
+
   List<dynamic> dashboardgridview=[
     {
       "icon":Icons.shopping_cart_rounded,
@@ -647,6 +649,59 @@ class _DashboardScreenState extends State<DashboardScreen> {
       "icon":Icons.favorite,
       "title":"Total Products",
       "amount":"45,280"
+    }
+  ];
+
+  List<dynamic> todaysgridview=[
+    {
+      "icon":Icons.grass,
+      "title":"Total Cow Milk",
+      "amount":"50 Litres"
+    },
+    {
+      "icon":Icons.grass,
+      "title":"Total Buffalo Milk",
+      "amount":"70 Litres"
+    },
+    {
+      "icon":Icons.grass,
+      "title":"Total Ghee (250 g)",
+      "amount":"20 pieces"
+    },
+    {
+      "icon":Icons.grass,
+      "title":"Total Curd (250 g)",
+      "amount":"50 pieces"
+    },
+    {
+      "icon":Icons.grass,
+      "title":"Total Paneer (250 g)",
+      "amount":"30 pieces"
+    },
+    {
+      "icon":Icons.grass,
+      "title":"Total Butter (250 g)",
+      "amount":"80 pieces"
+    },
+    {
+      "icon":Icons.grass,
+      "title":"Total Ghee (500 g)",
+      "amount":"20 pieces"
+    },
+    {
+      "icon":Icons.grass,
+      "title":"Total Curd (500 g)",
+      "amount":"50 pieces"
+    },
+    {
+      "icon":Icons.grass,
+      "title":"Total Paneer (500 g)",
+      "amount":"30 pieces"
+    },
+    {
+      "icon":Icons.grass,
+      "title":"Total Butter (500 g)",
+      "amount":"80 pieces"
     }
   ];
 
@@ -688,6 +743,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     ChartData3("DEC",1000),
   ];
 
+
   @override
   void initState() {
     getCmsPagebyIdControllerTermsandconditions.GetCMSPageByIdAPI(context, 3);
@@ -709,12 +765,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
     getOrderHistoryController.GetOrderHistoryAPI(context,"","");
     _tooltipBehavior=TooltipBehavior(enable: true);
     _tooltipBehavior2=TooltipBehavior(enable: true);
+    DateTime data = DateTime.now();
+    String formattedDate1 = DateFormat('dd-MM-yyyy').format(data);
+    formattedDate=formattedDate1;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Responsive(
+
       desktop:Scaffold(
         backgroundColor: Color_Constant.primarycolr,
         body: Row(
@@ -738,8 +798,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         drawerwidget(3, Icons.delivery_dining, "Delivery Partners"),
                         drawerwidget(4, CupertinoIcons.person, "Customers"),
                         drawerwidget(5, CupertinoIcons.cart_fill, "Product"),
+                        drawerwidget(15, CupertinoIcons.doc_plaintext, "Today's Order's"),
                         drawerwidget(6, CupertinoIcons.info, "Order History"),
                         drawerwidget(14, CupertinoIcons.info, "Subscription History"),
+                        drawerwidget(16, CupertinoIcons.money_dollar_circle_fill, "Delivery Payments"),
+
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: InkWell(
@@ -977,6 +1040,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     SubscriptionHistory():
                     container==14&&subscriptioncontainer==2?
                     ViewSubscriptionHistory():
+                    container==15?
+                        TodaysOrderWidget():
+                        container==16?
+                            DeliveryPaymentWidget():
                     Container()
                   ],
                 ),
@@ -1650,105 +1717,124 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       itemBuilder: (BuildContext context,int index){
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10)
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        color: index==0?
-                                        Colors.deepPurple.shade100:
-                                        index==1?
-                                        Colors.blue.shade100:
-                                        index==2?
-                                        Colors.red.shade100:
-                                        index==3?
-                                        Colors.orange.shade100:
-                                        index==4?
-                                        Colors.purple.shade100:
-                                        Colors.green.shade100,
-                                        borderRadius: BorderRadius.circular(10)
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: index==0?
-                                            Colors.deepPurple:
-                                            index==1?
-                                            Colors.blue:
-                                            index==2?
-                                            Colors.red:
-                                            index==3?
-                                            Colors.orange:
-                                            index==4?
-                                            Colors.purple:
-                                            Colors.green,
-                                            borderRadius: BorderRadius.circular(10)
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(12.0),
-                                          child: Icon(dashboardgridview[index]['icon'],color: Colors.white,size: 20,),
+                          child: InkWell(
+                            onTap: (){
+                              setState(() {
+                                index==0?
+                                container=6:
+                                index==1?
+                                container=3:
+                                index==2?
+                                container=4:
+                                index==3?
+                                container=6:
+                                index==4?
+                                container=14:
+                                index==5?
+                                container=5:
+                                container=1;
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10)
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          color: index==0?
+                                          Colors.deepPurple.shade100:
+                                          index==1?
+                                          Colors.blue.shade100:
+                                          index==2?
+                                          Colors.red.shade100:
+                                          index==3?
+                                          Colors.orange.shade100:
+                                          index==4?
+                                          Colors.purple.shade100:
+                                          Colors.green.shade100,
+                                          borderRadius: BorderRadius.circular(10)
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: index==0?
+                                              Colors.deepPurple:
+                                              index==1?
+                                              Colors.blue:
+                                              index==2?
+                                              Colors.red:
+                                              index==3?
+                                              Colors.orange:
+                                              index==4?
+                                              Colors.purple:
+                                              Colors.green,
+                                              borderRadius: BorderRadius.circular(10)
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(12.0),
+                                            child: Icon(dashboardgridview[index]['icon'],color: Colors.white,size: 20,),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left:18.0),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Text("${dashboardgridview[index]['title']??""}",style: commonstyle(color: Colors.grey.shade600,size: 18),),
-                                        index==0?
-                                        Obx(()=>getOrdercountController.getdata.isEmpty?
-                                        Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
-                                            : Text("${getOrdercountController.getdata[0]['deliveryOrderCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
-                                        index==1?
-                                        Obx(()=>
-                                        getalldeliveryuserscountController.getdata.isEmpty?
-                                        Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
-                                            :
-                                        Text("${getalldeliveryuserscountController.getdata[0]['deliveryUserCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
-                                        index==2?
-                                        Obx(()=>
-                                        getalluserscountController.getdata.isEmpty?
-                                        Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
-                                            :
-                                        Text("${getalluserscountController.getdata[0]['usersCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
-                                        index==3?
-                                        Obx(()=>
-                                        getallpricecountController.getdata.isEmpty?
-                                        Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
-                                            :
-                                        Row(
-                                          children: [
-                                            const Icon(Icons.currency_rupee,color: Colors.black,size: 20,),
-                                            Text("${getallpricecountController.getdata[0]['totalAmount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),),
-                                          ],
-                                        )):
-                                        index==4?
-                                        Obx(()=>
-                                        getSubscriptioncountController.getdata.isEmpty?
-                                        Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
-                                            :
-                                        Text("${getSubscriptioncountController.getdata[0]['subscriptionCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
-                                        index==5?
-                                        Obx(()=>
-                                        getProductcountController.getdata.isEmpty?
-                                        Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
-                                            :
-                                        Text("${getProductcountController.getdata[0]['productCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
-                                        Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
-                                      ],
-                                    ),
-                                  )
-                                ],
+                                    Padding(
+                                      padding: const EdgeInsets.only(left:18.0),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text("${dashboardgridview[index]['title']??""}",style: commonstyle(color: Colors.grey.shade600,size: 18),),
+                                          index==0?
+                                          Obx(()=>getOrdercountController.getdata.isEmpty?
+                                          Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                              : Text("${getOrdercountController.getdata[0]['deliveryOrderCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                          index==1?
+                                          Obx(()=>
+                                          getalldeliveryuserscountController.getdata.isEmpty?
+                                          Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                              :
+                                          Text("${getalldeliveryuserscountController.getdata[0]['deliveryUserCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                          index==2?
+                                          Obx(()=>
+                                          getalluserscountController.getdata.isEmpty?
+                                          Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                              :
+                                          Text("${getalluserscountController.getdata[0]['usersCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                          index==3?
+                                          Obx(()=>
+                                          getallpricecountController.getdata.isEmpty?
+                                          Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                              :
+                                          Row(
+                                            children: [
+                                              const Icon(Icons.currency_rupee,color: Colors.black,size: 20,),
+                                              Text("${getallpricecountController.getdata[0]['totalAmount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),),
+                                            ],
+                                          )):
+                                          index==4?
+                                          Obx(()=>
+                                          getSubscriptioncountController.getdata.isEmpty?
+                                          Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                              :
+                                          Text("${getSubscriptioncountController.getdata[0]['subscriptionCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                          index==5?
+                                          Obx(()=>
+                                          getProductcountController.getdata.isEmpty?
+                                          Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                              :
+                                          Text("${getProductcountController.getdata[0]['productCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                          Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -2042,6 +2128,553 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget TodaysOrderWidget(){
+    getalluserscountController.GetAllusercountAPI(context);
+    getalldeliveryuserscountController.GetAlldeliveryuserscountAPI(context);
+    getProductcountController.GetProductcountAPI(context);
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SingleChildScrollView(
+        child: SizedBox(
+          height: displayheight(context)*1,
+          width: double.infinity,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                width: double.infinity,
+                            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white
+                            ),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(" Today's Order  -  $formattedDate",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),),
+                      )
+                    ],
+                  ),
+                          ),
+              ),
+              SizedBox(
+                  height: displayheight(context)*0.40,
+                  width: double.infinity,
+                  child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          mainAxisSpacing: 2.0,
+                          crossAxisSpacing: 2.0,
+                          mainAxisExtent: displayheight(context)*0.15,
+                          crossAxisCount: 5),
+                      itemCount: todaysgridview.length,
+                      itemBuilder: (BuildContext context,int index){
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            onTap: (){
+                              setState(() {
+                                index==0?
+                                container=6:
+                                index==1?
+                                container=3:
+                                index==2?
+                                container=4:
+                                index==3?
+                                container=6:
+                                index==4?
+                                container=14:
+                                index==5?
+                                container=5:
+                                container=1;
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10)
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          color: index==0?
+                                          Colors.deepPurple.shade100:
+                                          index==1?
+                                          Colors.blue.shade100:
+                                          index==2?
+                                          Colors.red.shade100:
+                                          index==3?
+                                          Colors.orange.shade100:
+                                          index==4?
+                                          Colors.purple.shade100:
+                                          Colors.green.shade100,
+                                          borderRadius: BorderRadius.circular(10)
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: index==0?
+                                              Colors.deepPurple:
+                                              index==1?
+                                              Colors.blue:
+                                              index==2?
+                                              Colors.red:
+                                              index==3?
+                                              Colors.orange:
+                                              index==4?
+                                              Colors.purple:
+                                              Colors.green,
+                                              borderRadius: BorderRadius.circular(10)
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(12.0),
+                                            child: Icon(todaysgridview[index]['icon'],color: Colors.white,size: 12,),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left:18.0),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text("${todaysgridview[index]['title']??""}",style: commonstyle(color: Colors.grey.shade600,size: 12),),
+                                          // index==0?
+                                          // Obx(()=>getOrdercountController.getdata.isEmpty?
+                                          // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                          //     : Text("${getOrdercountController.getdata[0]['deliveryOrderCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                          // index==1?
+                                          // Obx(()=>
+                                          // getalldeliveryuserscountController.getdata.isEmpty?
+                                          // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                          //     :
+                                          // Text("${getalldeliveryuserscountController.getdata[0]['deliveryUserCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                          // index==2?
+                                          // Obx(()=>
+                                          // getalluserscountController.getdata.isEmpty?
+                                          // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                          //     :
+                                          // Text("${getalluserscountController.getdata[0]['usersCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                          // index==3?
+                                          // Obx(()=>
+                                          // getallpricecountController.getdata.isEmpty?
+                                          // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                          //     :
+                                          // Row(
+                                          //   children: [
+                                          //     const Icon(Icons.currency_rupee,color: Colors.black,size: 20,),
+                                          //     Text("${getallpricecountController.getdata[0]['totalAmount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),),
+                                          //   ],
+                                          // )):
+                                          // index==4?
+                                          // Obx(()=>
+                                          // getSubscriptioncountController.getdata.isEmpty?
+                                          // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                          //     :
+                                          // Text("${getSubscriptioncountController.getdata[0]['subscriptionCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                          // index==5?
+                                          // Obx(()=>
+                                          // getProductcountController.getdata.isEmpty?
+                                          // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                          //     :
+                                          // Text("${getProductcountController.getdata[0]['productCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                          Text("${todaysgridview[index]['amount']??""}",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),)
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      })
+              ),
+
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget DeliveryPaymentWidget(){
+    getalldeliveryController.GetAllDeliveryApi(context);
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                  width:displaywidth(context)*0.50,
+                  child: commontextfield("Search By Id,Name..", hubsearchcontroller)),
+              InkWell(
+                onTap: (){
+                  adddeliverysidesheet();
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Color_Constant.secondarycolr,
+                      borderRadius: BorderRadius.circular(10)
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.add,color: Colors.white,),
+                          Text("Add Delivery Payment",style: commonstyle(),)
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: ()async{
+                  await Printing.sharePdf(
+                      bytes:await _generatedeliveryPDFnew(context),
+                      filename: "Agaram Delivery Partners Payment Details"
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Color_Constant.secondarycolr,
+                      borderRadius: BorderRadius.circular(10)
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.download_for_offline_outlined,color: Colors.white,),
+                          Text("EXPORT",style: commonstyle(),)
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10)
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        color: Color_Constant.primarycolr,
+                        borderRadius: BorderRadius.circular(10)
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: displaywidth(context)*0.08,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("S.No",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context)*0.08,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Driver Id",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context)*0.10,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Driver Name",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context)*0.12,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Payment Id",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context)*0.10,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Mobile Number",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context)*0.12,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Amount",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context)*0.10,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Payment Status",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context)*0.11,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Actions",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: displayheight(context) * 0.69,
+                    width: double.infinity,
+                    child: FutureBuilder<List<dynamic>>(
+                      future: fetchDeliveryboy(),
+                      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(
+                            child: CupertinoActivityIndicator(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text(
+                              'Error: ${snapshot.error}',
+                              style: commonstyleweb(color: Colors.red),
+                            ),
+                          );
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return  Center(
+                            child: Text(
+                              'Delivery Partners Not Found',
+                              style:commonstyle(color: Colors.black),
+                            ),
+                          );
+                        }
+
+                        final deliveryData = snapshot.data!;
+
+                        return ListView.builder(
+                          itemCount: deliveryData.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            var data = deliveryData[index];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.08,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  "${index + 1}",
+                                                  style: commonstyleweb(color: Colors.black),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.08,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  "AGM123",
+                                                  style: commonstyleweb(color: Colors.black),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.10,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  "${data['username'] ?? ""}",
+                                                  style: commonstyleweb(color: Colors.black),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.12,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  "pay_PdnzGdlqQZCh4C",
+                                                  style: commonstyleweb(color: Colors.black),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.10,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  "${data['phone'] ?? ""}",
+                                                  style: commonstyleweb(color: Colors.black),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.12,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  "12000.00",
+                                                  style: commonstyleweb(color: Colors.black),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.10,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(5),
+                                                    color: data['hubuserId'] == null ? Colors.red.shade100 : Colors.green.shade100,
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: data['hubuserId'] == null
+                                                        ? Text("Pending", style: commonstyleweb(color: Colors.red,weight: FontWeight.w600))
+                                                        : Text("Completed", style: commonstyleweb(color: Colors.green,weight: FontWeight.w600)),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.11,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    // IconButton(
+                                                    //   onPressed: () {
+                                                    //     // Handle view action
+                                                    //   },
+                                                    //   icon: const Icon(
+                                                    //     CupertinoIcons.eye,
+                                                    //     color: Colors.grey,
+                                                    //     size: 20,
+                                                    //   ),
+                                                    // ),
+                                                    IconButton(
+                                                      onPressed: () {
+                                                        Map<String, dynamic> data = deliveryData[index];
+                                                        updatedeliverysidesheet(data: data);
+                                                      },
+                                                      icon: const Icon(
+                                                        CupertinoIcons.pen,
+                                                        color: Colors.grey,
+                                                        size: 20,
+                                                      ),
+                                                    ),
+                                                    IconButton(
+                                                      onPressed: () {
+                                                        DeleteDelivery(data['id'] ?? "");
+                                                      },
+                                                      icon: const Icon(
+                                                        CupertinoIcons.delete,
+                                                        color: Colors.grey,
+                                                        size: 20,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Divider(color: Colors.grey.shade200, thickness: 0.5),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+
+                ],
+              ),
+            ),
+          ),
+        )
+      ],
     );
   }
 
@@ -2472,7 +3105,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   InkWell(
                     onTap: (){
-                      getSubscriptionHistoryController.GetSubscriptionHistoryAPI(context, "","");
+                        getSubscriptionHistoryController.GetSubscriptionHistoryAPI(context, "","");
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(left:5.0),

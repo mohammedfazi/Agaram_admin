@@ -9,7 +9,6 @@ import '../../Widget/Snackbar.dart';
 
 class AddUsersController extends GetConnect{
 
-  // final SearchUsersController searchUsersController=Get.find<SearchUsersController>();
   Future <dynamic> AddUserAPI(BuildContext context,email,password,username,phone,address,profileimage,city,state,pincode,hubid)async{
     String service;
     service=Config.LOGIN_API;
@@ -25,7 +24,6 @@ class AddUsersController extends GetConnect{
     final data=jsonDecode(responce.body);
 
     if(responce.statusCode==201){
-      // await searchUsersController.SearchUserAPI(context,"","");
       StackDialog.show("Successfully", "User Created Successfully", Icons.verified, Colors.green);
     }else if(responce.statusCode==409){
       StackDialog.show("Already Exists", "Enter Id Already Exists", Icons.info, Colors.red);
