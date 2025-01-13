@@ -33,11 +33,8 @@ import 'package:agaram_admin/Service/Subscription_Service/GetSubscriptionHistory
 import 'package:agaram_admin/Service/Subscription_Service/Getseprate_Subscription_Controller.dart';
 import 'package:agaram_admin/Service/Users_service/DeleteUser_Controller.dart';
 import 'package:agaram_admin/Service/Users_service/UpdateUsers_Controller.dart';
-import 'package:agaram_admin/Testing.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get.dart';
-import 'Screens/Login/Loginscreen.dart';
 import 'Service/Dashboard_Count/GetAllUsersCount_Controller.dart';
 import 'Service/Product-Service/GetallProduct_Controller.dart';
 import 'Service/Getall_Service/GetallUsers.dart';
@@ -46,6 +43,7 @@ import 'Service/Users_service/SearchUsers_Controller.dart';
 
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   Get.put(LoginController());
   Get.put(GetallusersController());
   Get.put(GetalldeliveryController());
@@ -70,7 +68,6 @@ void main() {
   Get.put(GetallpricecountController());
   Get.put(GetProductcountController());
   Get.put(GetSubscriptioncountController());
-  Get.put(SearchUsersController());
   Get.put(Getallhubcontroller());
   Get.put(AddHubController());
   Get.put(DeleteDeliveryPartnerController());
@@ -86,6 +83,7 @@ void main() {
   Get.put(AssignSubscriptionController());
   Get.put(GetSubscriptionByHubIdcontroller());
   Get.put(DeleteUserController());
+  Get.put(SearchUsersController());
   runApp(const MyApp());
 }
 

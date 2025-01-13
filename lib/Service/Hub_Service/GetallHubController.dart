@@ -32,7 +32,6 @@ class Getallhubcontroller extends GetConnect{
       final value=(data['users']);
       getallhubdata.assignAll(value);
       return responce;
-
     }
     else{
       return responce;

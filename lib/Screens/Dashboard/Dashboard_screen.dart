@@ -385,7 +385,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final DeleteHubController deleteHubController=Get.find<DeleteHubController>();
   final DeleteUserController deleteUserController=Get.find<DeleteUserController>();
 
-  int container = 15;
+  int container = 1;
 
   String?SelectedPaymentStatus;
   List<String> paymentlist=['COMPLETED','PENDING','CANCELED'];
@@ -565,6 +565,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     } catch (e) {
       throw Exception('Failed to load products');
     }
+  }
+
+  Future<dynamic> fetchuserslist() async {
+   await searchUsersController.SearchUserAPI(context, "", "");
   }
 
   Future<List<dynamic>> fetchusersbyHubId() async {
@@ -2162,14 +2166,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
               ),
               SizedBox(
-                  height: displayheight(context)*0.40,
+                  height: displayheight(context)*1,
                   width: double.infinity,
                   child: GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           mainAxisSpacing: 2.0,
                           crossAxisSpacing: 2.0,
-                          mainAxisExtent: displayheight(context)*0.15,
-                          crossAxisCount: 5),
+                          mainAxisExtent: displayheight(context)*0.18,
+                          crossAxisCount: 4),
                       itemCount: todaysgridview.length,
                       itemBuilder: (BuildContext context,int index){
                         return Padding(
@@ -2321,7 +2325,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: commontextfield("Search By Id,Name..", hubsearchcontroller)),
               InkWell(
                 onTap: (){
-                  adddeliverysidesheet();
+                  // adddeliverysidesheet();
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -6413,7 +6417,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           )),
                           onPressed: ()async{
                             showloadingdialog(context);
-                            setState(() async{
                               addDeliverpartnerController.AddDeliverPartnerApi(context, deliveryemailcontroller.text,
                                   deliverypasswordcontroller.text, deliverynamecontroller.text, deliverynumbercontroller.text,
                                   deliveryaddresscontroller.text, "", "false", deliverybanknamecontroller.text,
@@ -6421,8 +6424,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   deliverybranchcontroller.text,deliverycitycontroller.text,deliverystatecontroller.text,deliverypincodecontroller.text,selecteddeliveryhubid.toString());
                               await getalldeliveryController.GetAllDeliveryApi(context);
                               Get.back();
-                            });
-
                           },
                           child: Text("SUBMIT",style: commonstyle(),))),
                 )
@@ -7628,10 +7629,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               alertToastRed(context,"Required Field is Empty");
                             }else{
                               showloadingdialog(context);
-                              setState(()async{
                                 addUsersController.AddUserAPI(context, useremailcontroller.text, userpasswordcontroller.text, usernamecontroller.text, usernumbercontroller.text, useraddresscontroller.text, _customerimageBytes.toString(),usercitycontroller.text,userstatecontroller.text,userpincodecontroller.text,selectedhubid??null);
                                 await searchUsersController.SearchUserAPI(context,"","");
-                              });
+                              fetchuserslist();
                               Get.back();
 
                             }
@@ -10215,7 +10215,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             style: ElevatedButton.styleFrom(backgroundColor: Color_Constant.secondarycolr,shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)
                             )),
-                            onPressed: (){},
+                            onPressed: (){
+                              if(oldpasswordcontroller.text.isEmpty||newpasswordcontroller.text.isEmpty||confirmpasswordcontroller.text.isEmpty){
+                                alertToastRed(context, "Required Field is Empty");
+                              }else if(newpasswordcontroller.text.isEmpty!=confirmpasswordcontroller.text.isEmpty){
+                                alertToastRed(context, "New Password Didn,t Matched");
+                              }else{
+
+                              }
+                            },
                             child: Center(child: Text("SUBMIT",style: btntxtwhite,))),
                       ),
                     ),
