@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:agaram_admin/Widget/Toast_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_connect/connect.dart';
 import 'package:get/get.dart';
@@ -33,6 +34,7 @@ class ChangepasswordController extends GetConnect{
 
     if(responce.statusCode==200){
       StackDialog.show("Successfully", "Password Changed Successfully", Icons.verified, Colors.green);
+      alerttoastredgreen(context, "Password Changed Successfully");
     }else if(responce.statusCode==500){
       StackDialog.show("Server Error", "Internal Server Error", Icons.info, Colors.red);
     }

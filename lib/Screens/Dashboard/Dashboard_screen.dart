@@ -59,6 +59,8 @@ import 'package:side_sheet/side_sheet.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../Service/Dashboard_Count/Getproductscount_Controller.dart';
 import '../../Service/GetByHubId/GetallSubscriptionbyHubId.dart';
+import '../../Service/Orders_Service/GetAdminallOrderByHubIdController.dart';
+import '../../Service/Orders_Service/GetallOrdersController.dart';
 import '../../Service/Product-Service/GetallProduct_Controller.dart';
 import '../../Service/Users_service/AddUsersController.dart';
 
@@ -95,7 +97,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void refreshuserdata()async{
     await getallusersController.GetAllUsersApi(context);
   }
-
 
 
   void _pickImage() async {
@@ -363,7 +364,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final GetDeliveryByHubIdcontroller getDeliveryByHubIdcontroller=Get.find<GetDeliveryByHubIdcontroller>();
   final GetOrderByHubIdcontroller getOrderByHubIdcontroller=Get.find<GetOrderByHubIdcontroller>();
   final GetSubscriptionByHubIdcontroller getSubscriptionByHubIdcontroller=Get.find<GetSubscriptionByHubIdcontroller>();
-
+  final GetAdminallOrdersController getAdminallOrdersController=Get.find<GetAdminallOrdersController>();
+  final GetAdminallOrdersByHubIdController getAdminallOrdersByHubIdController=Get.find<GetAdminallOrdersByHubIdController>();
 
   //UPDATE
   final UpdateUsersController updateUsersController=Get.find<UpdateUsersController>();
@@ -401,10 +403,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool myprofilebool=false;
   bool mysettingbool=false;
 
+  List<bool> hubhover = [];
 
   bool ?subscriptionstatusbool;
   int subscriptioncontainer=1;
   int ordercontainer=1;
+  int deliverpaymentontap=1;
 
   final TextEditingController hubsearchcontroller=TextEditingController();
 
@@ -767,11 +771,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
     getOrdercountController.GetOrdercountAPI(context);
     getSubscriptionHistoryController.GetSubscriptionHistoryAPI(context,"","");
     getOrderHistoryController.GetOrderHistoryAPI(context,"","");
+    getAdminallOrdersController.GetAdminAllOrderApi(context);
     _tooltipBehavior=TooltipBehavior(enable: true);
     _tooltipBehavior2=TooltipBehavior(enable: true);
     DateTime data = DateTime.now();
     String formattedDate1 = DateFormat('dd-MM-yyyy').format(data);
     formattedDate=formattedDate1;
+    hubhover = List<bool>.generate(
+      getallhubcontroller.getallhubdata.length,
+          (index) => false,
+    );
     super.initState();
   }
 
@@ -1045,9 +1054,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     container==14&&subscriptioncontainer==2?
                     ViewSubscriptionHistory():
                     container==15?
-                        TodaysOrderWidget():
-                        container==16?
-                            DeliveryPaymentWidget():
+                    TodaysOrderWidget():
+                    container==16 && deliverpaymentontap==1?
+                    DeliveryPaymentWidget():
+                    container==16 && deliverpaymentontap==2?
+                    ViewDeliveryPaymentWidget():
                     Container()
                   ],
                 ),
@@ -2139,6 +2150,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     getalluserscountController.GetAllusercountAPI(context);
     getalldeliveryuserscountController.GetAlldeliveryuserscountAPI(context);
     getProductcountController.GetProductcountAPI(context);
+    getAdminallOrdersController.GetAdminAllOrderApi(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SingleChildScrollView(
@@ -2168,14 +2180,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
               SizedBox(
                   height: displayheight(context)*1,
                   width: double.infinity,
-                  child: GridView.builder(
+                  child: getAdminallOrdersController.getallorderdata.isEmpty?
+                      Center(
+                        child:Text("Today's Order Not Found",style: commonstyle(color: Colors.black,size:15,),)
+                      )
+                      :GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           mainAxisSpacing: 2.0,
                           crossAxisSpacing: 2.0,
                           mainAxisExtent: displayheight(context)*0.18,
                           crossAxisCount: 4),
-                      itemCount: todaysgridview.length,
+                      itemCount: getAdminallOrdersController.getallorderdata.length,
                       itemBuilder: (BuildContext context,int index){
+                        var data=getAdminallOrdersController.getallorderdata[index];
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: InkWell(
@@ -2196,105 +2213,135 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 container=1;
                               });
                             },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10)
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                          color: index==0?
-                                          Colors.deepPurple.shade100:
-                                          index==1?
-                                          Colors.blue.shade100:
-                                          index==2?
-                                          Colors.red.shade100:
-                                          index==3?
-                                          Colors.orange.shade100:
-                                          index==4?
-                                          Colors.purple.shade100:
-                                          Colors.green.shade100,
-                                          borderRadius: BorderRadius.circular(10)
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                              color: index==0?
-                                              Colors.deepPurple:
-                                              index==1?
-                                              Colors.blue:
-                                              index==2?
-                                              Colors.red:
-                                              index==3?
-                                              Colors.orange:
-                                              index==4?
-                                              Colors.purple:
-                                              Colors.green,
-                                              borderRadius: BorderRadius.circular(10)
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(12.0),
-                                            child: Icon(todaysgridview[index]['icon'],color: Colors.white,size: 12,),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left:18.0),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10)
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 8.0),
+                                  child: Row(
+                                    children: [
+                                      Row(
                                         children: [
-                                          Text("${todaysgridview[index]['title']??""}",style: commonstyle(color: Colors.grey.shade600,size: 12),),
-                                          // index==0?
-                                          // Obx(()=>getOrdercountController.getdata.isEmpty?
-                                          // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
-                                          //     : Text("${getOrdercountController.getdata[0]['deliveryOrderCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
-                                          // index==1?
-                                          // Obx(()=>
-                                          // getalldeliveryuserscountController.getdata.isEmpty?
-                                          // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
-                                          //     :
-                                          // Text("${getalldeliveryuserscountController.getdata[0]['deliveryUserCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
-                                          // index==2?
-                                          // Obx(()=>
-                                          // getalluserscountController.getdata.isEmpty?
-                                          // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
-                                          //     :
-                                          // Text("${getalluserscountController.getdata[0]['usersCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
-                                          // index==3?
-                                          // Obx(()=>
-                                          // getallpricecountController.getdata.isEmpty?
-                                          // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
-                                          //     :
-                                          // Row(
-                                          //   children: [
-                                          //     const Icon(Icons.currency_rupee,color: Colors.black,size: 20,),
-                                          //     Text("${getallpricecountController.getdata[0]['totalAmount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),),
-                                          //   ],
-                                          // )):
-                                          // index==4?
-                                          // Obx(()=>
-                                          // getSubscriptioncountController.getdata.isEmpty?
-                                          // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
-                                          //     :
-                                          // Text("${getSubscriptioncountController.getdata[0]['subscriptionCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
-                                          // index==5?
-                                          // Obx(()=>
-                                          // getProductcountController.getdata.isEmpty?
-                                          // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
-                                          //     :
-                                          // Text("${getProductcountController.getdata[0]['productCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
-                                          Text("${todaysgridview[index]['amount']??""}",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),)
+                                          Container(
+                                            decoration: BoxDecoration(
+                                                color: index==0?
+                                                Colors.deepPurple.shade100:
+                                                index==1?
+                                                Colors.blue.shade100:
+                                                index==2?
+                                                Colors.red.shade100:
+                                                index==3?
+                                                Colors.orange.shade100:
+                                                index==4?
+                                                Colors.purple.shade100:
+                                                Colors.green.shade100,
+                                                borderRadius: BorderRadius.circular(10)
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: index==0?
+                                                    Colors.deepPurple:
+                                                    index==1?
+                                                    Colors.blue:
+                                                    index==2?
+                                                    Colors.red:
+                                                    index==3?
+                                                    Colors.orange:
+                                                    index==4?
+                                                    Colors.purple:
+                                                    Colors.green,
+                                                    borderRadius: BorderRadius.circular(10)
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(12.0),
+                                                  child: ImageNetwork(
+                                                    image: "${data['product']['productImages']}",
+                                                    height: 110,
+                                                    width: 50,
+                                                    duration: 1,
+                                                    curve: Curves.easeIn,
+                                                    onPointer: true,
+                                                    debugPrint: false,
+                                                    fullScreen: true,
+                                                    fitAndroidIos: BoxFit.cover,
+                                                    fitWeb: BoxFitWeb.cover,
+                                                    borderRadius: BorderRadius.circular(5),
+                                                    onLoading:  const CupertinoActivityIndicator(
+                                                      color: Colors.indigoAccent,
+                                                    ),
+                                                    onError: const Icon(
+                                                      Icons.error,
+                                                      color: Colors.red,
+                                                    ),
+                                                    onTap: () {
+                                                      debugPrint("©gabriel_patrick_souza");
+                                                    },
+                                                  )
+                                                  // Icon(todaysgridview[index]['icon'],color: Colors.white,size: 12,),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
-                                    )
-                                  ],
+                                      Padding(
+                                        padding: const EdgeInsets.only(left:18.0),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Text("${data['product']['productName']??""} (${data['product']['stockQty']??""})",style: commonstyle(color: Colors.grey.shade600,size: 12),),
+                                            // index==0?
+                                            // Obx(()=>getOrdercountController.getdata.isEmpty?
+                                            // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                            //     : Text("${getOrdercountController.getdata[0]['deliveryOrderCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                            // index==1?
+                                            // Obx(()=>
+                                            // getalldeliveryuserscountController.getdata.isEmpty?
+                                            // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                            //     :
+                                            // Text("${getalldeliveryuserscountController.getdata[0]['deliveryUserCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                            // index==2?
+                                            // Obx(()=>
+                                            // getalluserscountController.getdata.isEmpty?
+                                            // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                            //     :
+                                            // Text("${getalluserscountController.getdata[0]['usersCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                            // index==3?
+                                            // Obx(()=>
+                                            // getallpricecountController.getdata.isEmpty?
+                                            // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                            //     :
+                                            // Row(
+                                            //   children: [
+                                            //     const Icon(Icons.currency_rupee,color: Colors.black,size: 20,),
+                                            //     Text("${getallpricecountController.getdata[0]['totalAmount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),),
+                                            //   ],
+                                            // )):
+                                            // index==4?
+                                            // Obx(()=>
+                                            // getSubscriptioncountController.getdata.isEmpty?
+                                            // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                            //     :
+                                            // Text("${getSubscriptioncountController.getdata[0]['subscriptionCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                            // index==5?
+                                            // Obx(()=>
+                                            // getProductcountController.getdata.isEmpty?
+                                            // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                            //     :
+                                            // Text("${getProductcountController.getdata[0]['productCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                            Text("${data['totalCount']??""} Pieces",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),)
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -2323,29 +2370,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
               SizedBox(
                   width:displaywidth(context)*0.50,
                   child: commontextfield("Search By Id,Name..", hubsearchcontroller)),
-              InkWell(
-                onTap: (){
-                  // adddeliverysidesheet();
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Color_Constant.secondarycolr,
-                      borderRadius: BorderRadius.circular(10)
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.add,color: Colors.white,),
-                          Text("Add Delivery Payment",style: commonstyle(),)
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              // InkWell(
+              //   onTap: (){
+              //     // adddeliverysidesheet();
+              //   },
+              //   child: Container(
+              //     decoration: BoxDecoration(
+              //         color: Color_Constant.secondarycolr,
+              //         borderRadius: BorderRadius.circular(10)
+              //     ),
+              //     child: Padding(
+              //       padding: const EdgeInsets.all(8.0),
+              //       child: Padding(
+              //         padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              //         child: Row(
+              //           children: [
+              //             const Icon(Icons.add,color: Colors.white,),
+              //             Text("Add Delivery Payment",style: commonstyle(),)
+              //           ],
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
               InkWell(
                 onTap: ()async{
                   await Printing.sharePdf(
@@ -2453,7 +2500,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           SizedBox(
-                            width: displaywidth(context)*0.10,
+                            width: displaywidth(context)*0.20,
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -2461,15 +2508,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            width: displaywidth(context)*0.11,
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("Actions",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
-                              ),
-                            ),
-                          ),
+                          // SizedBox(
+                          //   width: displaywidth(context)*0.11,
+                          //   child: Center(
+                          //     child: Padding(
+                          //       padding: const EdgeInsets.all(8.0),
+                          //       child: Text("Actions",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
@@ -2510,156 +2557,230 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               padding: const EdgeInsets.symmetric(vertical: 8.0),
                               child: Column(
                                 children: [
-                                  Container(
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.08,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                  "${index + 1}",
-                                                  style: commonstyleweb(color: Colors.black),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.08,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                  "AGM123",
-                                                  style: commonstyleweb(color: Colors.black),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.10,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                  "${data['username'] ?? ""}",
-                                                  style: commonstyleweb(color: Colors.black),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.12,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                  "pay_PdnzGdlqQZCh4C",
-                                                  style: commonstyleweb(color: Colors.black),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.10,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                  "${data['phone'] ?? ""}",
-                                                  style: commonstyleweb(color: Colors.black),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.12,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                  "12000.00",
-                                                  style: commonstyleweb(color: Colors.black),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.10,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(5),
-                                                    color: data['hubuserId'] == null ? Colors.red.shade100 : Colors.green.shade100,
+                                  InkWell(
+                                    onTap:(){
+                                      setState(() {
+                                        deliverpaymentontap=2;
+                                      });
+                                    },
+                                    child: Container(
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.08,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    "${index + 1}",
+                                                    style: commonstyleweb(color: Colors.black),
                                                   ),
-                                                  child: Padding(
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.08,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    "AGM123",
+                                                    style: commonstyleweb(color: Colors.black),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.10,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    "${data['username'] ?? ""}",
+                                                    style: commonstyleweb(color: Colors.black),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.12,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    "pay_PdnzGdlqQZCh4C",
+                                                    style: commonstyleweb(color: Colors.black),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.10,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    "${data['phone'] ?? ""}",
+                                                    style: commonstyleweb(color: Colors.black),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.12,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    "12000.00",
+                                                    style: commonstyleweb(color: Colors.black),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+
+                                            SizedBox(
+                                                 width: displaywidth(context) * 0.20,
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: InkWell(
+                                                        onTap: (){},
+                                                        child: Container(
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(5),
+                                                            color:Colors.green.shade100,
+                                                          ),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(8.0),
+                                                            child: Row(
+                                                              children: [
+                                                                Icon(Icons.check,color: Colors.green.shade800,size: 20,),
+                                                                Padding(
+                                                                  padding: const EdgeInsets.only(left:8.0),
+                                                                  child: Text("COMPLETED", style: commonstyleweb(color: Colors.green.shade800,weight: FontWeight.w600)),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                ),
+                                                  Padding(
                                                     padding: const EdgeInsets.all(8.0),
-                                                    child: data['hubuserId'] == null
-                                                        ? Text("Pending", style: commonstyleweb(color: Colors.red,weight: FontWeight.w600))
-                                                        : Text("Completed", style: commonstyleweb(color: Colors.green,weight: FontWeight.w600)),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.11,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    // IconButton(
-                                                    //   onPressed: () {
-                                                    //     // Handle view action
-                                                    //   },
-                                                    //   icon: const Icon(
-                                                    //     CupertinoIcons.eye,
-                                                    //     color: Colors.grey,
-                                                    //     size: 20,
-                                                    //   ),
-                                                    // ),
-                                                    IconButton(
-                                                      onPressed: () {
-                                                        Map<String, dynamic> data = deliveryData[index];
-                                                        updatedeliverysidesheet(data: data);
-                                                      },
-                                                      icon: const Icon(
-                                                        CupertinoIcons.pen,
-                                                        color: Colors.grey,
-                                                        size: 20,
+                                                    child: InkWell(
+                                                      onTap: (){},
+                                                      child: Container(
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(5),
+                                                          color:Colors.red.shade100,
+                                                        ),
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: Row(
+                                                            children: [
+                                                              Icon(Icons.close,color: Colors.red.shade800,size: 20,),
+                                                              Padding(
+                                                                padding: const EdgeInsets.only(left:8.0),
+                                                                child: Text("CANCEL", style: commonstyleweb(color: Colors.red.shade800,weight: FontWeight.w600)),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
-                                                    IconButton(
-                                                      onPressed: () {
-                                                        DeleteDelivery(data['id'] ?? "");
-                                                      },
-                                                      icon: const Icon(
-                                                        CupertinoIcons.delete,
-                                                        color: Colors.grey,
-                                                        size: 20,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                                  )
+                                                ],
                                               ),
-                                            ),
-                                          ),
-                                        ],
+
+                                            )
+                                            // SizedBox(
+                                            //   width: displaywidth(context) * 0.20,
+                                            //   child: Center(
+                                            //     child: Padding(
+                                            //       padding: const EdgeInsets.all(8.0),
+                                            //       child: Container(
+                                            //         decoration: BoxDecoration(
+                                            //           borderRadius: BorderRadius.circular(5),
+                                            //           color: data['hubuserId'] == null ? Colors.red.shade100 : Colors.green.shade100,
+                                            //         ),
+                                            //         child: Padding(
+                                            //           padding: const EdgeInsets.all(8.0),
+                                            //           child: data['hubuserId'] == null
+                                            //               ? Text("Pending", style: commonstyleweb(color: Colors.red,weight: FontWeight.w600))
+                                            //               : Text("Completed", style: commonstyleweb(color: Colors.green,weight: FontWeight.w600)),
+                                            //         ),
+                                            //       ),
+                                            //     ),
+                                            //   ),
+                                            // ),
+
+
+
+
+
+
+
+
+                                            // SizedBox(
+                                            //   width: displaywidth(context) * 0.11,
+                                            //   child: Center(
+                                            //     child: Padding(
+                                            //       padding: const EdgeInsets.all(8.0),
+                                            //       child: Row(
+                                            //         mainAxisAlignment: MainAxisAlignment.center,
+                                            //         crossAxisAlignment: CrossAxisAlignment.center,
+                                            //         children: [
+                                            //           // IconButton(
+                                            //           //   onPressed: () {
+                                            //           //     // Handle view action
+                                            //           //   },
+                                            //           //   icon: const Icon(
+                                            //           //     CupertinoIcons.eye,
+                                            //           //     color: Colors.grey,
+                                            //           //     size: 20,
+                                            //           //   ),
+                                            //           // ),
+                                            //           IconButton(
+                                            //             onPressed: () {
+                                            //               Map<String, dynamic> data = deliveryData[index];
+                                            //               updatedeliverysidesheet(data: data);
+                                            //             },
+                                            //             icon: const Icon(
+                                            //               CupertinoIcons.pen,
+                                            //               color: Colors.grey,
+                                            //               size: 20,
+                                            //             ),
+                                            //           ),
+                                            //           IconButton(
+                                            //             onPressed: () {
+                                            //               DeleteDelivery(data['id'] ?? "");
+                                            //             },
+                                            //             icon: const Icon(
+                                            //               CupertinoIcons.delete,
+                                            //               color: Colors.grey,
+                                            //               size: 20,
+                                            //             ),
+                                            //           ),
+                                            //         ],
+                                            //       ),
+                                            //     ),
+                                            //   ),
+                                            // ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -2679,6 +2800,236 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         )
       ],
+    );
+  }
+
+  Widget ViewDeliveryPaymentWidget(){
+    return Container(
+      height: displayheight(context)*0.90,
+      width: double.infinity,
+      color: Colors.grey.shade200,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              color: Colors.grey.shade200,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: IconButton(onPressed: (){
+                        setState(() {
+                          deliverpaymentontap=1;
+                        });
+                      }, icon: const Icon(Icons.arrow_back_ios,color: Colors.black,)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("View Delivery Payment Details",style: commonstyleweb(color: Colors.black),),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 50.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Delivery Partner Details",style: commonstyle(size: 18,weight: FontWeight.w700,color: Color_Constant.primarycolr),),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Delivery Partner Name : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("John Robert",style: commonstyle(color: Colors.black,size: 15),)
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Delivery Partner Email ID : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("john@gmail.com",style: commonstyle(color: Colors.black,size: 15),)
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Delivery Partner Mobile Number : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("+918767876787",style: commonstyle(color: Colors.black,size: 15),)
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Text("Delivery Partner Address : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                      Text("14, Old GST Rd, Varadharaja Nagar, Chengalpattu, Tamil Nadu 603001, India",style: commonstyle(color: Colors.black,size: 15),)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Payment Details",style: commonstyle(size: 18,weight: FontWeight.w700,color: Color_Constant.primarycolr),),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Transaction ID : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("AGARAM8767ERDF65",style: commonstyle(color: Colors.black,size: 15),)
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Petrol Allowance : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("Rs:1000",style: commonstyle(color: Colors.black,size: 15),)
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Attendence Allowance : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("Rs:1000",style: commonstyle(color: Colors.black,size: 15),)
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Salary : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("Rs:5000",style: commonstyle(color: Colors.black,size: 15),)
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Total Amount : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("Rs:7000",style: commonstyle(color: Colors.black,size: 15),)
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Payment Status : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("PENDING",style: commonstyle(color: Colors.red,size: 15,weight: FontWeight.w900),)
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
+                  ],
+                ),
+              ),
+            )
+
+          ],
+        ),
+      ),
     );
   }
 
@@ -4012,7 +4363,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
-                  width: displaywidth(context)*0.50,
+                  width: displaywidth(context)*0.70,
                   decoration: BoxDecoration(
                     color: Color_Constant.primarycolr,
                     borderRadius: BorderRadius.circular(30)
@@ -4099,6 +4450,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                                 child: Text("Subscription History",style: commonstyle(color: ontapinsidehub==4?Colors.black:Colors.white,size: 15,weight: FontWeight.w500),),
+                              ),
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: (){
+                            setState(() {
+                              ontapinsidehub=5;
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color:ontapinsidehub==5?Colors.white:Colors.transparent,
+                                borderRadius: BorderRadius.circular(30.0)
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                                child: Text("Today's Order",style: commonstyle(color: ontapinsidehub==5?Colors.black:Colors.white,size: 15,weight: FontWeight.w500),),
                               ),
                             ),
                           ),
@@ -4858,6 +5229,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
             ):
+            ontapinsidehub==4?
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -5152,7 +5524,206 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
               ),
-            )
+            ):
+            SizedBox(
+              // height: displayheight(context)*1,
+              width: double.infinity,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white
+                      ),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(" Today's Order  -  $formattedDate",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                      height: displayheight(context)*1,
+                      width: double.infinity,
+                      child: getAdminallOrdersByHubIdController.getallorderdatabyhubid.isEmpty?
+                      Center(
+                          child:Text("Today's Order Not Found",style: commonstyle(color: Colors.black,size:15,),)
+                      )
+                          :GridView.builder(
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              mainAxisSpacing: 2.0,
+                              crossAxisSpacing: 2.0,
+                              mainAxisExtent: displayheight(context)*0.18,
+                              crossAxisCount: 4),
+                          itemCount: getAdminallOrdersByHubIdController.getallorderdatabyhubid.length,
+                          itemBuilder: (BuildContext context,int index){
+                            var data=getAdminallOrdersByHubIdController.getallorderdatabyhubid[index];
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: InkWell(
+                                onTap: (){
+                                  setState(() {
+                                    index==0?
+                                    container=6:
+                                    index==1?
+                                    container=3:
+                                    index==2?
+                                    container=4:
+                                    index==3?
+                                    container=6:
+                                    index==4?
+                                    container=14:
+                                    index==5?
+                                    container=5:
+                                    container=1;
+                                  });
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10)
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 8.0),
+                                      child: Row(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                    color: index==0?
+                                                    Colors.deepPurple.shade100:
+                                                    index==1?
+                                                    Colors.blue.shade100:
+                                                    index==2?
+                                                    Colors.red.shade100:
+                                                    index==3?
+                                                    Colors.orange.shade100:
+                                                    index==4?
+                                                    Colors.purple.shade100:
+                                                    Colors.green.shade100,
+                                                    borderRadius: BorderRadius.circular(10)
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        color: index==0?
+                                                        Colors.deepPurple:
+                                                        index==1?
+                                                        Colors.blue:
+                                                        index==2?
+                                                        Colors.red:
+                                                        index==3?
+                                                        Colors.orange:
+                                                        index==4?
+                                                        Colors.purple:
+                                                        Colors.green,
+                                                        borderRadius: BorderRadius.circular(10)
+                                                    ),
+                                                    child: Padding(
+                                                        padding: const EdgeInsets.all(12.0),
+                                                        child: ImageNetwork(
+                                                          image: "${data['product']['productImages']}",
+                                                          height: 110,
+                                                          width: 50,
+                                                          duration: 1,
+                                                          curve: Curves.easeIn,
+                                                          onPointer: true,
+                                                          debugPrint: false,
+                                                          fullScreen: true,
+                                                          fitAndroidIos: BoxFit.cover,
+                                                          fitWeb: BoxFitWeb.cover,
+                                                          borderRadius: BorderRadius.circular(5),
+                                                          onLoading:  const CupertinoActivityIndicator(
+                                                            color: Colors.indigoAccent,
+                                                          ),
+                                                          onError: const Icon(
+                                                            Icons.error,
+                                                            color: Colors.red,
+                                                          ),
+                                                          onTap: () {
+                                                            debugPrint("©gabriel_patrick_souza");
+                                                          },
+                                                        )
+                                                      // Icon(todaysgridview[index]['icon'],color: Colors.white,size: 12,),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left:18.0),
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Text("${data['product']['productName']??""} (${data['product']['stockQty']??""})",style: commonstyle(color: Colors.grey.shade600,size: 12),),
+                                                // index==0?
+                                                // Obx(()=>getOrdercountController.getdata.isEmpty?
+                                                // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                                //     : Text("${getOrdercountController.getdata[0]['deliveryOrderCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                                // index==1?
+                                                // Obx(()=>
+                                                // getalldeliveryuserscountController.getdata.isEmpty?
+                                                // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                                //     :
+                                                // Text("${getalldeliveryuserscountController.getdata[0]['deliveryUserCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                                // index==2?
+                                                // Obx(()=>
+                                                // getalluserscountController.getdata.isEmpty?
+                                                // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                                //     :
+                                                // Text("${getalluserscountController.getdata[0]['usersCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                                // index==3?
+                                                // Obx(()=>
+                                                // getallpricecountController.getdata.isEmpty?
+                                                // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                                //     :
+                                                // Row(
+                                                //   children: [
+                                                //     const Icon(Icons.currency_rupee,color: Colors.black,size: 20,),
+                                                //     Text("${getallpricecountController.getdata[0]['totalAmount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),),
+                                                //   ],
+                                                // )):
+                                                // index==4?
+                                                // Obx(()=>
+                                                // getSubscriptioncountController.getdata.isEmpty?
+                                                // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                                //     :
+                                                // Text("${getSubscriptioncountController.getdata[0]['subscriptionCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                                // index==5?
+                                                // Obx(()=>
+                                                // getProductcountController.getdata.isEmpty?
+                                                // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
+                                                //     :
+                                                // Text("${getProductcountController.getdata[0]['productCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+                                                Text("${data['totalCount']??""} Pieces",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),)
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          })
+                  ),
+
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -8124,6 +8695,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         getDeliveryByHubIdcontroller.GetDeliveryByHubIdApi(context,data['id']);
                                         getOrderByHubIdcontroller.GetOrderByHubIdApi(context,data['id']);
                                         getSubscriptionByHubIdcontroller.GetSubscriptionByHubIdApi(context,data['id']);
+                                        getAdminallOrdersByHubIdController.GetAdminAllOrderByHubIdApi(context,data['id']);
                                         ontaphub=2;
                                       });
                                     },
@@ -8205,7 +8777,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                       children: [
-                                                        IconButton(onPressed: (){}, icon: const Icon(CupertinoIcons.eye,color: Colors.grey,size: 20,)),
+                                                        // IconButton(onPressed: (){}, icon: const Icon(CupertinoIcons.eye,color: Colors.grey,size: 20,)),
                                                         IconButton(onPressed: (){
                                                           updatehubsidesheet(data: data);
                                                         }, icon: const Icon(CupertinoIcons.pen,color: Colors.grey,size: 20,)),
@@ -8942,16 +9514,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   crossAxisAlignment: CrossAxisAlignment.center,
                                                   children: [
-                                                    IconButton(
-                                                      onPressed: () {
-                                                        // Handle view action
-                                                      },
-                                                      icon: const Icon(
-                                                        CupertinoIcons.eye,
-                                                        color: Colors.grey,
-                                                        size: 20,
-                                                      ),
-                                                    ),
+                                                    // IconButton(
+                                                    //   onPressed: () {
+                                                    //     // Handle view action
+                                                    //   },
+                                                    //   icon: const Icon(
+                                                    //     CupertinoIcons.eye,
+                                                    //     color: Colors.grey,
+                                                    //     size: 20,
+                                                    //   ),
+                                                    // ),
                                                     IconButton(
                                                       onPressed: () {
                                                         Map<String, dynamic> data = deliveryData[index];
@@ -9283,14 +9855,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                       children: [
-                                                        IconButton(
-                                                          onPressed: () {},
-                                                          icon: const Icon(
-                                                            CupertinoIcons.eye,
-                                                            color: Colors.grey,
-                                                            size: 20,
-                                                          ),
-                                                        ),
+                                                        // IconButton(
+                                                        //   onPressed: () {},
+                                                        //   icon: const Icon(
+                                                        //     CupertinoIcons.eye,
+                                                        //     color: Colors.grey,
+                                                        //     size: 20,
+                                                        //   ),
+                                                        // ),
                                                         IconButton(
                                                           onPressed: () {
                                                             updateproductsidesheet(data: data);
@@ -10221,6 +10793,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               }else if(newpasswordcontroller.text.isEmpty!=confirmpasswordcontroller.text.isEmpty){
                                 alertToastRed(context, "New Password Didn,t Matched");
                               }else{
+                                showloadingdialog(context);
+                                changepasswordController.ChangepasswordApi(context, oldpasswordcontroller.text, newpasswordcontroller.text);
+                                Get.back();
 
                               }
                             },

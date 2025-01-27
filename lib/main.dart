@@ -24,6 +24,8 @@ import 'package:agaram_admin/Service/Hub_Service/DeleteHubController.dart';
 import 'package:agaram_admin/Service/Hub_Service/GetallHubController.dart';
 import 'package:agaram_admin/Service/Hub_Service/UpdateHub_Controller.dart';
 import 'package:agaram_admin/Service/OrderHistory_Service/GetOrderHistoryController.dart';
+import 'package:agaram_admin/Service/Orders_Service/GetAdminallOrderByHubIdController.dart';
+import 'package:agaram_admin/Service/Orders_Service/GetallOrdersController.dart';
 import 'package:agaram_admin/Service/Password_Service/ChangePassword-Controller.dart';
 import 'package:agaram_admin/Service/Password_Service/Forgetpassword_Controller.dart';
 import 'package:agaram_admin/Service/Product-Service/AddProduct_Controller.dart';
@@ -84,6 +86,8 @@ void main() {
   Get.put(GetSubscriptionByHubIdcontroller());
   Get.put(DeleteUserController());
   Get.put(SearchUsersController());
+  Get.put(GetAdminallOrdersController());
+  Get.put(GetAdminallOrdersByHubIdController());
   runApp(const MyApp());
 }
 

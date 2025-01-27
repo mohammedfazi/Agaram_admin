@@ -25,7 +25,7 @@ class UpdateUsersController extends GetConnect{
       "Authorization":"Bearer ${pref.getString("token")}"
     };
 
-    final json='{"id":"$id","username":"$username","email":"$email","password":"$password","phone":"$phone","address":"$address","profileImage":"$profileimage","roleId":"1","hubuserId":"$hubuserid"}';
+    final json='{"id":"$id","username":"$username","email":"$email","password":"$password","phone":"$phone","address":"$address","profileImage":"$profileimage","roleId":"2","hubuserId":"$hubuserid"}';
 
     final responce=await http.post(url,headers:header,body: json.toString());
 

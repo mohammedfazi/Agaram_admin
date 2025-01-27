@@ -19,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
     final SharedPreferences pref=await SharedPreferences.getInstance();
     Timer(const Duration(seconds: 4), (){
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>
-      pref.getString("session")==null?
+      pref.getString("token")==null?
       const Loginscreen():
       const DashboardScreen()
       ));
