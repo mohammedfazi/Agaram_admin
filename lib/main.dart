@@ -40,6 +40,7 @@ import 'package:get/get.dart';
 import 'Service/Dashboard_Count/GetAllUsersCount_Controller.dart';
 import 'Service/Product-Service/GetallProduct_Controller.dart';
 import 'Service/Getall_Service/GetallUsers.dart';
+import 'Service/Salary_service/GetallSalary_Controller.dart';
 import 'Service/Users_service/AddUsersController.dart';
 import 'Service/Users_service/SearchUsers_Controller.dart';
 
@@ -88,6 +89,7 @@ void main() {
   Get.put(SearchUsersController());
   Get.put(GetAdminallOrdersController());
   Get.put(GetAdminallOrdersByHubIdController());
+  Get.put(GetallSalaryController());
   runApp(const MyApp());
 }
 

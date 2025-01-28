@@ -29,6 +29,7 @@ class LoginController extends GetConnect{
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString("session","1");
       prefs.setString("token", data['token']??"");
+      print("Token : $data['token']");
       prefs.setString("address", data['existingUser']['address']??"");
       prefs.setInt("userid", data['existingUser']['id']??0);
       print(prefs.getString("token"));
