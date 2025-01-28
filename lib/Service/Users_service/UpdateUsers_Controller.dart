@@ -32,6 +32,7 @@ class UpdateUsersController extends GetConnect{
     final data=jsonDecode(responce.body);
 
     if(responce.statusCode==200){
+      Get.back();
       StackDialog.show("Successfully", "User Updated Successfully", Icons.verified, Colors.green);
       await getallusersController.GetAllUsersApi(context);
     }else if(responce.statusCode==400){

@@ -32,7 +32,6 @@ class GetallProductController extends GetConnect{
       final value=(data['products']);
       getdata.assignAll(value);
       return responce;
-
     }
     else{
       return responce;

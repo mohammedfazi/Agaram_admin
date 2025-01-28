@@ -6,15 +6,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Config.dart';
 
-class SearchUsersController extends GetConnect{
+class GetallSalaryController extends GetConnect{
 
-  RxList<dynamic> searchuserdata=[].obs;
-  Future <dynamic> SearchUserAPI(BuildContext context,username,email)async{
+  RxList<dynamic> getallsalarydata=[].obs;
+  Future <dynamic> GetAllSalaryApi(BuildContext context)async{
     final SharedPreferences pref=await SharedPreferences.getInstance();
     String ?service;
 
     service=Config.LOGIN_API;
-    final url=Uri.parse("${service}user/getUsers?username=$username&email=$email");
+    final url=Uri.parse("${service}hub/salary/getAllSingleSalary");
     print(url);
 
     final header={
@@ -29,8 +29,8 @@ class SearchUsersController extends GetConnect{
     final data=jsonDecode(responce.body);
 
     if(responce.statusCode==200){
-      final value=(data['users']);
-      searchuserdata.assignAll(value);
+      final value=(data['salary']);
+      getallsalarydata.assignAll(value);
       return responce;
     }
     else{

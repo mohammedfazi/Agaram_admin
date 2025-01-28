@@ -25,8 +25,8 @@ class AddDeliverpartnerController extends GetConnect{
     final data=jsonDecode(responce.body);
 
     if(responce.statusCode==201){
-      await getalldeliveryController.GetAllDeliveryApi(context);
       Get.back();
+      await getalldeliveryController.GetAllDeliveryApi(context);
       StackDialog.show("Successfully", "Deliver Partner Created Successfully", Icons.verified, Colors.green);
 
     }else if(responce.statusCode==400){
