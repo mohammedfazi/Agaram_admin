@@ -31,6 +31,7 @@ import 'package:agaram_admin/Service/Password_Service/Forgetpassword_Controller.
 import 'package:agaram_admin/Service/Product-Service/AddProduct_Controller.dart';
 import 'package:agaram_admin/Service/Product-Service/DeleteProduct_Controller.dart';
 import 'package:agaram_admin/Service/Product-Service/UpdateProduct_Controller.dart';
+import 'package:agaram_admin/Service/Salary_service/Salarystatus_Controller.dart';
 import 'package:agaram_admin/Service/Subscription_Service/GetSubscriptionHistory_Controller.dart';
 import 'package:agaram_admin/Service/Subscription_Service/Getseprate_Subscription_Controller.dart';
 import 'package:agaram_admin/Service/Users_service/DeleteUser_Controller.dart';
@@ -90,13 +91,13 @@ void main() {
   Get.put(GetAdminallOrdersController());
   Get.put(GetAdminallOrdersByHubIdController());
   Get.put(GetallSalaryController());
+  Get.put(SalarystatusController());
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
