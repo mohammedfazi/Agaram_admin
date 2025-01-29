@@ -93,8 +93,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final ForgetpasswordController forgetpasswordController=Get.find<ForgetpasswordController>();
   final ChangepasswordController changepasswordController=Get.find<ChangepasswordController>();
 
-    Map <String,dynamic> ?Viewsubscriptiondata;
+  Map <String,dynamic> ?Viewsubscriptiondata;
   Map <String,dynamic> ?Vieworderdata;
+  Map <String,dynamic> ?Viewpaymentdata;
 
   void refreshuserdata()async{
     await getallusersController.GetAllUsersApi(context);
@@ -2465,7 +2466,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text("Salary Month",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                child: Text("Salary Date",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
                               ),
                             ),
                           ),
@@ -2544,6 +2545,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       InkWell(
                                         onTap:(){
                                           setState(() {
+                                            Viewpaymentdata=deliveryData[index];
                                             deliverpaymentontap=2;
                                           });
                                         },
@@ -2576,7 +2578,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                   child: Center(
                                                     child: Padding(
                                                       padding: const EdgeInsets.all(8.0),
-                                                      child: Text("${data['driverID']??""}",
+                                                      child: Text("${data['deliveryAutoID']??""}",
                                                         style: commonstyleweb(color: Colors.black),
                                                       ),
                                                     ),
@@ -2600,7 +2602,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                     child: Padding(
                                                       padding: const EdgeInsets.all(8.0),
                                                       child: Text(
-                                                        "${data['month']}-${data['year']}",
+                                                        "${data['requestDate']??""}",
                                                         style: commonstyleweb(color: Colors.black),
                                                       ),
                                                     ),
@@ -2803,7 +2805,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       child: Row(
                                         children: [
                                           Text("Delivery Partner Name : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
-                                          Text("John Robert",style: commonstyle(color: Colors.black,size: 15),)
+                                          Text("Mohammed Fazil",style: commonstyle(color: Colors.black,size: 15),)
                                         ],
                                       ),
                                     ),
@@ -2812,7 +2814,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       child: Row(
                                         children: [
                                           Text("Delivery Partner Email ID : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
-                                          Text("john@gmail.com",style: commonstyle(color: Colors.black,size: 15),)
+                                          Text("fazil@gmail.com",style: commonstyle(color: Colors.black,size: 15),)
                                         ],
                                       ),
                                     )
@@ -2879,8 +2881,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       padding: const EdgeInsets.all(8.0),
                                       child: Row(
                                         children: [
-                                          Text("Transaction ID : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
-                                          Text("AGARAM8767ERDF65",style: commonstyle(color: Colors.black,size: 15),)
+                                          Text("Salary Date : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("${Viewpaymentdata!['requestDate']??""}",style: commonstyle(color: Colors.black,size: 15),)
                                         ],
                                       ),
                                     ),
@@ -2889,7 +2891,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       child: Row(
                                         children: [
                                           Text("Petrol Allowance : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
-                                          Text("Rs:1000",style: commonstyle(color: Colors.black,size: 15),)
+                                          Text("Rs:${Viewpaymentdata!['petrolAllowance']??""}",style: commonstyle(color: Colors.black,size: 15),)
                                         ],
                                       ),
                                     )
@@ -2907,7 +2909,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       child: Row(
                                         children: [
                                           Text("Attendence Allowance : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
-                                          Text("Rs:1000",style: commonstyle(color: Colors.black,size: 15),)
+                                          Text("Rs:${Viewpaymentdata!['attenanceFees']??""}",style: commonstyle(color: Colors.black,size: 15),)
                                         ],
                                       ),
                                     ),
@@ -2916,7 +2918,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       child: Row(
                                         children: [
                                           Text("Salary : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
-                                          Text("Rs:5000",style: commonstyle(color: Colors.black,size: 15),)
+                                          Text("Rs:${Viewpaymentdata!['salary']??""}",style: commonstyle(color: Colors.black,size: 15),)
                                         ],
                                       ),
                                     )
@@ -2934,7 +2936,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       child: Row(
                                         children: [
                                           Text("Total Amount : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
-                                          Text("Rs:7000",style: commonstyle(color: Colors.black,size: 15),)
+                                          Text("Rs:${Viewpaymentdata!['totalSalary']??""}",style: commonstyle(color: Colors.black,size: 15),)
                                         ],
                                       ),
                                     ),
@@ -2943,7 +2945,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       child: Row(
                                         children: [
                                           Text("Payment Status : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
-                                          Text("PENDING",style: commonstyle(color: Colors.red,size: 15,weight: FontWeight.w900),)
+                                          Text("${Viewpaymentdata!['isCompleted']??""}",style: commonstyle(color:Viewpaymentdata!['isCompleted']=="PENDING"?
+                                          Colors.red:Viewpaymentdata!['isCompleted']=="COMPLETED"?Colors.green:Colors.orange,size: 15,weight: FontWeight.w900),)
                                         ],
                                       ),
                                     )
