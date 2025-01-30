@@ -794,7 +794,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _tooltipBehavior=TooltipBehavior(enable: true);
     _tooltipBehavior2=TooltipBehavior(enable: true);
     DateTime data = DateTime.now();
-    String formattedDate1 = DateFormat('dd-MM-yyyy').format(data);
+    DateTime nextDay = data.add(Duration(days: 1));
+    String formattedDate1 = DateFormat('dd-MM-yyyy').format(nextDay);
     formattedDate=formattedDate1;
     hubhover = List<bool>.generate(
       getallhubcontroller.getallhubdata.length,
@@ -1559,9 +1560,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   height: displayheight(context)*1,
                   width: double.infinity,
                   child: getAdminallOrdersController.getallorderdata.isEmpty?
-                      Center(
-                        child:Text("Today's Order Not Found",style: commonstyle(color: Colors.black,size:15,),)
-                      )
+                      EmptyContainer(context, "Tomorrow Orders is Empty")
                       :GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           mainAxisSpacing: 2.0,
@@ -3275,7 +3274,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text("User Details",style: commonstyle(size: 18,weight: FontWeight.w700,color: Color_Constant.primarycolr),),
+                      child: Text("Customer Details",style: commonstyle(size: 18,weight: FontWeight.w700,color: Color_Constant.primarycolr),),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -3353,6 +3352,176 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
+                      child: Text("Delivery Partner Details",style: commonstyle(size: 18,weight: FontWeight.w700,color: Color_Constant.primarycolr),),
+                    ),
+                    Viewsubscriptiondata?['deliveryuser']==null?
+                        Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("Subscription Is Not Assigned To Driver",style: commonstyle(size:15,weight: FontWeight.w700,color: Colors.black),),
+                            ),
+                        )
+                        :Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Driver Name : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("${Viewsubscriptiondata?['deliveryuser']['username']??""}",style: commonstyle(color: Colors.black,size: 15),)
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Driver Email ID : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("${Viewsubscriptiondata?['deliveryuser']['email']??""}",style: commonstyle(color: Colors.black,size: 15),)
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Driver Mobile Number : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("${Viewsubscriptiondata?['deliveryuser']['phone']??""}",style: commonstyle(color: Colors.black,size: 15),)
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Text("Driver Address : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                      Text("${Viewsubscriptiondata?['deliveryuser']['address']??""}",style: commonstyle(color: Colors.black,size: 15),)
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Hub Details",style: commonstyle(size: 18,weight: FontWeight.w700,color: Color_Constant.primarycolr),),
+                    ),
+                    Viewsubscriptiondata?['hubuser']==null?
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("Subscription Is Not Assigned To Hub",style: commonstyle(size:15,weight: FontWeight.w700,color: Colors.black),),
+                      ),
+                    )
+                        :Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Hub Name : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("${Viewsubscriptiondata?['hubuser']['username']??""}",style: commonstyle(color: Colors.black,size: 15),)
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Hub Email ID : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("${Viewsubscriptiondata?['hubuser']['email']??""}",style: commonstyle(color: Colors.black,size: 15),)
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Hub Mobile Number : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("${Viewsubscriptiondata?['hubuser']['phone']??""}",style: commonstyle(color: Colors.black,size: 15),)
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Text("Hub Address : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                      Text("${Viewsubscriptiondata?['hubuser']['address']??""}",style: commonstyle(color: Colors.black,size: 15),)
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
                       child: Text("Product Details",style: commonstyle(size: 18,weight: FontWeight.w700,color: Color_Constant.primarycolr),),
                     ),
                     Padding(
@@ -3388,7 +3557,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   color: Colors.red,
                                 ),
                                 onTap: () {
-                                  debugPrint("©gabriel_patrick_souza");
+
                                 },
                               ),
                               Padding(
@@ -4942,7 +5111,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             );
                           })
                   ),
-
                 ],
               ),
             ),
@@ -4955,7 +5123,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget ViewOrderHistory(){
     List getproductdata=Vieworderdata?['products']??[];
     return Container(
-      height: displayheight(context)*0.90,
+      height: displayheight(context)*1,
       width: double.infinity,
       color: Colors.grey.shade200,
       child: SingleChildScrollView(
@@ -5095,85 +5263,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text("Delivery Details",style: commonstyle(size: 18,weight: FontWeight.w700,color: Color_Constant.primarycolr),),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10)
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        children: [
-                                          Text("Driver Name : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
-                                          Text("${Vieworderdata?['user']['username']??""}",style: commonstyle(color: Colors.black,size: 15),)
-                                        ],
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        children: [
-                                          Text("Driver Email ID : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
-                                          Text("${Vieworderdata?['user']['email']??""}",style: commonstyle(color: Colors.black,size: 15),)
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        children: [
-                                          Text("Driver Mobile Number : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
-                                          Text("${Vieworderdata?['user']['phone']??""}",style: commonstyle(color: Colors.black,size: 15),)
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Text("Driver Address : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
-                                      Text("${Vieworderdata?['user']['address']??""}",style: commonstyle(color: Colors.black,size: 15),)
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text("User Details",style: commonstyle(size: 18,weight: FontWeight.w700,color: Color_Constant.primarycolr),),
+                      child: Text("Customer Details",style: commonstyle(size: 18,weight: FontWeight.w700,color: Color_Constant.primarycolr),),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -5251,10 +5341,180 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
+                      child: Text("Delivery Partner Details",style: commonstyle(size: 18,weight: FontWeight.w700,color: Color_Constant.primarycolr),),
+                    ),
+                    Vieworderdata?['deliveryuser']==null?
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("Subscription Is Not Assigned To Driver",style: commonstyle(size:15,weight: FontWeight.w700,color: Colors.black),),
+                      ),
+                    )
+                        :Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Driver Name : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("${Vieworderdata?['deliveryuser']['username']??""}",style: commonstyle(color: Colors.black,size: 15),)
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Driver Email ID : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("${Vieworderdata?['deliveryuser']['email']??""}",style: commonstyle(color: Colors.black,size: 15),)
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Driver Mobile Number : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("${Vieworderdata?['deliveryuser']['phone']??""}",style: commonstyle(color: Colors.black,size: 15),)
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Text("Driver Address : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                      Text("${Vieworderdata?['deliveryuser']['address']??""}",style: commonstyle(color: Colors.black,size: 15),)
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Hub Details",style: commonstyle(size: 18,weight: FontWeight.w700,color: Color_Constant.primarycolr),),
+                    ),
+                    Vieworderdata?['hubuser']==null?
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("Subscription Is Not Assigned To Hub",style: commonstyle(size:15,weight: FontWeight.w700,color: Colors.black),),
+                      ),
+                    )
+                        :Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Hub Name : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("${Vieworderdata?['hubuser']['username']??""}",style: commonstyle(color: Colors.black,size: 15),)
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Hub Email ID : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("${Vieworderdata?['hubuser']['email']??""}",style: commonstyle(color: Colors.black,size: 15),)
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text("Hub Mobile Number : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("${Vieworderdata?['hubuser']['phone']??""}",style: commonstyle(color: Colors.black,size: 15),)
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Text("Hub Address : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                      Text("${Vieworderdata?['hubuser']['address']??""}",style: commonstyle(color: Colors.black,size: 15),)
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
                       child: Text("Product Details",style: commonstyle(size: 18,weight: FontWeight.w700,color: Color_Constant.primarycolr),),
                     ),
                     SizedBox(
-                      height:displayheight(context)*0.40,
+                      height:displayheight(context)*0.50,
                         width:double.infinity,
                         child:getproductdata.isEmpty?
                             Center(
@@ -5265,7 +5525,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
                                 mainAxisSpacing: 10.0,
                                 crossAxisSpacing: 10.0,
-                                mainAxisExtent: displayheight(context)*0.17,
+                                mainAxisExtent: displayheight(context)*0.20,
                                 crossAxisCount: 2,),
                             itemBuilder: (BuildContext context,int index){
                               return Padding(
@@ -5318,7 +5578,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Row(
-
                                                       children: [
                                                         Text("Product Name : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
                                                         Text("${getproductdata[index]['productName']??""}",style: commonstyle(color: Colors.black,size: 15),)
@@ -5344,6 +5603,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                   children: [
                                                     Text("Product Quantity : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
                                                     Text("${getproductdata[index]['stockQty']??""}",style: commonstyle(color: Colors.black,size: 15),)
+                                                  ],
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                                  children: [
+                                                    Text("No.of.Pieces : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                                    Text("${getproductdata[index]['checkoutproduct']['qquantity']??""}",style: commonstyle(color: Colors.black,size: 15),)
                                                   ],
                                                 ),
                                               ),
@@ -10017,7 +10287,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 alertToastRed(context, "New Password Didn,t Matched");
                               }else{
                                 showloadingdialog(context);
-                                await changepasswordController.ChangepasswordApi(context, oldpasswordcontroller.text, newpasswordcontroller.text);
+                                 changepasswordController.ChangepasswordApi(context, oldpasswordcontroller.text, newpasswordcontroller.text);
                                 Get.back();
 
                               }

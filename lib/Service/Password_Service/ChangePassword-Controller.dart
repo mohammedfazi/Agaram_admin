@@ -34,7 +34,6 @@ class ChangepasswordController extends GetConnect{
 
     if(responce.statusCode==200){
       StackDialog.show("Successfully", "Password Changed Successfully", Icons.verified, Colors.green);
-      alerttoastredgreen(context, "Password Changed Successfully");
     }else if(responce.statusCode==500){
       StackDialog.show("Server Error", "Internal Server Error", Icons.info, Colors.red);
     }

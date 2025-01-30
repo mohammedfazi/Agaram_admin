@@ -29,7 +29,7 @@ class GetOrderHistoryController extends GetConnect{
     final data=jsonDecode(responce.body);
 
     if(responce.statusCode==200){
-      final value=(data['checkoutHistory']);
+      final value=(data['existingCheckouts']);
       getorderdata.assignAll(value);
       return responce;
 

@@ -14,7 +14,8 @@ class GetAdminallOrdersController extends GetConnect{
     final SharedPreferences pref=await SharedPreferences.getInstance();
     String ?service;
     var date=DateTime.now();
-    String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+    DateTime nextdate=date.add(Duration(days: 1));
+    String formattedDate = DateFormat('yyyy-MM-dd').format(nextdate);
     service=Config.LOGIN_API;
     final url=Uri.parse("${service}delivery/order/allDeliveryProductsCount?deliveryDay=$formattedDate");
     print(url);

@@ -15,7 +15,8 @@ class GetAdminallOrdersByHubIdController extends GetConnect{
     String ?service;
 
     var date=DateTime.now();
-    String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+    DateTime nextdate=date.add(Duration(days: 1));
+    String formattedDate = DateFormat('yyyy-MM-dd').format(nextdate);
     service=Config.LOGIN_API;
     final url=Uri.parse("${service}delivery/order/allDeliveryProductsCountHub?deliveryDay=$formattedDate&hubuserId=$id");
     print(url);
