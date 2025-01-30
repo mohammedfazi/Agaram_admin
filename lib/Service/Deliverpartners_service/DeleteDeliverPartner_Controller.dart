@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class DeleteDeliveryPartnerController extends GetConnect{
 
-Future<dynamic> DeleteDeliverPartnerApi(id)async{
+Future<dynamic> DeleteDeliverPartnerApi(BuildContext context,id)async{
   final GetalldeliveryController getalldeliveryController=Get.find<GetalldeliveryController>();
 
   final SharedPreferences pref=await SharedPreferences.getInstance();
@@ -29,7 +29,7 @@ Future<dynamic> DeleteDeliverPartnerApi(id)async{
   final data=jsonDecode(responce.body);
 
   if(responce.statusCode==200){
-    // await getalldeliveryController.GetAllDeliveryApi(context);
+    await getalldeliveryController.GetAllDeliveryApi(context);
     Get.back();
     StackDialog.show("Deleted Successfully", "Delivery Partner Deleted Successfully", Icons.verified, Colors.green);
   }else if(responce.statusCode==500){

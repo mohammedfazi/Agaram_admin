@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:math';
 import 'dart:html' as html;
+import 'package:agaram_admin/Service/Product-Service/UpdateProduct_Controller.dart';
 import 'package:agaram_admin/Service/Salary_service/GetallSalary_Controller.dart';
 import 'package:agaram_admin/Service/Salary_service/Salarystatus_Controller.dart';
 import 'package:intl/intl.dart';
@@ -65,6 +66,7 @@ import '../../Service/Orders_Service/GetAdminallOrderByHubIdController.dart';
 import '../../Service/Orders_Service/GetallOrdersController.dart';
 import '../../Service/Product-Service/GetallProduct_Controller.dart';
 import '../../Service/Users_service/AddUsersController.dart';
+import '../../Widget/EmptyContainer.dart';
 
 
 class DashboardScreen extends StatefulWidget {
@@ -370,6 +372,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final GetAdminallOrdersController getAdminallOrdersController=Get.find<GetAdminallOrdersController>();
   final GetAdminallOrdersByHubIdController getAdminallOrdersByHubIdController=Get.find<GetAdminallOrdersByHubIdController>();
   final GetallSalaryController getallSalaryController=Get.find<GetallSalaryController>();
+
   //UPDATE
   final UpdateUsersController updateUsersController=Get.find<UpdateUsersController>();
   final UpdateAdminController updateAdminController=Get.find<UpdateAdminController>();
@@ -377,6 +380,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final UpdateHubController updateHubController=Get.find<UpdateHubController>();
   final AssigncheckoutController assigncheckoutController=Get.find<AssigncheckoutController>();
   final AssignSubscriptionController assignSubscriptionController=Get.find<AssignSubscriptionController>();
+  final UpdateProductController updateProductController=Get.find<UpdateProductController>();
+
 
   //POST
   final AddUsersController addUsersController=Get.find<AddUsersController>();
@@ -800,313 +805,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Responsive(
-      desktop:Scaffold(
-        backgroundColor: Color_Constant.primarycolr,
-        body: Row(
-          children: [
-            Container(
-              width: displaywidth(context) * 0.15,
-              color: Color_Constant.primarycolr, // Adjust this color
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.asset(Asset_Constant.logo)
-                    ),
-                    Column(
-                      children: [
-                        drawerwidget(1, CupertinoIcons.home, "Dashboard"),
-                        drawerwidget(2, CupertinoIcons.building_2_fill, "Hub"),
-                        drawerwidget(3, Icons.delivery_dining, "Delivery Partners"),
-                        drawerwidget(4, CupertinoIcons.person, "Customers"),
-                        drawerwidget(5, CupertinoIcons.cart_fill, "Product"),
-                        drawerwidget(15, CupertinoIcons.doc_plaintext, "Today's Order's"),
-                        drawerwidget(6, CupertinoIcons.info, "Order History"),
-                        drawerwidget(14, CupertinoIcons.info, "Subscription History"),
-                        drawerwidget(16, CupertinoIcons.money_dollar_circle_fill, "Delivery Payments"),
-
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: InkWell(
-                            onTap: () {
-                              setState(() {
-                                mysettingbool=!mysettingbool;
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: mysettingbool == true
-                                    ? Colors.white.withOpacity(0.2)
-                                    : Colors.transparent,
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          CupertinoIcons.settings,
-                                          size: 15,
-                                          color: mysettingbool == true?Colors.white:Colors.white.withOpacity(0.5),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 8.0),
-                                          child: Text(
-                                            "Setting",
-                                            style: commonstyleweb(
-                                              weight: FontWeight.w600,
-                                              color: mysettingbool == true
-                                                  ? Colors.white
-                                                  : Colors.white.withOpacity(0.5),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-
-                                    Icon(
-                                      Icons.arrow_forward_ios_sharp,
-                                      size: 15,
-                                      color: mysettingbool == true?Colors.white:Colors.white.withOpacity(0.5),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        mysettingbool==true?settingcontainer():Container(),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: InkWell(
-                            onTap: () {
-                              setState(() {
-                                // container = 9;
-                                myprofilebool=!myprofilebool;
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: myprofilebool == true
-                                    ? Colors.white.withOpacity(0.2)
-                                    : Colors.transparent,
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          CupertinoIcons.person,
-                                          size: 15,
-                                          color: myprofilebool == true?Colors.white:Colors.white.withOpacity(0.5),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 8.0),
-                                          child: Text(
-                                            "My Profile",
-                                            style: commonstyleweb(
-                                              weight: FontWeight.w600,
-                                              color: myprofilebool == true
-                                                  ? Colors.white
-                                                  : Colors.white.withOpacity(0.5),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-
-                                    Icon(
-                                      Icons.arrow_forward_ios_sharp,
-                                      size: 15,
-                                      color: myprofilebool == true?Colors.white:Colors.white.withOpacity(0.5),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        myprofilebool==true?myprofilecontainer():Container(),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: InkWell(
-                            onTap: () {
-                              setState(() {
-                                // container = 8;
-                                Logout();
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: container == 8
-                                    ? Colors.white.withOpacity(0.2)
-                                    : Colors.transparent,
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.logout,
-                                      size: 15,
-                                      color: container==8?Colors.white:Colors.white.withOpacity(0.5),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
-                                      child: Text(
-                                        "Logout",
-                                        style: commonstyleweb(
-                                          weight: FontWeight.w600,
-                                          color: container == 8
-                                              ? Colors.white
-                                              : Colors.white.withOpacity(0.5),
-                                        ),
-
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              width: displaywidth(context)*0.85,
-              color: Colors.grey.shade100,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: displayheight(context)*0.10,
-                      width: double.infinity,
-                      color: Colors.white,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text("Agaram Diary Products",style: commonstyleweb(color: Colors.black,size: 20,weight: FontWeight.w700),),
-                            InkWell(
-                              onTap: (){
-                                // PopupMenuButton<String>(
-                                //   onSelected: (value){
-                                //     print(value);
-                                //   },
-                                //   itemBuilder: (BuildContext context){
-                                //     return[
-                                //       PopupMenuItem(
-                                //           child: "")
-                                //     ]
-                                //   },
-                                // )
-                              },
-                              child: const CircleAvatar(
-                                // radius: 20,
-                                backgroundColor: Colors.white,
-                                backgroundImage: AssetImage(Asset_Constant.logo),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    container==1?
-                    dashboard():
-                    container==2 && ontaphub==1?
-                    hubwidget():
-                    container==2 && ontaphub==2?
-                    Viewhubdetails():
-                    container==3?
-                    deliverywidget():
-                    container==4?
-                    customerwidget():
-                    container==5?
-                    productwidget():
-                    container==6&&ordercontainer==1?
-                    OrderHistory():
-                    container==6&&ordercontainer==2?
-                    ViewOrderHistory():
-                    container==2&&ontaphub==1&&ordercontainer==2?
-                    ViewOrderHistory():
-                    container==12?
-                    Aboutuscms():
-                    container==13?
-                    Termsandconditionsscms():
-                    container==10?
-                    myprofile():
-                    container==11?
-                    changepasswordscreen():
-                    container==14&&subscriptioncontainer==1?
-                    SubscriptionHistory():
-                    container==14&&subscriptioncontainer==2?
-                    ViewSubscriptionHistory():
-                    container==15?
-                    TodaysOrderWidget():
-                    container==16 && deliverpaymentontap==1?
-                    DeliveryPaymentWidget():
-                    container==16 && deliverpaymentontap==2?
-                    ViewDeliveryPaymentWidget():
-                    Container()
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      mobile:Scaffold(
-        backgroundColor: Colors.grey.shade100,
-        appBar: AppBar(
-          backgroundColor: Color_Constant.primarycolr,
-          leading: Builder(
-            builder: (context) {
-              return IconButton(onPressed: (){
-                setState(() {
-                  Scaffold.of(context).openDrawer();
-                });
-              }, icon:const Icon(Icons.sort,color: Colors.white,));
-            }
-          ),
-          title:Text("Agaram Diary Products",style: commonstyleweb(color: Colors.black,size: 15,weight: FontWeight.w700),),
-          actions: const [
-            Padding(
-              padding: EdgeInsets.only(right:8.0),
-              child: CircleAvatar(
-                backgroundColor: Colors.white,
-                backgroundImage: AssetImage("${Asset_Constant.logo}"),
-              ),
-            )
-          ],
-        ),
-        drawer:  Drawer(
-          backgroundColor: Colors.white,
-          child:   Container(
+    return Scaffold(
+      body: Row(
+        children: [
+          Container(
             width: displaywidth(context) * 0.15,
             color: Color_Constant.primarycolr, // Adjust this color
             child: SingleChildScrollView(
@@ -1125,8 +827,122 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       drawerwidget(3, Icons.delivery_dining, "Delivery Partners"),
                       drawerwidget(4, CupertinoIcons.person, "Customers"),
                       drawerwidget(5, CupertinoIcons.cart_fill, "Product"),
+                      drawerwidget(15, CupertinoIcons.doc_plaintext, "Today's Order's"),
                       drawerwidget(6, CupertinoIcons.info, "Order History"),
                       drawerwidget(14, CupertinoIcons.info, "Subscription History"),
+                      drawerwidget(16, CupertinoIcons.money_dollar_circle_fill, "Delivery Payments"),
+
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              mysettingbool=!mysettingbool;
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: mysettingbool == true
+                                  ? Colors.white.withOpacity(0.2)
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        CupertinoIcons.settings,
+                                        size: 15,
+                                        color: mysettingbool == true?Colors.white:Colors.white.withOpacity(0.5),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          "Setting",
+                                          style: commonstyleweb(
+                                            weight: FontWeight.w600,
+                                            color: mysettingbool == true
+                                                ? Colors.white
+                                                : Colors.white.withOpacity(0.5),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  Icon(
+                                    Icons.arrow_forward_ios_sharp,
+                                    size: 15,
+                                    color: mysettingbool == true?Colors.white:Colors.white.withOpacity(0.5),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      mysettingbool==true?settingcontainer():Container(),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              // container = 9;
+                              myprofilebool=!myprofilebool;
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: myprofilebool == true
+                                  ? Colors.white.withOpacity(0.2)
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        CupertinoIcons.person,
+                                        size: 15,
+                                        color: myprofilebool == true?Colors.white:Colors.white.withOpacity(0.5),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          "My Profile",
+                                          style: commonstyleweb(
+                                            weight: FontWeight.w600,
+                                            color: myprofilebool == true
+                                                ? Colors.white
+                                                : Colors.white.withOpacity(0.5),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  Icon(
+                                    Icons.arrow_forward_ios_sharp,
+                                    size: 15,
+                                    color: myprofilebool == true?Colors.white:Colors.white.withOpacity(0.5),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      myprofilebool==true?myprofilecontainer():Container(),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: InkWell(
@@ -1180,540 +996,90 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
           ),
-        ),
-        body: SingleChildScrollView(
-          child: container==1?
-          dashboard():
-          container==2?
-          hubwidgetmobile():
-          container==3?
-          deliverywidget():
-          container==4?
-          customerwidgetmobile():
-          container==5?
-          productwidget():
-          container==6&&ordercontainer==1?
-          OrderHistory():
-          container==6&&ordercontainer==2?
-          ViewOrderHistory():
-          container==12?
-          Aboutuscms():
-          container==13?
-          Termsandconditionsscms():
-          container==10?
-          myprofile():
-          container==11?
-          changepasswordscreen():
-          container==14&&subscriptioncontainer==1?
-          SubscriptionHistory():
-          container==14&&subscriptioncontainer==2?
-          ViewSubscriptionHistory():
-          Container()
-        ),
-      ),
-    );
-  }
-
-  Widget mobiledashboard(){
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          SizedBox(
-              height: displayheight(context)*0.33,
-              width: double.infinity,
-              child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      mainAxisSpacing: 5.0,
-                      crossAxisSpacing: 5.0,
-                      mainAxisExtent: displayheight(context)*0.10,
-                      crossAxisCount: 2),
-                  itemCount: dashboardgridview.length,
-                  itemBuilder: (BuildContext context,int index){
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10)
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                          child: Row(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                    color: index==0?
-                                    Colors.deepPurple.shade100:
-                                    index==1?
-                                    Colors.blue.shade100:
-                                    index==2?
-                                    Colors.red.shade100:
-                                    index==3?
-                                    Colors.orange.shade100:
-                                    index==4?
-                                    Colors.purple.shade100:
-                                    Colors.green.shade100,
-                                    borderRadius: BorderRadius.circular(10)
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(6.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: index==0?
-                                        Colors.deepPurple:
-                                        index==1?
-                                        Colors.blue:
-                                        index==2?
-                                        Colors.red:
-                                        index==3?
-                                        Colors.orange:
-                                        index==4?
-                                        Colors.purple:
-                                        Colors.green,
-                                        borderRadius: BorderRadius.circular(10)
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: Icon(dashboardgridview[index]['icon'],color: Colors.white,size: 15,),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left:8.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text("${dashboardgridview[index]['title']??""}",style: commonstyle(color: Colors.grey.shade600,size: 12),),
-                                    index==0?
-                                    Obx(()=>getOrdercountController.getdata.isEmpty?
-                                    Text("0",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),)
-                                        : Text("${getOrdercountController.getdata[0]['deliveryOrderCount']??"0"}",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),)):
-                                    index==1?
-                                    Obx(()=>
-                                    getalldeliveryuserscountController.getdata.isEmpty?
-                                    Text("0",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),)
-                                        :
-                                    Text("${getalldeliveryuserscountController.getdata[0]['deliveryUserCount']??"0"}",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),)):
-                                    index==2?
-                                    Obx(()=>
-                                    getalluserscountController.getdata.isEmpty?
-                                    Text("0",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),)
-                                        :
-                                    Text("${getalluserscountController.getdata[0]['usersCount']??"0"}",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),)):
-                                    index==3?
-                                    Obx(()=>
-                                    getallpricecountController.getdata.isEmpty?
-                                    Text("0",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),)
-                                        :
-                                    Row(
-                                      children: [
-                                        const Icon(Icons.currency_rupee,color: Colors.black,size: 15,),
-                                        Text("${getallpricecountController.getdata[0]['totalAmount']??"0"}",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),),
-                                      ],
-                                    )):
-                                    index==4?
-                                    Obx(()=>
-                                    getSubscriptioncountController.getdata.isEmpty?
-                                    Text("0",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),)
-                                        :
-                                    Text("${getSubscriptioncountController.getdata[0]['productCount']??"0"}",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),)):
-                                    index==5?
-                                    Obx(()=>
-                                    getProductcountController.getdata.isEmpty?
-                                    Text("0",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),)
-                                        :
-                                    Text("${getProductcountController.getdata[0]['productCount']??"0"}",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),)):
-                                    Text("0",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),)
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  })
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("Total Number of Customers and Delivery Partners",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    height: displayheight(context)*0.42,
+          Container(
+            width: displaywidth(context)*0.85,
+            color: Colors.grey.shade100,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: displayheight(context)*0.10,
                     width: double.infinity,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10)
-                    ),
-                    child: SfCircularChart(
-                        legend:  Legend(isVisible: true,position: LegendPosition.bottom,textStyle:commonstyle(color: Colors.black) ),
-                        tooltipBehavior: _tooltipBehavior,
-                        series: <CircularSeries>[
-                          DoughnutSeries<ChartData, String>(
-                            // strokeColor: Colors.black,
-                              enableTooltip: true,
-                              dataSource: chartData,
-                              pointColorMapper:(ChartData data,  _) => data.color,
-                              xValueMapper: (ChartData data, _) => data.x,
-                              yValueMapper: (ChartData data, _) => data.y
-                          )
-                        ]
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("Total Number of Sales for an Year",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  height: displayheight(context)*0.42,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15)
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Text("Fees Collection",style: commonstyle(weight: FontWeight.w700,size: 14),),
-                        ),
-                        SizedBox(
-                          height: displayheight(context)*0.34,
-                          width: double.infinity,
-                          child: SfCartesianChart(
-                            plotAreaBorderWidth: 0,
-                            legend: const Legend(isVisible: true,position: LegendPosition.bottom),
-                            tooltipBehavior: _tooltipBehavior2,
-                            primaryXAxis:  CategoryAxis(
-                                labelStyle: commonstyle(color: Colors.black),
-                                axisLine:const AxisLine(width: 0),
-                                majorGridLines: const MajorGridLines(width: 0),
-                                majorTickLines: const MajorTickLines(width: 0)
-                            ),
-                            primaryYAxis:  NumericAxis(
-                                labelStyle: commonstyle(color: Colors.black),
-                                axisLine:const AxisLine(width: 0),
-                                majorGridLines: MajorGridLines(width: 0),
-                                majorTickLines: MajorTickLines(width: 0)
-                            ),
-                            series: <CartesianSeries>[
-                              SplineAreaSeries<ChartData3, String>(
-                                  enableTooltip: true,
-                                  borderColor: Colors.orange.shade800,
-                                  name: "Sales",
-                                  gradient: LinearGradient(
-                                      begin: Alignment.bottomCenter,
-                                      end: Alignment.topCenter,
-                                      colors: [
-                                        Color_Constant.primarycolr.withOpacity(0.1),
-                                        Color_Constant.primarycolr
-                                      ]),
-                                  dataSource: chartData3,
-                                  xValueMapper: (ChartData3 data, _) => data.x,
-                                  yValueMapper: (ChartData3 data, _) => data.y
-                              ),
-                            ],
-                          ),
-                        ),
-      
-      
-                      ],
-                    ),
-                  ),
-      
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              width: double.infinity,
-              // height: displayheight(context)*0.42,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10)
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("Top Products",style: commonstyleweb(color: Colors.black,weight: FontWeight.w700),),
-                  ),
-                  const Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Divider(color: Colors.black,thickness: 0.1,),
-                  ),
-                  SizedBox(
-                    height: displayheight(context) * 0.35,
-                    child: FutureBuilder<List<dynamic>>(
-                      future: fetchProducts(),
-                      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          // Loading state
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        } else if (snapshot.hasError) {
-                          // Error state
-                          return Center(
-                            child: Text(
-                              "Error loading products",
-                              style: commonstyle(color: Colors.red, weight: FontWeight.bold),
-                            ),
-                          );
-                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          // No data state
-                          return Center(
-                            child: Text(
-                              "No products available",
-                              style: commonstyle(color: Colors.black),
-                            ),
-                          );
-                        } else {
-                          // Success state
-                          final data = snapshot.data!;
-                          return ListView.builder(
-                            itemCount: data.length > 5 ? 5 : data.length, // Limit to 5 items
-                            itemBuilder: (BuildContext context, int index) {
-                              var product = data[index];
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    ImageNetwork(
-                                      image: "${product['productImages'] ?? ""}",
-                                      height: 50,
-                                      width: 50,
-                                      duration: 200,
-                                      curve: Curves.easeIn,
-                                      onPointer: true,
-                                      debugPrint: false,
-                                      fullScreen: true,
-                                      fitAndroidIos: BoxFit.cover,
-                                      fitWeb: BoxFitWeb.cover,
-                                      borderRadius: BorderRadius.circular(5),
-                                      onLoading: const CupertinoActivityIndicator(
-                                        color: Colors.indigoAccent,
-                                      ),
-                                      onError: const Icon(
-                                        Icons.error,
-                                        color: Colors.red,
-                                      ),
-                                      onTap: () {
-                                        debugPrint("©gabriel_patrick_souza");
-                                      },
-                                    ),
-                                    Text(
-                                      "${product['productName'] ?? ""}",
-                                      style: commonstyle(color: Colors.black, weight: FontWeight.w600, size: 15),
-                                    ),
-                                    Row(
-                                      children: [
-                                        const Icon(Icons.currency_rupee, color: Colors.black, size: 15),
-                                        Text(
-                                          "${product['price'] ?? ""}",
-                                          style: commonstyle(color: Colors.black, size: 15),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              );
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text("Agaram Diary Products",style: commonstyleweb(color: Colors.black,size: 20,weight: FontWeight.w700),),
+                          InkWell(
+                            onTap: (){
+                              // PopupMenuButton<String>(
+                              //   onSelected: (value){
+                              //     print(value);
+                              //   },
+                              //   itemBuilder: (BuildContext context){
+                              //     return[
+                              //       PopupMenuItem(
+                              //           child: "")
+                              //     ]
+                              //   },
+                              // )
                             },
-                          );
-                        }
-                      },
+                            child: const CircleAvatar(
+                              // radius: 20,
+                              backgroundColor: Colors.white,
+                              backgroundImage: AssetImage(Asset_Constant.logo),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
+                  container==1?
+                  dashboard():
+                  container==2 && ontaphub==1?
+                  hubwidget():
+                  container==2 && ontaphub==2?
+                  Viewhubdetails():
+                  container==3?
+                  deliverywidget():
+                  container==4?
+                  customerwidget():
+                  container==5?
+                  productwidget():
+                  container==6&&ordercontainer==1?
+                  OrderHistory():
+                  container==6&&ordercontainer==2?
+                  ViewOrderHistory():
+                  container==2&&ontaphub==1&&ordercontainer==2?
+                  ViewOrderHistory():
+                  container==12?
+                  Aboutuscms():
+                  container==13?
+                  Termsandconditionsscms():
+                  container==10?
+                  myprofile():
+                  container==11?
+                  changepasswordscreen():
+                  container==14&&subscriptioncontainer==1?
+                  SubscriptionHistory():
+                  container==14&&subscriptioncontainer==2?
+                  ViewSubscriptionHistory():
+                  container==15?
+                  TodaysOrderWidget():
+                  container==16 && deliverpaymentontap==1?
+                  DeliveryPaymentWidget():
+                  container==16 && deliverpaymentontap==2?
+                  ViewDeliveryPaymentWidget():
+                  Container()
                 ],
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              width: double.infinity,
-              // height: displayheight(context)*0.42,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10)
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("Top Products",style: commonstyleweb(color: Colors.black,weight: FontWeight.w700),),
-                  ),
-                  const Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Divider(color: Colors.black,thickness: 0.1,),
-                  ),
-                  SizedBox(
-                    height: displayheight(context)*0.35,
-                    child: Obx(
-                          ()=> ListView.builder(
-                          itemCount: min(getallusersController.getallusersdata.length,5),
-                          itemBuilder: (BuildContext context,int index){
-                            var data=getallusersController.getallusersdata[index];
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12.0,vertical: 8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  data['productImages']==null?
-                                  Icon(Icons.info,color: Colors.grey,size: 50,)
-                                      :ImageNetwork(
-                                    image: "${data['productImages']??""}",
-                                    height: 40,
-                                    width: 40,
-                                    duration: 200,
-                                    curve: Curves.easeIn,
-                                    onPointer: true,
-                                    debugPrint: false,
-                                    fullScreen: true,
-                                    fitAndroidIos: BoxFit.cover,
-                                    fitWeb: BoxFitWeb.cover,
-                                    borderRadius: BorderRadius.circular(5),
-                                    onLoading:  const CupertinoActivityIndicator(
-                                      color: Colors.indigoAccent,
-                                    ),
-                                    onError: const Icon(
-                                      Icons.error,
-                                      color: Colors.black,size: 40,
-                                    ),
-                                    onTap: () {
-                                      debugPrint("©gabriel_patrick_souza");
-                                    },
-                                  ),
-                                  Text("${data['username']??""}",style: commonstyle(color: Colors.black,weight: FontWeight.w600,size: 15),),
-                                  Text("${data['phone']??""}",style: commonstyle(color: Colors.black,weight: FontWeight.w600,size: 15),),
-
-
-                                  // Row(
-                                  //   children: [
-                                  //     const Icon(Icons.currency_rupee,color: Colors.black,size: 15,),
-                                  //     Text("${data['price']??""}",style: commonstyle(color: Colors.black,size: 15),),
-                                  //   ],
-                                  // )
-                                ],
-                              ),
-                            );
-                          }),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              width: double.infinity,
-              // height: displayheight(context)*0.42,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10)
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("Top Products",style: commonstyleweb(color: Colors.black,weight: FontWeight.w700),),
-                  ),
-                  const Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Divider(color: Colors.black,thickness: 0.1,),
-                  ),
-                  SizedBox(
-                    height: displayheight(context)*0.35,
-                    child: Obx(
-                          ()=> ListView.builder(
-                          itemCount: min(getalldeliveryController.getalldeliverytdata.length,5),
-                          itemBuilder: (BuildContext context,int index){
-                            var data=getalldeliveryController.getalldeliverytdata[index];
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12.0,vertical: 8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  ImageNetwork(
-                                    image: "${data['profileImage']??""}",
-                                    height: 50,
-                                    width: 50,
-                                    duration: 200,
-                                    curve: Curves.easeIn,
-                                    onPointer: true,
-                                    debugPrint: false,
-                                    fullScreen: true,
-                                    fitAndroidIos: BoxFit.cover,
-                                    fitWeb: BoxFitWeb.cover,
-                                    borderRadius: BorderRadius.circular(5),
-                                    onLoading:  const CupertinoActivityIndicator(
-                                      color: Colors.indigoAccent,
-                                    ),
-                                    onError: const Icon(
-                                      Icons.error,
-                                      color: Colors.black,size: 40,
-                                    ),
-                                    onTap: () {
-                                      debugPrint("©gabriel_patrick_souza");
-                                    },
-                                  ),
-                                  Text("${data['username']??""}",style: commonstyle(color: Colors.black,weight: FontWeight.w600,size: 15),),
-                                  Text("${data['phone']??""}",style: commonstyle(color: Colors.black,weight: FontWeight.w600,size: 15),),
-
-                                  // Row(
-                                  //   children: [
-                                  //     const Icon(Icons.currency_rupee,color: Colors.black,size: 15,),
-                                  //     Text("${data['price']??""}",style: commonstyle(color: Colors.black,size: 15),),
-                                  //   ],
-                                  // )
-                                ],
-                              ),
-                            );
-                          }),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-      
         ],
       ),
     );
@@ -2519,12 +1885,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           );
                         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return  Center(
-                            child: Text(
-                              'Delivery Partners Payment Not Found',
-                              style:commonstyle(color: Colors.black,weight: FontWeight.w600),
-                            ),
-                          );
+                          return   EmptyContainer(context,"Delivery Payments Is Empty");
                         }
 
                         final deliveryData = snapshot.data!;
@@ -2879,7 +2240,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Row(
+                                       child: Row(
                                         children: [
                                           Text("Salary Date : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
                                           Text("${Viewpaymentdata!['requestDate']??""}",style: commonstyle(color: Colors.black,size: 15),)
@@ -3151,9 +2512,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     width: double.infinity,
                     child: Obx(
                           ()=> getOrderHistoryController.getorderdata.isEmpty?
-                      const Center(
-                        child: CupertinoActivityIndicator(),
-                      )
+                          EmptyContainer(context,"Order History Is Empty")
                           :ListView.builder(
                           itemCount: getOrderHistoryController.getorderdata.length,
                           itemBuilder: (BuildContext context,int index){
@@ -3537,9 +2896,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     width: double.infinity,
                     child: Obx(
                           ()=> getSubscriptionHistoryController.getsubscriptiondata.isEmpty?
-                      const Center(
-                        child: CupertinoActivityIndicator(),
-                      )
+                          EmptyContainer(context,"Subscription History Is Empty")
                           :ListView.builder(
                           itemCount: getSubscriptionHistoryController.getsubscriptiondata.length,
                           itemBuilder: (BuildContext context,int index){
@@ -6241,7 +5598,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   ),
                                   SizedBox(
                                       width: displaywidth(context)*0.40,
-                                      child: commontextfield("Enter Hub Mobile Number", hubaddresscontroller,lines: 3))
+                                      child: commontextfield("Enter Hub Address", hubaddresscontroller,lines: 3))
                                 ],
                               ),
                             ],
@@ -7584,7 +6941,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     updateproductdescriptioncontroller.text=data['productDescription']??"";
     updateproductpricecontroller.text=data['price']??"";
     updateproductqtycontroller.text=data['stockQty']??"";
-
+    SelectedSubscriptionStatus = data['isSubscripe'] == true ? "Subscription Available" : "Subscription Not Available";
     return SideSheet.right(
         sheetColor: Colors.white,
         width: displaywidth(context)*0.42,
@@ -7782,7 +7139,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ],
                   ),
                 ),
-            
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
@@ -7802,8 +7158,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               "size": filesize,
                             };
                             showloadingdialog(context);
+                             updateProductController.UpdateProductAPI(context, data['id'], updateproductnamecontroller.text,
+                                 updateproductdescriptioncontroller.text, updateproductpricecontroller.text,
+                                 updateproductqtycontroller.text, "", data['productImages']);
             
                             await getallProductController.GetAllProductAPI(context,"","");
+                            Get.back();
                           },
                           child: Text("SUBMIT",style: commonstyle(),))),
                 )
@@ -8614,7 +7974,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     height: displayheight(context)*0.69,
                     width: double.infinity,
                     child: Obx(
-                            ()=> ListView.builder(
+                            ()=> getallhubcontroller.getallhubdata.isEmpty?
+                            EmptyContainer(context,"Hub Profile Is Empty")
+                                :ListView.builder(
                         itemCount: getallhubcontroller.getallhubdata.length,
                           itemBuilder: (BuildContext context,int index){
                           var data=getallhubcontroller.getallhubdata[index];
@@ -8967,7 +8329,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           return Center(child: Text("Error: ${snapshot.error}"));
                         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                           // If the data is empty
-                          return  Center(child: Text("No Users found.",style: commonstyle(),));
+                          return   EmptyContainer(context,"User Profile Is Empty");
                         }
 
                         // Data is available; proceed with ListView.builder
@@ -9315,12 +8677,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           );
                         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return  Center(
-                            child: Text(
-                              'Delivery Partners Not Found',
-                              style:commonstyle(color: Colors.black),
-                            ),
-                          );
+                          return   EmptyContainer(context,"Delivery Profile Is Empty");
                         }
 
                         final deliveryData = snapshot.data!;
@@ -9673,162 +9030,165 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             child: Text('Error: ${snapshot.error}'),
                           );
                         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return const Center(
-                            child: Text('No products available'),
-                          );
+                          return  EmptyContainer(context,"Products Is Empty");
                         } else {
                           final products = snapshot.data!;
                           return Obx(
-                            ()=> ListView.builder(
-                              itemCount: products.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                var data = products[index];
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              SizedBox(
-                                                width: displaywidth(context) * 0.08,
-                                                child: Center(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(8.0),
-                                                    child: Text(
-                                                      "${index + 1}",
-                                                      style: commonstyleweb(color: Colors.black),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: displaywidth(context) * 0.08,
-                                                child: Center(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(8.0),
-                                                    child: ImageNetwork(
-                                                      image: "${data['productImages']}",
-                                                      height: 100,
-                                                      width: 100,
-                                                      duration: 200,
-                                                      curve: Curves.easeIn,
-                                                      onPointer: true,
-                                                      debugPrint: false,
-                                                      fullScreen: true,
-                                                      fitAndroidIos: BoxFit.cover,
-                                                      fitWeb: BoxFitWeb.cover,
-                                                      borderRadius: BorderRadius.circular(5),
-                                                      onLoading:  const CupertinoActivityIndicator(
-                                                        color: Colors.indigoAccent,
+                            ()=> RefreshIndicator(
+                              onRefresh: ()async{
+                                await getallProductController.GetAllProductAPI(context, "", "");
+                              },
+                              child: ListView.builder(
+                                itemCount: products.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  var data = products[index];
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.08,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text(
+                                                        "${index + 1}",
+                                                        style: commonstyleweb(color: Colors.black),
                                                       ),
-                                                      onError: const Icon(
-                                                        Icons.error,
-                                                        color: Colors.red,
-                                                      ),
-                                                      onTap: () {
-                                                        debugPrint("©gabriel_patrick_souza");
-                                                      },
-                                                    )
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: displaywidth(context) * 0.10,
-                                                child: Center(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(8.0),
-                                                    child: Text(
-                                                      "${data['productName'] ?? ""}",
-                                                      style: commonstyleweb(color: Colors.black),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                width: displaywidth(context) * 0.10,
-                                                child: Center(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(8.0),
-                                                    child: Text(
-                                                      "${data['price'] ?? ""}",
-                                                      style: commonstyleweb(color: Colors.black),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: displaywidth(context) * 0.20,
-                                                child: Center(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(8.0),
-                                                    child: Text(
-                                                      "${data['productDescription'] ?? ""}",
-                                                      style: commonstyleweb(color: Colors.black),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: displaywidth(context) * 0.14,
-                                                child: Center(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(8.0),
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      children: [
-                                                        // IconButton(
-                                                        //   onPressed: () {},
-                                                        //   icon: const Icon(
-                                                        //     CupertinoIcons.eye,
-                                                        //     color: Colors.grey,
-                                                        //     size: 20,
-                                                        //   ),
-                                                        // ),
-                                                        IconButton(
-                                                          onPressed: () {
-                                                            updateproductsidesheet(data: data);
-                                                          },
-                                                          icon: const Icon(
-                                                            CupertinoIcons.pen,
-                                                            color: Colors.grey,
-                                                            size: 20,
-                                                          ),
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.08,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: ImageNetwork(
+                                                        image: "${data['productImages']}",
+                                                        height: 100,
+                                                        width: 100,
+                                                        duration: 200,
+                                                        curve: Curves.easeIn,
+                                                        onPointer: true,
+                                                        debugPrint: false,
+                                                        fullScreen: true,
+                                                        fitAndroidIos: BoxFit.cover,
+                                                        fitWeb: BoxFitWeb.cover,
+                                                        borderRadius: BorderRadius.circular(5),
+                                                        onLoading:  const CupertinoActivityIndicator(
+                                                          color: Colors.indigoAccent,
                                                         ),
-                                                        IconButton(
-                                                          onPressed: () {
-                                                            DeleteProduct(data['id']);
-                                                          },
-                                                          icon: const Icon(
-                                                            CupertinoIcons.delete,
-                                                            color: Colors.grey,
-                                                            size: 20,
-                                                          ),
-                                                        )
-                                                      ],
+                                                        onError: const Icon(
+                                                          Icons.error,
+                                                          color: Colors.red,
+                                                        ),
+                                                        onTap: () {
+                                                          debugPrint("©gabriel_patrick_souza");
+                                                        },
+                                                      )
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.10,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text(
+                                                        "${data['productName'] ?? ""}",
+                                                        style: commonstyleweb(color: Colors.black),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.10,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text(
+                                                        "${data['price'] ?? ""}",
+                                                        style: commonstyleweb(color: Colors.black),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.20,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text(
+                                                        "${data['productDescription'] ?? ""}",
+                                                        style: commonstyleweb(color: Colors.black),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: displaywidth(context) * 0.14,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        children: [
+                                                          // IconButton(
+                                                          //   onPressed: () {},
+                                                          //   icon: const Icon(
+                                                          //     CupertinoIcons.eye,
+                                                          //     color: Colors.grey,
+                                                          //     size: 20,
+                                                          //   ),
+                                                          // ),
+                                                          IconButton(
+                                                            onPressed: () {
+                                                              updateproductsidesheet(data: data);
+                                                            },
+                                                            icon: const Icon(
+                                                              CupertinoIcons.pen,
+                                                              color: Colors.grey,
+                                                              size: 20,
+                                                            ),
+                                                          ),
+                                                          IconButton(
+                                                            onPressed: () {
+                                                              DeleteProduct(data['id']);
+                                                            },
+                                                            icon: const Icon(
+                                                              CupertinoIcons.delete,
+                                                              color: Colors.grey,
+                                                              size: 20,
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Divider(color: Colors.grey.shade200,thickness: 0.5,)
-                                    ],
-                                  ),
-                                );
-                              },
+                                        Divider(color: Colors.grey.shade200,thickness: 0.5,)
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
                           );
                         }
@@ -9883,7 +9243,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         actions: [
           TextButton(onPressed: ()async{
             showloadingdialog(context);
-            deleteDeliveryPartnerController.DeleteDeliverPartnerApi(id);
+            deleteDeliveryPartnerController.DeleteDeliverPartnerApi(context,id);
              getalldeliveryController.GetAllDeliveryApi(context);
              Get.back();
           }, child: Text("Yes",style: commonstyleweb(color: Colors.black),)),
@@ -10750,517 +10110,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   double displayheight(BuildContext context) =>
       MediaQuery.of(context).size.height;
 
-  Widget hubwidgetmobile(){
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                      width:displaywidth(context)*0.48,
-                      child: commontextfield("Search By Hub Name", searchhubusernamecontroller)),
-                  SizedBox(
-                      width:displaywidth(context)*0.48,
-                      child: commontextfield("Search By Hub Email Id", searchhubemailidcontroller)),
-                ],
-              ),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: InkWell(
-                  onTap: (){
-                    setState(() {
-                      getallhubcontroller.GetAllHubApi(context, searchhubusernamecontroller.text??"", searchhubemailidcontroller.text??"");
-                    });
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        color: Color_Constant.secondarycolr,
-                        borderRadius: BorderRadius.circular(10)
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.search,color: Colors.white,),
-                            Text("SEARCH",style: commonstyle(),)
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              )
-
-            ],
-          ),
-        ),
-              Padding(
-              padding: const EdgeInsets.all(8.0),
-               child:
-                Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(10)),
-                child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                width: double.infinity,
-                child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                // Header Row
-                Container(
-                width: displaywidth(context) * 2.80,
-                decoration: BoxDecoration(
-                color: Color_Constant.primarycolr,
-                borderRadius: BorderRadius.circular(10)),
-                child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                children: [
-                _buildHeaderCell("Hub Id", 0.20),
-                _buildHeaderCell("Hub Profile", 0.25),
-                _buildHeaderCell("Hub Name", 0.40),
-                _buildHeaderCell("Email Id", 0.50),
-                _buildHeaderCell("Mobile Number", 0.40),
-                _buildHeaderCell("Hub Address", 0.70),
-                _buildHeaderCell("Actions", 0.30),
-                ],
-                ),
-                ),
-                ),
-                // List View
-                SizedBox(
-                height: displayheight(context) * 0.90,
-                width: displaywidth(context) * 2.80,
-                child: Obx(
-                () => ListView.builder(
-                itemCount: getallhubcontroller.getallhubdata.length,
-                itemBuilder: (BuildContext context, int index) {
-                var data = getallhubcontroller.getallhubdata[index];
-                return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Column(
-                children: [
-                Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10)),
-                child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                children: [
-                _buildRowCell("${index + 1}", 0.20),
-                _buildRowCell(
-                "",
-                0.25,
-                isCircle: true,
-                ),
-                _buildRowCell(data['username'] ?? "", 0.40),
-                _buildRowCell(data['email'] ?? "", 0.50),
-                _buildRowCell(data['phone'] ?? "", 0.40),
-                _buildRowCell(data['address'] ?? "", 0.70),
-                _buildActionCell(data['id']),
-                ],
-                ),
-                ),
-                ),
-                Divider(
-                color: Colors.grey.shade200,
-                thickness: 0.5,
-                ),
-                ],
-                ),
-                );
-                },
-                ),
-                ),
-                ),
-                ],
-                ),
-                ),
-                ),
-                ),
-                ),
-              )
-
-    ],
-    );
-  }
-
-  Widget customerwidgetmobile(){
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                      width:displaywidth(context)*0.30,
-                      child: commontextfield("Search By Name", searchusernamecontroller)),
-                  SizedBox(
-                      width:displaywidth(context)*0.30,
-                      child: commontextfield("Search By Email Id", searchemailidcontroller)),
-                ],
-              ),
-
-              Row(
-                children: [
-                  InkWell(
-                    onTap: (){
-                      setState(() {
-                        searchUsersController.SearchUserAPI(context, searchusernamecontroller.text??"", searchemailidcontroller.text??"");
-                      });
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Color_Constant.secondarycolr,
-                          borderRadius: BorderRadius.circular(10)
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.search,color: Colors.white,),
-                              Text("SEARCH",style: commonstyle(),)
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: displaywidth(context)*0.02,),
-                  InkWell(
-                    onTap: (){
-                      adduserssidesheet();
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Color_Constant.secondarycolr,
-                          borderRadius: BorderRadius.circular(10)
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.add,color: Colors.white,),
-                              Text("ADD USERS",style: commonstyle(),)
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              )
-
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10)
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        color: Color_Constant.primarycolr,
-                        borderRadius: BorderRadius.circular(10)
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: displaywidth(context)*0.08,
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("User Id",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: displaywidth(context)*0.08,
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("User Profile",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: displaywidth(context)*0.10,
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("User Name",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: displaywidth(context)*0.15,
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("Email Id",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: displaywidth(context)*0.10,
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("Mobile Number",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: displaywidth(context)*0.16,
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("User Address",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: displaywidth(context)*0.14,
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("Actions",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: displayheight(context)*0.69,
-                    width: double.infinity,
-                    child: ListView.builder(
-                        itemCount: searchUsersController.searchuserdata.length,
-                        itemBuilder: (BuildContext context,int index){
-                          var data=searchUsersController.searchuserdata[index];
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10)
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          width: displaywidth(context)*0.08,
-                                          child: Center(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Text("${data['id']??""}",style: commonstyleweb(color: Colors.black),),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: displaywidth(context)*0.08,
-                                          child: const Center(
-                                            child: Padding(
-                                                padding: EdgeInsets.all(8.0),
-                                                child: CircleAvatar(
-                                                  backgroundColor: Colors.white,
-                                                  backgroundImage: AssetImage(Asset_Constant.logo),
-                                                )
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: displaywidth(context)*0.10,
-                                          child: Center(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: SelectableText("${data['username']??""}",style: commonstyleweb(color: Colors.black),),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: displaywidth(context)*0.15,
-                                          child: Center(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: SelectableText("${data['email']??""}",style: commonstyleweb(color: Colors.black),),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: displaywidth(context)*0.10,
-                                          child: Center(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Text("${data['phone']??""}",style: commonstyleweb(color: Colors.black),),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: displaywidth(context)*0.16,
-                                          child: Center(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Text("${data['address']??""}",style: commonstyleweb(color: Colors.black),),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: displaywidth(context)*0.14,
-                                          child: Center(
-                                            child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    IconButton(onPressed: (){}, icon: const Icon(CupertinoIcons.eye,color: Colors.grey,size: 20,)),
-                                                    IconButton(onPressed: (){
-                                                      Map<String,dynamic> data=getallusersController.getallusersdata[index];
-                                                      updateuserssidesheet(data:data);
-                                                    }, icon: const Icon(CupertinoIcons.pen,color: Colors.grey,size: 20,)),
-                                                    IconButton(onPressed: (){
-                                                      // DeleteHub();
-                                                    }, icon: const Icon(CupertinoIcons.delete,color: Colors.grey,size: 20,))
-                                                  ],
-                                                )
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Divider(color: Colors.grey.shade200,thickness: 0.5,)
-                              ],
-                            ),
-                          );
-
-                        }),
-                  )
-                ],
-              ),
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _buildHeaderCell(String text, double widthFactor) {
-    return SizedBox(
-      width: displaywidth(context) * widthFactor,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            text,
-            style: commonstyleweb(color: Colors.black, weight: FontWeight.w600),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRowCell(String text, double widthFactor, {bool isCircle = false}) {
-    return SizedBox(
-      width: displaywidth(context) * widthFactor,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: isCircle
-              ? const CircleAvatar(
-            backgroundColor: Colors.white,
-            backgroundImage: AssetImage(Asset_Constant.logo),
-          )
-              : Text(
-            text,
-            style: commonstyleweb(color: Colors.black),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActionCell(int? id) {
-    return SizedBox(
-      width: displaywidth(context) * 0.30,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // IconButton(
-              //   onPressed: () {},
-              //   icon: const Icon(CupertinoIcons.eye, color: Colors.grey, size: 15),
-              // ),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(CupertinoIcons.pen, color: Colors.grey, size: 15),
-              ),
-              IconButton(
-                onPressed: () {
-                  DeleteHub(id ?? 1);
-                },
-                icon: const Icon(CupertinoIcons.delete,
-                    color: Colors.grey, size: 15),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
   Future Assignordertohubdialog(orderid){
     return showDialog(context: context, builder: (BuildContext context){
