@@ -27,7 +27,7 @@ class UpdateAdminController extends GetConnect{
       "Authorization":"Bearer ${pref.getString("token")}"
     };
 
-    final json='{"id","$id","username":"$username","email":"$email","password":"$password","phone":"$phone","address":"","profileImage":"$profileimage","roleId":"1"}';
+    final json='{"id":"$id","adminName":"$username","email":"$email","phone":"$phone"}';
 
     final responce=await http.post(url,headers:header,body: json.toString());
 

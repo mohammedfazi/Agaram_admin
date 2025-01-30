@@ -3272,80 +3272,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             );
                           }),
                     ),
-                    // Padding(
-                    //   padding: const EdgeInsets.all(8.0),
-                    //   child: Container(
-                    //     decoration: BoxDecoration(
-                    //         color: Colors.white,
-                    //         borderRadius: BorderRadius.circular(10)
-                    //     ),
-                    //     child: Padding(
-                    //       padding: const EdgeInsets.all(8.0),
-                    //       child: Column(
-                    //         children: [
-                    //           Padding(
-                    //             padding: const EdgeInsets.all(8.0),
-                    //             child: Row(
-                    //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //               crossAxisAlignment: CrossAxisAlignment.start,
-                    //               children: [
-                    //                 Padding(
-                    //                   padding: const EdgeInsets.all(8.0),
-                    //                   child: Row(
-                    //                     children: [
-                    //                       Text("Customer Name : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
-                    //                       Text("${Viewsubscriptiondata?['user']['username']??""}",style: commonstyle(color: Colors.black,size: 15),)
-                    //                     ],
-                    //                   ),
-                    //                 ),
-                    //                 Padding(
-                    //                   padding: const EdgeInsets.all(8.0),
-                    //                   child: Row(
-                    //                     children: [
-                    //                       Text("Customer Email ID : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
-                    //                       Text("${Viewsubscriptiondata?['user']['email']??""}",style: commonstyle(color: Colors.black,size: 15),)
-                    //                     ],
-                    //                   ),
-                    //                 )
-                    //               ],
-                    //             ),
-                    //           ),
-                    //           Padding(
-                    //             padding: const EdgeInsets.all(8.0),
-                    //             child: Row(
-                    //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //               crossAxisAlignment: CrossAxisAlignment.start,
-                    //               children: [
-                    //                 Padding(
-                    //                   padding: const EdgeInsets.all(8.0),
-                    //                   child: Row(
-                    //                     children: [
-                    //                       Text("Customer Mobile Number : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
-                    //                       Text("${Viewsubscriptiondata?['user']['phone']??""}",style: commonstyle(color: Colors.black,size: 15),)
-                    //                     ],
-                    //                   ),
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //           ),
-                    //           Padding(
-                    //             padding: const EdgeInsets.all(8.0),
-                    //             child: Padding(
-                    //               padding: const EdgeInsets.all(8.0),
-                    //               child: Row(
-                    //                 children: [
-                    //                   Text("Customer Address : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
-                    //                   Text("${Viewsubscriptiondata?['user']['address']??""}",style: commonstyle(color: Colors.black,size: 15),)
-                    //                 ],
-                    //               ),
-                    //             ),
-                    //           ),
-                    //
-                    //         ],
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
+
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text("User Details",style: commonstyle(size: 18,weight: FontWeight.w700,color: Color_Constant.primarycolr),),
@@ -5191,7 +5118,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       padding: const EdgeInsets.all(8.0),
                                       child: Row(
                                         children: [
-                                          Text("Customer Name : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("Driver Name : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
                                           Text("${Vieworderdata?['user']['username']??""}",style: commonstyle(color: Colors.black,size: 15),)
                                         ],
                                       ),
@@ -5200,7 +5127,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       padding: const EdgeInsets.all(8.0),
                                       child: Row(
                                         children: [
-                                          Text("Customer Email ID : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("Driver Email ID : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
                                           Text("${Vieworderdata?['user']['email']??""}",style: commonstyle(color: Colors.black,size: 15),)
                                         ],
                                       ),
@@ -5218,7 +5145,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       padding: const EdgeInsets.all(8.0),
                                       child: Row(
                                         children: [
-                                          Text("Customer Mobile Number : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                          Text("Driver Mobile Number : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
                                           Text("${Vieworderdata?['user']['phone']??""}",style: commonstyle(color: Colors.black,size: 15),)
                                         ],
                                       ),
@@ -5232,7 +5159,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: Row(
                                     children: [
-                                      Text("Customer Address : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                      Text("Driver Address : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
                                       Text("${Vieworderdata?['user']['address']??""}",style: commonstyle(color: Colors.black,size: 15),)
                                     ],
                                   ),
@@ -5329,7 +5256,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     SizedBox(
                       height:displayheight(context)*0.40,
                         width:double.infinity,
-                        child:GridView.builder(
+                        child:getproductdata.isEmpty?
+                            Center(
+                              child: Text("Order Products Not Found",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                            )
+                            :GridView.builder(
                           itemCount: getproductdata.length,
                             gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
                                 mainAxisSpacing: 10.0,
@@ -9893,12 +9824,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             style: ElevatedButton.styleFrom(backgroundColor: Color_Constant.secondarycolr,shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)
                             )),
-                            onPressed: (){
+                            onPressed: ()async{
                               if(adminnamecontroller.text.isEmpty||adminemailcontroller.text.isEmpty||adminnumbercontroller.text.isEmpty){
                                 alertToastRed(context, "Required Field is Empty");
                               }else{
                                 showloadingdialog(context);
-                                updateAdminController.UpdateAdminAPI(context, getAdminController.getadmindata[0]['id']??"", adminemailcontroller.text, getAdminController.getadmindata[0]['password']??"",
+                                    await updateAdminController.UpdateAdminAPI(context, getAdminController.getadmindata[0]['id']??"", adminemailcontroller.text, getAdminController.getadmindata[0]['password']??"",
                                     adminemailcontroller.text, adminnumbercontroller.text, "");
                                 Get.back();
                               }
@@ -10079,14 +10010,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             style: ElevatedButton.styleFrom(backgroundColor: Color_Constant.secondarycolr,shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)
                             )),
-                            onPressed: (){
+                            onPressed: ()async{
                               if(oldpasswordcontroller.text.isEmpty||newpasswordcontroller.text.isEmpty||confirmpasswordcontroller.text.isEmpty){
                                 alertToastRed(context, "Required Field is Empty");
                               }else if(newpasswordcontroller.text.isEmpty!=confirmpasswordcontroller.text.isEmpty){
                                 alertToastRed(context, "New Password Didn,t Matched");
                               }else{
                                 showloadingdialog(context);
-                                changepasswordController.ChangepasswordApi(context, oldpasswordcontroller.text, newpasswordcontroller.text);
+                                await changepasswordController.ChangepasswordApi(context, oldpasswordcontroller.text, newpasswordcontroller.text);
                                 Get.back();
 
                               }

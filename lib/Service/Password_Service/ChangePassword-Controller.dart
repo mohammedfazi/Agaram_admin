@@ -15,7 +15,7 @@ class ChangepasswordController extends GetConnect{
     final SharedPreferences pref=await SharedPreferences.getInstance();
 
     String service;
-    service=Config.API;
+    service=Config.LOGIN_API;
 
 
     final url=Uri.parse("${service}password/changepassword");
