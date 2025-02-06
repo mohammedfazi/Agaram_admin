@@ -153,6 +153,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
   final pdf = pw.Document();
+
   Future<Uint8List> _generatecustomerPDFnew(BuildContext context) async {
     final pdf = pw.Document();
 
@@ -198,6 +199,64 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         data['email'] ?? "",
                         data['phone']?? "",
                         data['address']??"",
+                      ];
+                    }).toList(),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    return pdf.save();
+  }
+
+  Future<Uint8List> _generatetomorroworderPDFnew(BuildContext context) async {
+    final pdf = pw.Document();
+
+    // Load the logo image (update the path to your logo's path)
+    final logoImage = pw.MemoryImage(
+      (await rootBundle.load('Assets/logo.png')).buffer.asUint8List(),
+    );
+
+    pdf.addPage(
+      pw.Page(
+        build: (pw.Context context) => pw.Column(
+          children: [
+            // App bar with logo, background color, and title
+            pw.Container(
+              width: double.infinity,
+              color: PdfColors.orange,
+              padding: const pw.EdgeInsets.all(10),
+              child: pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Image(logoImage, width: 50, height: 50),
+                  pw.Text(
+                    "Agaram Tomorrow Order Details",
+                    style: pw.TextStyle(
+                      fontSize: 24,
+                      color: PdfColors.white,
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            pw.SizedBox(height: 20),
+            pw.Center(
+              child: pw.Column(
+                children: [
+                  // Subscription History Table
+                  pw.Table.fromTextArray(
+                    headers: ['Product Name','Quantity','Total Pieces'],
+                    data: getAdminallOrdersController.getallorderdata.map((data) {
+                      return [
+                        data['product']['productName']??"",
+                        data['product']['stockQty']??"",
+                        data['totalCount']??""+" Pieces",
                       ];
                     }).toList(),
                   ),
@@ -794,7 +853,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _tooltipBehavior=TooltipBehavior(enable: true);
     _tooltipBehavior2=TooltipBehavior(enable: true);
     DateTime data = DateTime.now();
-    DateTime nextDay = data.add(Duration(days: 1));
+    DateTime nextDay = data.add(const Duration(days: 1));
     String formattedDate1 = DateFormat('dd-MM-yyyy').format(nextDay);
     formattedDate=formattedDate1;
     hubhover = List<bool>.generate(
@@ -828,7 +887,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       drawerwidget(3, Icons.delivery_dining, "Delivery Partners"),
                       drawerwidget(4, CupertinoIcons.person, "Customers"),
                       drawerwidget(5, CupertinoIcons.cart_fill, "Product"),
-                      drawerwidget(15, CupertinoIcons.doc_plaintext, "Today's Order's"),
+                      drawerwidget(15, CupertinoIcons.doc_plaintext, "Tomorrow Order's"),
                       drawerwidget(6, CupertinoIcons.info, "Order History"),
                       drawerwidget(14, CupertinoIcons.info, "Subscription History"),
                       drawerwidget(16, CupertinoIcons.money_dollar_circle_fill, "Delivery Payments"),
@@ -1546,13 +1605,46 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.white
                             ),
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(" Today's Order  -  $formattedDate",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),),
-                      )
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(" Tomorrow's Order  -  $formattedDate",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),),
+                        ),
+                        InkWell(
+                          onTap: ()async{
+                            showloadingdialog(context);
+                            await Printing.sharePdf(
+                                bytes:await _generatetomorroworderPDFnew(context),
+                                filename: "Agaram Tomorrow Order Details $formattedDate"
+                            );
+                            Get.back();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Color_Constant.secondarycolr,
+                                borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.download_for_offline_outlined,color: Colors.white,),
+                                    Text("EXPORT",style: commonstyle(),)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                           ),
               ),
@@ -1674,45 +1766,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
                                             Text("${data['product']['productName']??""} (${data['product']['stockQty']??""})",style: commonstyle(color: Colors.grey.shade600,size: 12),),
-                                            // index==0?
-                                            // Obx(()=>getOrdercountController.getdata.isEmpty?
-                                            // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
-                                            //     : Text("${getOrdercountController.getdata[0]['deliveryOrderCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
-                                            // index==1?
-                                            // Obx(()=>
-                                            // getalldeliveryuserscountController.getdata.isEmpty?
-                                            // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
-                                            //     :
-                                            // Text("${getalldeliveryuserscountController.getdata[0]['deliveryUserCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
-                                            // index==2?
-                                            // Obx(()=>
-                                            // getalluserscountController.getdata.isEmpty?
-                                            // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
-                                            //     :
-                                            // Text("${getalluserscountController.getdata[0]['usersCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
-                                            // index==3?
-                                            // Obx(()=>
-                                            // getallpricecountController.getdata.isEmpty?
-                                            // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
-                                            //     :
-                                            // Row(
-                                            //   children: [
-                                            //     const Icon(Icons.currency_rupee,color: Colors.black,size: 20,),
-                                            //     Text("${getallpricecountController.getdata[0]['totalAmount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),),
-                                            //   ],
-                                            // )):
-                                            // index==4?
-                                            // Obx(()=>
-                                            // getSubscriptioncountController.getdata.isEmpty?
-                                            // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
-                                            //     :
-                                            // Text("${getSubscriptioncountController.getdata[0]['subscriptionCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
-                                            // index==5?
-                                            // Obx(()=>
-                                            // getProductcountController.getdata.isEmpty?
-                                            // Text("0",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)
-                                            //     :
-                                            // Text("${getProductcountController.getdata[0]['productCount']??"0"}",style: commonstyle(color: Colors.black,size: 22,weight: FontWeight.w700),)):
+
                                             Text("${data['totalCount']??""} Pieces",style: commonstyle(color: Colors.black,size: 15,weight: FontWeight.w700),)
                                           ],
                                         ),
@@ -8042,10 +8096,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   InkWell(
                     onTap: ()async{
+                      showloadingdialog(context);
                       await Printing.sharePdf(
                           bytes:await _generatehubPDFnew(context),
                           filename: "Agaram Hub Details"
                       );
+                      Get.back();
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -8140,15 +8196,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ),
                             ),
                           ),
-                          // SizedBox(
-                          //   width: displaywidth(context)*0.05,
-                          //   child: Center(
-                          //     child: Padding(
-                          //       padding: const EdgeInsets.all(8.0),
-                          //       child: Text("Pincode",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
-                          //     ),
-                          //   ),
-                          // ),
                           SizedBox(
                             width: displaywidth(context)*0.16,
                             child: Center(
@@ -8386,10 +8433,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   InkWell(
                     onTap: ()async{
+                      showloadingdialog(context);
                       await Printing.sharePdf(
                           bytes:await _generatecustomerPDFnew(context),
                         filename: "Agaram Customer Details"
                       );
+                      Get.back();
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -8734,10 +8783,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
               InkWell(
                 onTap: ()async{
+                  showloadingdialog(context);
                   await Printing.sharePdf(
                       bytes:await _generatedeliveryPDFnew(context),
                       filename: "Agaram Delivery Partners Details"
                   );
+                  Get.back();
                 },
                 child: Container(
                   decoration: BoxDecoration(
