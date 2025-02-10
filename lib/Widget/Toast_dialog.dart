@@ -29,6 +29,17 @@ void alerttoastredgreen(BuildContext context,String txt){
       SnackBar(
           duration: const Duration(seconds: 1),
           backgroundColor: Colors.green,
-          content: Text(txt,style: btntxtwhite,))
+        margin: const EdgeInsets.symmetric(horizontal: 300, vertical: 30),
+        behavior: SnackBarBehavior.floating,
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+                txt,
+                style: btntxtwhite),
+            Icon(Icons.verified,color: Colors.white,)
+          ],
+        ), )
   );
 }

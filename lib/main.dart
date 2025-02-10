@@ -1,4 +1,5 @@
 import 'package:agaram_admin/Screens/Login/Login_Controller.dart';
+import 'package:agaram_admin/Screens/Login/Otp_Controller.dart';
 import 'package:agaram_admin/Screens/Splash_screen.dart';
 import 'package:agaram_admin/Service/Admin-Service/Getadmin_Controller.dart';
 import 'package:agaram_admin/Service/Admin-Service/UpdateAdmin_Controller.dart';
@@ -92,6 +93,7 @@ void main() {
   Get.put(GetAdminallOrdersByHubIdController());
   Get.put(GetallSalaryController());
   Get.put(SalarystatusController());
+  Get.put(OtpController());
   runApp(const MyApp());
 }
 

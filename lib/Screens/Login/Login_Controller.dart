@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:agaram_admin/Widget/ShowDialog.dart';
+import 'package:agaram_admin/Widget/Toast_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
@@ -10,7 +11,7 @@ import '../Dashboard/Dashboard_screen.dart';
 
 class LoginController extends GetConnect{
 
-  Future <dynamic> LoginApi(BuildContext context,email,password)async{
+  Future <dynamic> LoginApi(BuildContext context,email)async{
     String service;
     service=Config.LOGIN_API;
 
@@ -18,25 +19,14 @@ class LoginController extends GetConnect{
 
     final header=Config.Header;
 
-    final json='{"email":"$email","password":"$password","roleId":"1"}';
+    final json='{"phone":"$email","roleId":"1"}';
 
     final responce=await http.post(url,headers:header,body: json.toString());
 
     final data=jsonDecode(responce.body);
 
     if(responce.statusCode==200){
-      showloadingdialog(context);
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString("session","1");
-      prefs.setString("token", data['token']??"");
-      print("Token : $data['token']");
-      prefs.setString("address", data['existingUser']['address']??"");
-      prefs.setInt("userid", data['existingUser']['id']??0);
-      print(prefs.getString("token"));
-      Get.back();
-      Get.to(const DashboardScreen());
-      StackDialog.show("Successfully", "Successfully Logged In", Icons.verified, Colors.green);
-
+      alerttoastredgreen(context, "Mobile Number Verified");
     }else if(responce.statusCode==400){
       StackDialog.show("Not Found", "User Not Found", Icons.info, Colors.red);
     }else if(responce.statusCode==500){
