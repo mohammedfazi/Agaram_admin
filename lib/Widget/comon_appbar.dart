@@ -7,7 +7,6 @@ import '../common/common Textstyle.dart';
 
 AppBar common_appbar(String txt){
   return AppBar(
-    // backgroundColor: Colors.grey.shade100,
     backgroundColor: Color_Constant.primarycolr,
     leading: IconButton(onPressed: (){
       Get.back();

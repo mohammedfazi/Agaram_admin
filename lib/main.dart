@@ -1,6 +1,9 @@
+import 'package:agaram_admin/Screens/Dashboard/Dashboard_screen.dart';
+import 'package:agaram_admin/Screens/Hub/ViewHub_screen.dart';
 import 'package:agaram_admin/Screens/Login/Login_Controller.dart';
 import 'package:agaram_admin/Screens/Login/Otp_Controller.dart';
 import 'package:agaram_admin/Screens/Splash_screen.dart';
+import 'package:agaram_admin/Service/Active&Inactive_service/ActiveInactive_Controller.dart';
 import 'package:agaram_admin/Service/Admin-Service/Getadmin_Controller.dart';
 import 'package:agaram_admin/Service/Admin-Service/UpdateAdmin_Controller.dart';
 import 'package:agaram_admin/Service/Assign_service/AssignCheckout_Controller.dart';
@@ -94,6 +97,7 @@ void main() {
   Get.put(GetallSalaryController());
   Get.put(SalarystatusController());
   Get.put(OtpController());
+  Get.put(ActiveInactiveController());
   runApp(const MyApp());
 }
 
@@ -109,7 +113,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const SplashScreen(),
+      home: const DashboardScreen(),
     );
   }
 }

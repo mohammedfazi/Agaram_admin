@@ -31,6 +31,7 @@ class AddProductController extends GetConnect{
     final responce=await http.post(url,headers:header,body: json.toString());
 
     final data=jsonDecode(responce.body);
+    print(data);
 
     if(responce.statusCode==201){
       await getallProductController.GetAllProductAPI(context,"","");
