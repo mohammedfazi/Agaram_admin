@@ -169,7 +169,7 @@ class _ViewhubScreenState extends State<ViewhubScreen> {
   Widget build(BuildContext context) {
     return  Scaffold(
       backgroundColor: Colors.grey.shade200,
-      appBar: common_appbar("${widget.hubname.toUpperCase()} Hub Details"),
+      appBar: common_appbar("${widget.hubname.toUpperCase()} Hub Details",context),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -637,7 +637,7 @@ class _ViewhubScreenState extends State<ViewhubScreen> {
                                                         children: [
                                                           IconButton(
                                                               onPressed: () {},
-                                                              icon: Icon(
+                                                              icon: const Icon(
                                                                 CupertinoIcons.eye,
                                                                 color: Colors.grey,
                                                                 size: 20,

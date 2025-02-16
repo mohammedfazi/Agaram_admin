@@ -30,7 +30,7 @@ class _ViewsubscriptionScreenState extends State<ViewsubscriptionScreen> {
   Widget build(BuildContext context) {
     return  Scaffold(
       backgroundColor: Colors.grey.shade200,
-      appBar: common_appbar("View Subscription - ( ${widget.data['subscriptionOrderId']??""} )"),
+      appBar: common_appbar("View Subscription - ( ${widget.data['subscriptionOrderId']??""} )",context),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Padding(

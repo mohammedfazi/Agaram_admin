@@ -589,7 +589,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String ?selectedstatusnumber;
   String?Selectedsubscription;
   List<dynamic> Subscriptionlists=["Subscription Available,Subscription Not Available"];
-
+  int activecontainer=1;
   //bool password
   bool oldpassword=true;
   bool newpassword=true;
@@ -1726,48 +1726,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             ),
                                             child: Padding(
                                               padding: const EdgeInsets.all(8.0),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: index==0?
-                                                    Colors.deepPurple:
-                                                    index==1?
-                                                    Colors.blue:
-                                                    index==2?
-                                                    Colors.red:
-                                                    index==3?
-                                                    Colors.orange:
-                                                    index==4?
-                                                    Colors.purple:
-                                                    Colors.green,
-                                                    borderRadius: BorderRadius.circular(10)
+                                              child: ImageNetwork(
+                                                image: "${data['product']['productImages']}",
+                                                height: 200,
+                                                width: 80,
+                                                duration: 1,
+                                                curve: Curves.easeIn,
+                                                onPointer: true,
+                                                debugPrint: false,
+                                                fullScreen: true,
+                                                fitAndroidIos: BoxFit.cover,
+                                                fitWeb: BoxFitWeb.cover,
+                                                borderRadius: BorderRadius.circular(5),
+                                                onLoading:  const CupertinoActivityIndicator(
+                                                  color: Colors.indigoAccent,
                                                 ),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(12.0),
-                                                  child: ImageNetwork(
-                                                    image: "${data['product']['productImages']}",
-                                                    height: 110,
-                                                    width: 50,
-                                                    duration: 1,
-                                                    curve: Curves.easeIn,
-                                                    onPointer: true,
-                                                    debugPrint: false,
-                                                    fullScreen: true,
-                                                    fitAndroidIos: BoxFit.cover,
-                                                    fitWeb: BoxFitWeb.cover,
-                                                    borderRadius: BorderRadius.circular(5),
-                                                    onLoading:  const CupertinoActivityIndicator(
-                                                      color: Colors.indigoAccent,
-                                                    ),
-                                                    onError: const Icon(
-                                                      Icons.error,
-                                                      color: Colors.red,
-                                                    ),
-                                                    onTap: () {
-                                                      debugPrint("©gabriel_patrick_souza");
-                                                    },
-                                                  )
-                                                  // Icon(todaysgridview[index]['icon'],color: Colors.white,size: 12,),
+                                                onError: const Icon(
+                                                  Icons.error,
+                                                  color: Colors.red,
                                                 ),
+                                                onTap: () {
+                                                  debugPrint("©gabriel_patrick_souza");
+                                                },
                                               ),
                                             ),
                                           ),
@@ -6202,113 +6182,72 @@ class _DashboardScreenState extends State<DashboardScreen> {
     activeInactiveController.ActiveInactiveAPI(context);
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                      width:displaywidth(context)*0.30,
-                      child: commontextfield("Search By Name", searchusernamecontroller)),
-                  SizedBox(
-                      width:displaywidth(context)*0.30,
-                      child: commontextfield("Search By Email Id", searchemailidcontroller)),
-                ],
-              ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  InkWell(
-                    onTap: (){
-                      setState(() {
-                        // searchUsersController.SearchUserAPI(context, searchusernamecontroller.text??"", searchemailidcontroller.text??"");
-                      });
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Color_Constant.secondarycolr,
-                          borderRadius: BorderRadius.circular(10)
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.search,color: Colors.white,),
-                              Text("SEARCH",style: commonstyle(),)
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  // width: displaywidth(context)*0.50,
+                  decoration: BoxDecoration(
+                      color: Color_Constant.primarycolr,
+                      borderRadius: BorderRadius.circular(30)
                   ),
-                  InkWell(
-                    onTap: (){
-                      adduserssidesheet();
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Color_Constant.secondarycolr,
-                            borderRadius: BorderRadius.circular(10)
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.add,color: Colors.white,),
-                                Text("ADD USERS",style: commonstyle(),)
-                              ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: (){
+                            setState(() {
+                              activecontainer=1;
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color:activecontainer==1?Colors.white:Colors.transparent,
+                                borderRadius: BorderRadius.circular(30.0)
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                                child: Text("Active Customers",style: commonstyle(color: activecontainer==1?Colors.black:Colors.white,size: 15,weight: FontWeight.w500),),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: ()async{
-                      showloadingdialog(context);
-                      await Printing.sharePdf(
-                          bytes:await _generatecustomerPDFnew(context),
-                          filename: "Agaram Customer Details"
-                      );
-                      Get.back();
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Color_Constant.secondarycolr,
-                          borderRadius: BorderRadius.circular(10)
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.download_for_offline_outlined,color: Colors.white,),
-                              Text("EXPORT",style: commonstyle(),)
-                            ],
+                        InkWell(
+                          onTap: (){
+                            setState(() {
+                              activecontainer=2;
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color:activecontainer==2?Colors.white:Colors.transparent,
+                                borderRadius: BorderRadius.circular(30.0)
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                                child: Text("In Active Customers",style: commonstyle(color: activecontainer==2?Colors.black:Colors.white,size: 15,weight: FontWeight.w500),),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
+                )
 
-                ],
-              )
-
-            ],
+              ],
+            ),
           ),
         ),
         Padding(
@@ -6362,7 +6301,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           SizedBox(
-                            width: displaywidth(context)*0.13,
+                            width: displaywidth(context)*0.15,
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -6380,32 +6319,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           SizedBox(
-                            width: displaywidth(context)*0.13,
+                            width: displaywidth(context)*0.20,
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text("User Address",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                                child: Text("Address",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
                               ),
                             ),
                           ),
-                          SizedBox(
-                            width: displaywidth(context)*0.09,
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("Assigned \nStatus",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),textAlign: TextAlign.center,),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: displaywidth(context)*0.10,
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("Actions",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
-                              ),
-                            ),
-                          ),
+                          // SizedBox(
+                          //   width: displaywidth(context)*0.09,
+                          //   child: Center(
+                          //     child: Padding(
+                          //       padding: const EdgeInsets.all(8.0),
+                          //       child: Text("Assigned \nStatus",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),textAlign: TextAlign.center,),
+                          //     ),
+                          //   ),
+                          // ),
+                          // SizedBox(
+                          //   width: displaywidth(context)*0.10,
+                          //   child: Center(
+                          //     child: Padding(
+                          //       padding: const EdgeInsets.all(8.0),
+                          //       child: Text("Actions",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
@@ -6435,9 +6374,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           },
                           child: Obx(
                                 ()=> ListView.builder(
-                              itemCount: searchuserdata.length,
+                              itemCount: activecontainer == 1?searchuserdata.where((user)=>user['isSubscriptionValid']==true).length:searchuserdata.where((user)=>user['isSubscriptionValid']==false).length,
                               itemBuilder: (BuildContext context, int index) {
-                                var data = searchuserdata[index];
+                                var truedata=searchuserdata.where((user)=>user['isSubscriptionValid']==true).toList();
+                                var falsedata=searchuserdata.where((user)=>user['isSubscriptionValid']==false).toList();
+                                var data = activecontainer == 1?truedata[index]:falsedata[index];
                                 return Padding(
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   child: Column(
@@ -6487,7 +6428,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                               ),
                                               // Email
                                               SizedBox(
-                                                width: displaywidth(context) * 0.13,
+                                                width: displaywidth(context) * 0.15,
                                                 child: Center(
                                                   child: Padding(
                                                     padding: const EdgeInsets.all(8.0),
@@ -6507,7 +6448,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                               ),
                                               // Address
                                               SizedBox(
-                                                width: displaywidth(context) * 0.13,
+                                                width: displaywidth(context) * 0.20,
                                                 child: Center(
                                                   child: Padding(
                                                     padding: const EdgeInsets.all(8.0),
@@ -6516,55 +6457,55 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                 ),
                                               ),
                                               // Hub User ID Status
-                                              SizedBox(
-                                                width: displaywidth(context) * 0.09,
-                                                child: Center(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(8.0),
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(5),
-                                                        color: data['hubuserId'] == null ? Colors.red.shade100 : Colors.green.shade100,
-                                                      ),
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.all(8.0),
-                                                        child: data['hubuserId'] == null
-                                                            ? Text("Not Assigned", style: commonstyleweb(color: Colors.red,weight: FontWeight.w600))
-                                                            : Text("Assigned", style: commonstyleweb(color: Colors.green,weight: FontWeight.w600)),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              // Actions
-                                              SizedBox(
-                                                width: displaywidth(context) * 0.10,
-                                                child: Center(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(8.0),
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      children: [
-                                                        // IconButton(onPressed: () {}, icon: const Icon(CupertinoIcons.eye, color: Colors.grey, size: 20)),
-                                                        IconButton(
-                                                          onPressed: () {
-                                                            Map<String, dynamic> data = getallusersController.getallusersdata[index];
-                                                            updateuserssidesheet(data: data);
-                                                          },
-                                                          icon: const Icon(CupertinoIcons.pen, color: Colors.grey, size: 20),
-                                                        ),
-                                                        IconButton(
-                                                          onPressed: () {
-                                                            DeleteCustomer(data['id']);
-                                                          },
-                                                          icon: const Icon(CupertinoIcons.delete, color: Colors.grey, size: 20),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
+                                              // SizedBox(
+                                              //   width: displaywidth(context) * 0.09,
+                                              //   child: Center(
+                                              //     child: Padding(
+                                              //       padding: const EdgeInsets.all(8.0),
+                                              //       child: Container(
+                                              //         decoration: BoxDecoration(
+                                              //           borderRadius: BorderRadius.circular(5),
+                                              //           color: data['hubuserId'] == null ? Colors.red.shade100 : Colors.green.shade100,
+                                              //         ),
+                                              //         child: Padding(
+                                              //           padding: const EdgeInsets.all(8.0),
+                                              //           child: data['hubuserId'] == null
+                                              //               ? Text("Not Assigned", style: commonstyleweb(color: Colors.red,weight: FontWeight.w600))
+                                              //               : Text("Assigned", style: commonstyleweb(color: Colors.green,weight: FontWeight.w600)),
+                                              //         ),
+                                              //       ),
+                                              //     ),
+                                              //   ),
+                                              // ),
+                                              // // Actions
+                                              // SizedBox(
+                                              //   width: displaywidth(context) * 0.10,
+                                              //   child: Center(
+                                              //     child: Padding(
+                                              //       padding: const EdgeInsets.all(8.0),
+                                              //       child: Row(
+                                              //         mainAxisAlignment: MainAxisAlignment.center,
+                                              //         crossAxisAlignment: CrossAxisAlignment.center,
+                                              //         children: [
+                                              //           // IconButton(onPressed: () {}, icon: const Icon(CupertinoIcons.eye, color: Colors.grey, size: 20)),
+                                              //           IconButton(
+                                              //             onPressed: () {
+                                              //               Map<String, dynamic> data = getallusersController.getallusersdata[index];
+                                              //               updateuserssidesheet(data: data);
+                                              //             },
+                                              //             icon: const Icon(CupertinoIcons.pen, color: Colors.grey, size: 20),
+                                              //           ),
+                                              //           IconButton(
+                                              //             onPressed: () {
+                                              //               DeleteCustomer(data['id']);
+                                              //             },
+                                              //             icon: const Icon(CupertinoIcons.delete, color: Colors.grey, size: 20),
+                                              //           ),
+                                              //         ],
+                                              //       ),
+                                              //     ),
+                                              //   ),
+                                              // ),
                                             ],
                                           ),
                                         ),
@@ -8359,8 +8300,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       );
     });
-  }
-}
+  }}
 
 class ChartData {
   ChartData(this.x, this.y, this.color);

@@ -21,7 +21,7 @@ class _VieworderhistoryScreenState extends State<VieworderhistoryScreen> {
     List getproductdata=widget.data['products']??[];
     return  Scaffold(
       backgroundColor: Colors.grey.shade200,
-      appBar: common_appbar("View Checkout Details - ( ${widget.data['orderId']??""} )"),
+      appBar: common_appbar("View Checkout Details - ( ${widget.data['orderId']??""} )",context),
       body:  Padding(
         padding: const EdgeInsets.symmetric(horizontal: 50.0),
         child: SingleChildScrollView(
