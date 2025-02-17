@@ -32,135 +32,117 @@ class _LoginscreenState extends State<Loginscreen> {
   final TextEditingController forgetemailcontroller=TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return  Responsive(
-      desktop: Scaffold(
-        body: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Image.asset(Asset_Constant.cowgrass,width: double.infinity,height: displayheight(context)*1,fit: BoxFit.cover,),
-            Positioned(
-              top: 80,
-              right: 50,
-              child: container==1?
-              login():
-              Otpcontainer()
-              ,
-            )
-          ],
-        ),
+    return Scaffold(
+      body: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Image.asset(Asset_Constant.cowgrass,width: double.infinity,height: displayheight(context)*1,fit: BoxFit.cover,),
+          Positioned(
+            top: 80,
+            right: 50,
+            bottom: 80,
+            child: container==1?
+            login():
+            Otpcontainer()
+            ,
+          )
+        ],
       ),
-      mobile: Scaffold(
-        body: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Image.asset(Asset_Constant.cowgrass,width: double.infinity,height: displayheight(context)*1,fit: BoxFit.cover,),
-            Positioned(
-              top: 120,
-              bottom: 120,
-              right: 10,
-              left: 10,
-              child: container==1?
-              login():
-              Otpcontainer()
-              ,
-            )
-          ],
-        ),
-      ),
-
     );
   }
 
   Widget login(){
-    return Container(
-      height: displayheight(context)*0.80,
-      width: displaywidth(context)*0.30,
-      decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(10)
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(child: Image.asset(Asset_Constant.logo,height: displayheight(context)*0.20,)),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text("Login",style: commonstyleweb(color: Colors.black,size: 25,weight: FontWeight.w700),),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("Enter the Registered Mobile Number",style: commonstyle(color: Colors.black),),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 30.0),
-                  child: SizedBox(
-                    // width: displaywidth(context)*0.20,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          style: commonstyle(size: 20,color: Colors.black,weight: FontWeight.w700),
-                          cursorColor: Colors.black,
-                          controller: emailcontroller,
-                          maxLines: 1,
-                          maxLength: 10,
-                          decoration: InputDecoration(
-                            counterText: "",
-                              enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.transparent)
-                              ),
-                              focusedBorder:const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.transparent)
-                              ),
-                              fillColor: Colors.grey.shade400,
-                              filled: true,
-                              hintText: "Enter Mobile Number",
-                              hintStyle: commonstyle()
-                          ),
-                        ),
-                      )),
-                )
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Padding(
-                padding: const EdgeInsets.only(top:8.0),
-                child: SizedBox(
-                    width: double.infinity,
-                    height: displayheight(context)*0.06,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(backgroundColor: Color_Constant.primarycolr,shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)
-                        )),
-                        onPressed: (){
-                          if(emailcontroller.text.isEmpty){
-                            alertToastRed(context, "Enter Mobile Number");
-                          }else if(emailcontroller.text.length!=10){
-                            alertToastRed(context, "Mobile Number Not Valid");
-                          }
-                          else{
-                            showloadingdialog(context);
-                            loginController.LoginApi(context, emailcontroller.text);
-                            setState(() {
-                              container=2;
-                            });
-                            Get.back();
-                          }
-                        },
-                        child: Text("SUBMIT",style: commonstyle(),))),
+    return Center(
+      child: Container(
+        // height: displayheight(context)*0.80,
+        width: displaywidth(context)*0.30,
+        decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(10)
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(child: Image.asset(Asset_Constant.logo,height: displayheight(context)*0.20,)),
               ),
-            )
-          ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Login",style: commonstyleweb(color: Colors.black,size: 25,weight: FontWeight.w700),),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("Enter the Registered Mobile Number",style: commonstyle(color: Colors.black),),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 30.0),
+                    child: SizedBox(
+                      // width: displaywidth(context)*0.20,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            style: commonstyle(size: 20,color: Colors.black,weight: FontWeight.w700),
+                            cursorColor: Colors.black,
+                            controller: emailcontroller,
+                            maxLines: 1,
+                            maxLength: 10,
+                            decoration: InputDecoration(
+                              counterText: "",
+                                enabledBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.transparent)
+                                ),
+                                focusedBorder:const OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.transparent)
+                                ),
+                                fillColor: Colors.grey.shade400,
+                                filled: true,
+                                hintText: "Enter Mobile Number",
+                                hintStyle: commonstyle()
+                            ),
+                          ),
+                        )),
+                  )
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Padding(
+                  padding: const EdgeInsets.only(top:8.0,bottom: 20.0),
+                  child: SizedBox(
+                      width: double.infinity,
+                      height: displayheight(context)*0.06,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(backgroundColor: Color_Constant.primarycolr,shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)
+                          )),
+                          onPressed: (){
+                            if(emailcontroller.text.isEmpty){
+                              alertToastRed(context, "Enter Mobile Number");
+                            }else if(emailcontroller.text.length!=10){
+                              alertToastRed(context, "Mobile Number Not Valid");
+                            }
+                            else{
+                              showloadingdialog(context);
+                              loginController.LoginApi(context, emailcontroller.text);
+                              setState(() {
+                                container=2;
+                              });
+                              Get.back();
+                            }
+                          },
+                          child: Text("SUBMIT",style: commonstyle(),))),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

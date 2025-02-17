@@ -7,6 +7,7 @@ import 'package:agaram_admin/Service/Active&Inactive_service/ActiveInactive_Cont
 import 'package:agaram_admin/Service/Product-Service/UpdateProduct_Controller.dart';
 import 'package:agaram_admin/Service/Salary_service/GetallSalary_Controller.dart';
 import 'package:agaram_admin/Service/Salary_service/Salarystatus_Controller.dart';
+import 'package:agaram_admin/Service/stock/GetallStock_Controller.dart';
 import 'package:intl/intl.dart';
 import 'package:agaram_admin/Service/Assign_service/AssignCheckout_Controller.dart';
 import 'package:agaram_admin/Service/Assign_service/AssignSubscription_Controller.dart';
@@ -440,6 +441,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final GetAdminallOrdersByHubIdController getAdminallOrdersByHubIdController=Get.find<GetAdminallOrdersByHubIdController>();
   final GetallSalaryController getallSalaryController=Get.find<GetallSalaryController>();
   final ActiveInactiveController activeInactiveController = Get.find<ActiveInactiveController>();
+  final GetallstockController getallstockController=Get.find<GetallstockController>();
 
   //UPDATE
   final UpdateUsersController updateUsersController=Get.find<UpdateUsersController>();
@@ -464,7 +466,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final DeleteHubController deleteHubController=Get.find<DeleteHubController>();
   final DeleteUserController deleteUserController=Get.find<DeleteUserController>();
 
-  int container = 17;
+  int container = 1;
 
   String?SelectedPaymentStatus;
   List<String> paymentlist=['COMPLETED','PENDING','CANCELED'];
@@ -634,6 +636,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     try {
       await Future.delayed(const Duration(milliseconds: 1)); // Simulated delay
       return getallProductController.getdata;
+    } catch (e) {
+      throw Exception('Failed to load products');
+    }
+  }
+
+  Future<List<dynamic>> fetchstock() async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 1)); // Simulated delay
+      return getallstockController.getallstockdata;
     } catch (e) {
       throw Exception('Failed to load products');
     }
@@ -869,6 +880,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     getOrderHistoryController.GetOrderHistoryAPI(context,"","");
     getAdminallOrdersController.GetAdminAllOrderApi(context);
     getallSalaryController.GetAllSalaryApi(context);
+    getallstockController.GetAllStockApi(context);
     _tooltipBehavior=TooltipBehavior(enable: true);
     _tooltipBehavior2=TooltipBehavior(enable: true);
     DateTime data = DateTime.now();
@@ -910,7 +922,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       drawerwidget(6, CupertinoIcons.info, "Order History"),
                       drawerwidget(14, CupertinoIcons.info, "Subscription History"),
                       drawerwidget(16, CupertinoIcons.money_dollar_circle_fill, "Delivery Payments"),
-                      drawerwidget(17, CupertinoIcons.money_dollar_circle_fill, "Active & Inactive \nCustomers"),
+                      drawerwidget(17, CupertinoIcons.person_2, "Active & Inactive \nCustomers"),
+                      drawerwidget(18, CupertinoIcons.shopping_cart, "Hub Stocks"),
 
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -1149,6 +1162,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ViewDeliveryPaymentWidget():
                   container==17?
                       Activecustomerwidget():
+                  container==18?
+                  hubstockwidget():
                   Container()
                 ],
               ),
@@ -6169,6 +6184,297 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   )
 
+                ],
+              ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+
+  Widget hubstockwidget(){
+    getallProductController.GetAllProductAPI(context, "", "");
+    return Column(
+      children: [
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //     crossAxisAlignment: CrossAxisAlignment.center,
+        //     children: [
+        //       SizedBox(
+        //           width:displaywidth(context)*0.30,
+        //           child: commontextfield("Search By Product Name ...", productsearchnamecontroller)),
+        //       SizedBox(
+        //           width:displaywidth(context)*0.30,
+        //           child: commontextfield("Search By Product Price ...", productsearchpricecontroller)),
+        //
+        //       Row(
+        //         children: [
+        //           InkWell(
+        //             onTap: (){
+        //               getallProductController.GetAllProductAPI(context, productsearchnamecontroller.text??"", productsearchpricecontroller.text??"");
+        //             },
+        //             child: Container(
+        //               decoration: BoxDecoration(
+        //                   color: Color_Constant.secondarycolr,
+        //                   borderRadius: BorderRadius.circular(10)
+        //               ),
+        //               child: Padding(
+        //                 padding: const EdgeInsets.all(8.0),
+        //                 child: Padding(
+        //                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        //                   child: Row(
+        //                     children: [
+        //                       const Icon(Icons.search,color: Colors.white,),
+        //                       Text("Search",style: commonstyle(),)
+        //                     ],
+        //                   ),
+        //                 ),
+        //               ),
+        //             ),
+        //           ),
+        //         ],
+        //       )
+        //
+        //     ],
+        //   ),
+        // ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10)
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        color: Color_Constant.primarycolr,
+                        borderRadius: BorderRadius.circular(10)
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: displaywidth(context)*0.08,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Product Id",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context)*0.08,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Product Image",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context)*0.10,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Product Name",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context)*0.10,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Report Date",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context)*0.20,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Quantity",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context)*0.20,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Stock Quantity",style: commonstyleweb(color: Colors.black,weight: FontWeight.w600),),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                      height: displayheight(context)*0.69,
+                      width: double.infinity,
+                      child:
+                      FutureBuilder<List<dynamic>>(
+                        future: fetchstock(), // Your async function
+                        builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const Center(
+                              child: CupertinoActivityIndicator(),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text('Error: ${snapshot.error}'),
+                            );
+                          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                            return  EmptyContainer(context,"Stock Is Empty");
+                          } else {
+                            final products = snapshot.data!;
+                            return Obx(
+                                  ()=> RefreshIndicator(
+                                onRefresh: ()async{
+                                  await getallstockController.GetAllStockApi(context);
+                                },
+                                child: ListView.builder(
+                                  itemCount: products.length,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    var data = products[index];
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  SizedBox(
+                                                    width: displaywidth(context) * 0.08,
+                                                    child: Center(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: Text(
+                                                          "${index + 1}",
+                                                          style: commonstyleweb(color: Colors.black),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: displaywidth(context) * 0.08,
+                                                    child: Center(
+                                                      child: Padding(
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: ImageNetwork(
+                                                            image: "${data['product']['productImages']}",
+                                                            height: 50,
+                                                            width: 50,
+                                                            duration: 200,
+                                                            curve: Curves.easeIn,
+                                                            onPointer: true,
+                                                            debugPrint: false,
+                                                            fullScreen: true,
+                                                            fitAndroidIos: BoxFit.cover,
+                                                            fitWeb: BoxFitWeb.cover,
+                                                            borderRadius: BorderRadius.circular(5),
+                                                            onLoading:  const CupertinoActivityIndicator(
+                                                              color: Colors.indigoAccent,
+                                                            ),
+                                                            onError: const Icon(
+                                                              Icons.error,
+                                                              color: Colors.red,
+                                                            ),
+                                                            onTap: () {
+                                                              debugPrint("©gabriel_patrick_souza");
+                                                            },
+                                                          )
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: displaywidth(context) * 0.10,
+                                                    child: Center(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: Text(
+                                                          "${data['product']['productName'] ?? ""}",
+                                                          style: commonstyleweb(color: Colors.black),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: displaywidth(context) * 0.10,
+                                                    child: Center(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: Text(
+                                                          "${data['reportDate'] ?? ""}",
+                                                          style: commonstyleweb(color: Colors.black),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: displaywidth(context) * 0.20,
+                                                    child: Center(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: Text(
+                                                          "${data['product']['stockQty'] ?? ""}",
+                                                          style: commonstyleweb(color: Colors.black),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: displaywidth(context) * 0.20,
+                                                    child: Center(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: Text(
+                                                          "${data['quantity'] ?? ""} Pieces",
+                                                          style: commonstyleweb(color: Colors.black),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Divider(color: Colors.grey.shade200,thickness: 0.5,)
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      )
+                  )
                 ],
               ),
             ),

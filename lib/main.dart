@@ -40,6 +40,7 @@ import 'package:agaram_admin/Service/Subscription_Service/GetSubscriptionHistory
 import 'package:agaram_admin/Service/Subscription_Service/Getseprate_Subscription_Controller.dart';
 import 'package:agaram_admin/Service/Users_service/DeleteUser_Controller.dart';
 import 'package:agaram_admin/Service/Users_service/UpdateUsers_Controller.dart';
+import 'package:agaram_admin/Service/stock/GetallStock_Controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'Service/Dashboard_Count/GetAllUsersCount_Controller.dart';
@@ -98,6 +99,7 @@ void main() {
   Get.put(SalarystatusController());
   Get.put(OtpController());
   Get.put(ActiveInactiveController());
+  Get.put(GetallstockController());
   runApp(const MyApp());
 }
 
