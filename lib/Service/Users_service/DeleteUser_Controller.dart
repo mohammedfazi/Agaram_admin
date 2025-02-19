@@ -30,7 +30,6 @@ class DeleteUserController extends GetConnect{
     final data=jsonDecode(responce.body);
 
     if(responce.statusCode==200){
-      Get.back();
       await getallusersController.GetAllUsersApi(context);
       StackDialog.show("Deleted Successfully", "Customer Deleted Successfully", Icons.verified, Colors.green);
     }else if(responce.statusCode==500){
