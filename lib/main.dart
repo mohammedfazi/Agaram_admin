@@ -50,7 +50,6 @@ import 'Service/Salary_service/GetallSalary_Controller.dart';
 import 'Service/Users_service/AddUsersController.dart';
 import 'Service/Users_service/SearchUsers_Controller.dart';
 
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Get.put(LoginController());

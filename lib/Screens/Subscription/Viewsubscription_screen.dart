@@ -75,7 +75,7 @@ class _ViewsubscriptionScreenState extends State<ViewsubscriptionScreen> {
                                   child: Row(
                                     children: [
                                       Text("Total Order Days : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
-                                      Text("${widget.data['totalDate']??""}",style: commonstyle(color: Colors.black,size: 15),)
+                                      Text("${widget.data['totalDate']??""} Days",style: commonstyle(color: Colors.black,size: 15),)
                                     ],
                                   ),
                                 )
@@ -133,6 +133,25 @@ class _ViewsubscriptionScreenState extends State<ViewsubscriptionScreen> {
                                     ],
                                   ),
                                 )
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Text("Total Subscription Amount : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                      Text("₹ ${widget.data['totalPrice']??""}",style: commonstyle(color: Colors.black,size: 15),)
+                                    ],
+                                  ),
+                                ),
+
                               ],
                             ),
                           ),
@@ -197,11 +216,6 @@ class _ViewsubscriptionScreenState extends State<ViewsubscriptionScreen> {
                 style: commonstyle(color: Colors.black),
               ),
             ),
-
-
-
-
-
 
             Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -530,6 +544,17 @@ class _ViewsubscriptionScreenState extends State<ViewsubscriptionScreen> {
                                     children: [
                                       Text("Product Quantity : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
                                       Text("${widget.data['product']['stockQty']??""}",style: commonstyle(color: Colors.black,size: 15),)
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text("Product Quantity Per Day : ",style: commonstyle(weight: FontWeight.w700,color: Colors.black,size: 15),),
+                                      Text("${widget.data['quantity']??""} Pieces",style: commonstyle(color: Colors.black,size: 15),)
                                     ],
                                   ),
                                 ),

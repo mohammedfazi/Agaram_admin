@@ -383,7 +383,7 @@ class _ViewhubScreenState extends State<ViewhubScreen> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                                    child: Text("Today's Order",style: commonstyle(color: ontapinsidehub==5?Colors.black:Colors.white,size: 15,weight: FontWeight.w500),),
+                                    child: Text("Tomorrow's Order",style: commonstyle(color: ontapinsidehub==5?Colors.black:Colors.white,size: 15,weight: FontWeight.w500),),
                                   ),
                                 ),
                               ),

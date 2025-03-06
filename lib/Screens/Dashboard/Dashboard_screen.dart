@@ -8,6 +8,7 @@ import 'package:agaram_admin/Service/Product-Service/UpdateProduct_Controller.da
 import 'package:agaram_admin/Service/Salary_service/GetallSalary_Controller.dart';
 import 'package:agaram_admin/Service/Salary_service/Salarystatus_Controller.dart';
 import 'package:agaram_admin/Service/stock/GetallStock_Controller.dart';
+import 'package:agaram_admin/common/Text_Constant.dart';
 import 'package:intl/intl.dart';
 import 'package:agaram_admin/Service/Assign_service/AssignCheckout_Controller.dart';
 import 'package:agaram_admin/Service/Assign_service/AssignSubscription_Controller.dart';
@@ -116,7 +117,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ..accept = 'image/*'
       ..click();
 
-    // Listen for file selection
+
     uploadInput.onChange.listen((e) async {
       final files = uploadInput.files;
       if (files == null || files.isEmpty) {
@@ -143,17 +144,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             _imageName = "${file.name}";
             filesize = "${file.size}";
             filetype = "${file.type}";
-            _finalcustomerimageBytes =
-            "<Buffer ${_customerimageBytes!.take(20).map((b) =>
-                b.toRadixString(16).padLeft(2, '0')).join(
-                ' ')} ... ${_customerimageBytes!.length} more bytes>"
-            as Uint8List;
-            print(
-                "Buffer: <Buffer ${_customerimageBytes!.take(20).map((b) =>
-                    b.toRadixString(16).padLeft(2, '0')).join(
-                    ' ')} ... ${_customerimageBytes!.length} more bytes>");
-            print("File Size: ${file.size} bytes");
-            print("Buffer (Uint8List): $_customerimageBytes");
+            print(_customerimageBytes);
           } catch (error) {
             print("Error processing file: $error");
           }
@@ -2443,7 +2434,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                           child: Text(
-                                                            "Mohammed Fazil",
+                                                            "${data['deliveryuser']['username']??""}",
                                                             style: commonstyleweb(
                                                                 color:
                                                                 Colors.black),
@@ -3092,6 +3083,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget OrderHistory() {
+    getOrderHistoryController.GetOrderHistoryAPI(
+        context, "", "");
     return Column(
       children: [
         Padding(
@@ -3628,6 +3621,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget SubscriptionHistory() {
+    getSubscriptionHistoryController.GetSubscriptionHistoryAPI(context, "", "");
     return Column(
       children: [
         Padding(
@@ -7152,11 +7146,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                      width: displaywidth(context) * 0.30,
+                      width: displaywidth(context) * 0.25,
                       child: commontextfield(
                           "Search By Hub Name", searchhubusernamecontroller)),
                   SizedBox(
-                      width: displaywidth(context) * 0.30,
+                      width: displaywidth(context) * 0.25,
                       child: commontextfield("Search By Hub Email Id",
                           searchhubemailidcontroller)),
                 ],
@@ -9797,6 +9791,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                               const EdgeInsets
                                                                   .all(8.0),
                                                               child: ImageNetwork(
+                                                                key: Key(data['productImages']),
                                                                 image:
                                                                 "${data['productImages']}",
                                                                 height: 100,
@@ -9861,7 +9856,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                             const EdgeInsets
                                                                 .all(8.0),
                                                             child: Text(
-                                                              "${data['price'] ??
+                                                              "${Text_Constant.rupees} ${data['price'] ??
                                                                   ""}",
                                                               style: commonstyleweb(
                                                                   color:
