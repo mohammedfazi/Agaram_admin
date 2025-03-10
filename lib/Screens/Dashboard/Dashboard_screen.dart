@@ -2342,9 +2342,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           return EmptyContainer(
                               context, "Delivery Payments Is Empty");
                         }
-
                         final deliveryData = snapshot.data!;
-
                         return Obx(
                               () =>
                               RefreshIndicator(

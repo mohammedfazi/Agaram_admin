@@ -192,7 +192,7 @@ class _ViewsubscriptionScreenState extends State<ViewsubscriptionScreen> {
                             decoration: BoxDecoration(
                               color: data[index]['deliveryStatus'] == "VACATION"
                                   ? Color_Constant.primarycolr
-                                  : data[index]['deliveryStatus'] == "COMPLETED"
+                                  : data[index]['deliveryStatus'] == "DELIVERED"
                                   ? Colors.green
                                   : Colors.red,
                               borderRadius: BorderRadius.circular(10),
