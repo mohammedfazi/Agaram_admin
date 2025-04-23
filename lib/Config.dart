@@ -1,11 +1,16 @@
 
 class Config {
 
-  static const API="http://65.0.115.133:8000/admin/";
+  // http://65.0.115.133:8000
+  static const ENDPOINT1= "https://www.api.agarammilk.link/";
 
-  static const LOGIN_API="http://65.0.115.133:8000/";
+  static const ENDPOINT2= "http://65.0.115.133:8000/";
 
-  static const DRIVER_API="http://65.0.115.133:8000/delivery/";
+  static const API="https://www.api.agarammilk.link/admin/";
+
+  static const LOGIN_API="https://www.api.agarammilk.link/";
+
+  static const DRIVER_API="https://www.api.agarammilk.link/delivery/";
 
   static const Header={
     "Accept":"application/json",

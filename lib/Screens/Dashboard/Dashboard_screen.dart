@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:math';
 import 'dart:html' as html;
+import 'package:agaram_admin/Screens/Hub_Stocks/HubStocks_screen.dart';
 import 'package:agaram_admin/Screens/Orders/Vieworderhistory_screen.dart';
 import 'package:agaram_admin/Service/Active&Inactive_service/ActiveInactive_Controller.dart';
 import 'package:agaram_admin/Service/Product-Service/UpdateProduct_Controller.dart';
@@ -524,7 +525,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final DeleteUserController deleteUserController =
   Get.find<DeleteUserController>();
 
-  int container = 1;
+  int container = 19;
 
   String? SelectedPaymentStatus;
   List<String> paymentlist = ['COMPLETED', 'PENDING', 'CANCELED'];
@@ -966,21 +967,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     children: [
                       drawerwidget(1, CupertinoIcons.home, "Dashboard"),
                       drawerwidget(2, CupertinoIcons.building_2_fill, "Hub"),
-                      drawerwidget(
-                          3, Icons.delivery_dining, "Delivery Partners"),
+                      drawerwidget(3, Icons.delivery_dining, "Delivery Partners"),
+                      drawerwidget(19, Icons.delivery_dining, "Pending Delivery \nPartners"),
                       drawerwidget(4, CupertinoIcons.person, "Customers"),
                       drawerwidget(5, CupertinoIcons.cart_fill, "Product"),
-                      drawerwidget(
-                          15, CupertinoIcons.doc_plaintext, "Tomorrow Order's"),
+                      drawerwidget(15, CupertinoIcons.doc_plaintext, "Tomorrow Order's"),
                       drawerwidget(6, CupertinoIcons.info, "Order History"),
-                      drawerwidget(
-                          14, CupertinoIcons.info, "Subscription History"),
-                      drawerwidget(16, CupertinoIcons.money_dollar_circle_fill,
-                          "Delivery Payments"),
-                      drawerwidget(17, CupertinoIcons.person_2,
-                          "Active & Inactive \nCustomers"),
-                      drawerwidget(
-                          18, CupertinoIcons.shopping_cart, "Hub Stocks"),
+                      drawerwidget(14, CupertinoIcons.info, "Subscription History"),
+                      drawerwidget(16, CupertinoIcons.money_dollar_circle_fill, "Delivery Payments"),
+                      drawerwidget(17, CupertinoIcons.person_2, "Active & Inactive \nCustomers"),
+                      drawerwidget(18, CupertinoIcons.shopping_cart, "Hub Stocks"),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: InkWell(
@@ -1244,6 +1240,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ? Activecustomerwidget()
                       : container == 18
                       ? hubstockwidget()
+                      : container == 19
+                      ? Pendingdeliverywidget()
                       : Container()
                 ],
               ),
@@ -1543,373 +1541,373 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [deliveranduserchart(), expancechart()],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      width: displaywidth(context) * 0.26,
-                      height: displayheight(context) * 0.50,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0, left: 8.0),
-                            child: Text(
-                              "Top Products",
-                              style: commonstyleweb(
-                                  color: Colors.black, weight: FontWeight.w700),
-                            ),
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Divider(
-                              color: Colors.black,
-                              thickness: 0.1,
-                            ),
-                          ),
-                          SizedBox(
-                            height: displayheight(context) * 0.41,
-                            child: FutureBuilder<List<dynamic>>(
-                              future: fetchProducts(),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<List<dynamic>> snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  // Loading state
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                } else if (snapshot.hasError) {
-                                  // Error state
-                                  return Center(
-                                    child: Text(
-                                      "Error loading products",
-                                      style: commonstyle(
-                                          color: Colors.red,
-                                          weight: FontWeight.bold),
-                                    ),
-                                  );
-                                } else if (!snapshot.hasData ||
-                                    snapshot.data!.isEmpty) {
-                                  // No data state
-                                  return Center(
-                                    child: Text(
-                                      "No products available",
-                                      style: commonstyle(color: Colors.black),
-                                    ),
-                                  );
-                                } else {
-                                  // Success state
-                                  final data = snapshot.data!;
-                                  return ListView.builder(
-                                    itemCount: data.length > 5
-                                        ? 5
-                                        : data.length, // Limit to 5 items
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      var product = data[index];
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 12.0, vertical: 8.0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                          children: [
-                                            ImageNetwork(
-                                              image:
-                                              "${product['productImages'] ??
-                                                  ""}",
-                                              height: 50,
-                                              width: 50,
-                                              duration: 200,
-                                              curve: Curves.easeIn,
-                                              onPointer: true,
-                                              debugPrint: false,
-                                              fullScreen: true,
-                                              fitAndroidIos: BoxFit.cover,
-                                              fitWeb: BoxFitWeb.cover,
-                                              borderRadius:
-                                              BorderRadius.circular(5),
-                                              onLoading:
-                                              const CupertinoActivityIndicator(
-                                                color: Colors.indigoAccent,
-                                              ),
-                                              onError: const Icon(
-                                                Icons.error,
-                                                color: Colors.red,
-                                              ),
-                                              onTap: () {
-                                                debugPrint(
-                                                    "©gabriel_patrick_souza");
-                                              },
-                                            ),
-                                            Text(
-                                              "${product['productName'] ?? ""}",
-                                              style: commonstyle(
-                                                  color: Colors.black,
-                                                  weight: FontWeight.w600,
-                                                  size: 15),
-                                            ),
-                                            Row(
-                                              children: [
-                                                const Icon(Icons.currency_rupee,
-                                                    color: Colors.black,
-                                                    size: 15),
-                                                Text(
-                                                  "${product['price'] ?? ""}",
-                                                  style: commonstyle(
-                                                      color: Colors.black,
-                                                      size: 15),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  );
-                                }
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      width: displaywidth(context) * 0.26,
-                      height: displayheight(context) * 0.50,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0, left: 8.0),
-                            child: Text(
-                              "Top Customers",
-                              style: commonstyleweb(
-                                  color: Colors.black, weight: FontWeight.w700),
-                            ),
-                          ),
-                          const Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Divider(
-                              color: Colors.black,
-                              thickness: 0.1,
-                            ),
-                          ),
-                          SizedBox(
-                            height: displayheight(context) * 0.41,
-                            child: Obx(
-                                  () =>
-                                  ListView.builder(
-                                      itemCount: min(
-                                          getallusersController
-                                              .getallusersdata.length,
-                                          5),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        var data = getallusersController
-                                            .getallusersdata[index];
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 12.0, vertical: 8.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                            children: [
-                                              data['productImages'] == null
-                                                  ? const Icon(
-                                                Icons.info,
-                                                color: Colors.grey,
-                                                size: 50,
-                                              )
-                                                  : ImageNetwork(
-                                                image:
-                                                "${data['productImages'] ??
-                                                    ""}",
-                                                height: 40,
-                                                width: 40,
-                                                duration: 200,
-                                                curve: Curves.easeIn,
-                                                onPointer: true,
-                                                debugPrint: false,
-                                                fullScreen: true,
-                                                fitAndroidIos: BoxFit.cover,
-                                                fitWeb: BoxFitWeb.cover,
-                                                borderRadius:
-                                                BorderRadius.circular(5),
-                                                onLoading:
-                                                const CupertinoActivityIndicator(
-                                                  color: Colors.indigoAccent,
-                                                ),
-                                                onError: const Icon(
-                                                  Icons.error,
-                                                  color: Colors.black,
-                                                  size: 40,
-                                                ),
-                                                onTap: () {
-                                                  debugPrint(
-                                                      "©gabriel_patrick_souza");
-                                                },
-                                              ),
-                                              Text(
-                                                "${data['username'] ?? ""}",
-                                                style: commonstyle(
-                                                    color: Colors.black,
-                                                    weight: FontWeight.w600,
-                                                    size: 15),
-                                              ),
-                                              Text(
-                                                "${data['phone'] ?? ""}",
-                                                style: commonstyle(
-                                                    color: Colors.black,
-                                                    weight: FontWeight.w600,
-                                                    size: 15),
-                                              ),
-
-                                              // Row(
-                                              //   children: [
-                                              //     const Icon(Icons.currency_rupee,color: Colors.black,size: 15,),
-                                              //     Text("${data['price']??""}",style: commonstyle(color: Colors.black,size: 15),),
-                                              //   ],
-                                              // )
-                                            ],
-                                          ),
-                                        );
-                                      }),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      width: displaywidth(context) * 0.26,
-                      height: displayheight(context) * 0.50,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0, left: 8.0),
-                            child: Text(
-                              "Top Deliver Partners",
-                              style: commonstyleweb(
-                                  color: Colors.black, weight: FontWeight.w700),
-                            ),
-                          ),
-                          const Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Divider(
-                              color: Colors.black,
-                              thickness: 0.1,
-                            ),
-                          ),
-                          SizedBox(
-                            height: displayheight(context) * 0.41,
-                            child: Obx(
-                                  () =>
-                                  ListView.builder(
-                                      itemCount: min(
-                                          getalldeliveryController
-                                              .getalldeliverytdata.length,
-                                          5),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        var data = getalldeliveryController
-                                            .getalldeliverytdata[index];
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 12.0, vertical: 8.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                            children: [
-                                              ImageNetwork(
-                                                image:
-                                                "${data['profileImage'] ?? ""}",
-                                                height: 50,
-                                                width: 50,
-                                                duration: 200,
-                                                curve: Curves.easeIn,
-                                                onPointer: true,
-                                                debugPrint: false,
-                                                fullScreen: true,
-                                                fitAndroidIos: BoxFit.cover,
-                                                fitWeb: BoxFitWeb.cover,
-                                                borderRadius:
-                                                BorderRadius.circular(5),
-                                                onLoading:
-                                                const CupertinoActivityIndicator(
-                                                  color: Colors.indigoAccent,
-                                                ),
-                                                onError: const Icon(
-                                                  Icons.error,
-                                                  color: Colors.black,
-                                                  size: 40,
-                                                ),
-                                                onTap: () {
-                                                  debugPrint(
-                                                      "©gabriel_patrick_souza");
-                                                },
-                                              ),
-                                              Text(
-                                                "${data['username'] ?? ""}",
-                                                style: commonstyle(
-                                                    color: Colors.black,
-                                                    weight: FontWeight.w600,
-                                                    size: 15),
-                                              ),
-                                              Text(
-                                                "${data['phone'] ?? ""}",
-                                                style: commonstyle(
-                                                    color: Colors.black,
-                                                    weight: FontWeight.w600,
-                                                    size: 15),
-                                              ),
-
-                                              // Row(
-                                              //   children: [
-                                              //     const Icon(Icons.currency_rupee,color: Colors.black,size: 15,),
-                                              //     Text("${data['price']??""}",style: commonstyle(color: Colors.black,size: 15),),
-                                              //   ],
-                                              // )
-                                            ],
-                                          ),
-                                        );
-                                      }),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              )
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Padding(
+              //       padding: const EdgeInsets.all(8.0),
+              //       child: Container(
+              //         width: displaywidth(context) * 0.26,
+              //         height: displayheight(context) * 0.50,
+              //         decoration: BoxDecoration(
+              //           color: Colors.white,
+              //           borderRadius: BorderRadius.circular(10),
+              //         ),
+              //         child: Column(
+              //           mainAxisAlignment: MainAxisAlignment.start,
+              //           crossAxisAlignment: CrossAxisAlignment.start,
+              //           children: [
+              //             Padding(
+              //               padding: const EdgeInsets.only(top: 8.0, left: 8.0),
+              //               child: Text(
+              //                 "Top Products",
+              //                 style: commonstyleweb(
+              //                     color: Colors.black, weight: FontWeight.w700),
+              //               ),
+              //             ),
+              //             const Padding(
+              //               padding: EdgeInsets.all(8.0),
+              //               child: Divider(
+              //                 color: Colors.black,
+              //                 thickness: 0.1,
+              //               ),
+              //             ),
+              //             SizedBox(
+              //               height: displayheight(context) * 0.41,
+              //               child: FutureBuilder<List<dynamic>>(
+              //                 future: fetchProducts(),
+              //                 builder: (BuildContext context,
+              //                     AsyncSnapshot<List<dynamic>> snapshot) {
+              //                   if (snapshot.connectionState ==
+              //                       ConnectionState.waiting) {
+              //                     // Loading state
+              //                     return const Center(
+              //                       child: CircularProgressIndicator(),
+              //                     );
+              //                   } else if (snapshot.hasError) {
+              //                     // Error state
+              //                     return Center(
+              //                       child: Text(
+              //                         "Error loading products",
+              //                         style: commonstyle(
+              //                             color: Colors.red,
+              //                             weight: FontWeight.bold),
+              //                       ),
+              //                     );
+              //                   } else if (!snapshot.hasData ||
+              //                       snapshot.data!.isEmpty) {
+              //                     // No data state
+              //                     return Center(
+              //                       child: Text(
+              //                         "No products available",
+              //                         style: commonstyle(color: Colors.black),
+              //                       ),
+              //                     );
+              //                   } else {
+              //                     // Success state
+              //                     final data = snapshot.data!;
+              //                     return ListView.builder(
+              //                       itemCount: data.length > 5
+              //                           ? 5
+              //                           : data.length, // Limit to 5 items
+              //                       itemBuilder:
+              //                           (BuildContext context, int index) {
+              //                         var product = data[index];
+              //                         return Padding(
+              //                           padding: const EdgeInsets.symmetric(
+              //                               horizontal: 12.0, vertical: 8.0),
+              //                           child: Row(
+              //                             mainAxisAlignment:
+              //                             MainAxisAlignment.spaceBetween,
+              //                             crossAxisAlignment:
+              //                             CrossAxisAlignment.center,
+              //                             children: [
+              //                               ImageNetwork(
+              //                                 image:
+              //                                 "${product['productImages'] ??
+              //                                     ""}",
+              //                                 height: 50,
+              //                                 width: 50,
+              //                                 duration: 200,
+              //                                 curve: Curves.easeIn,
+              //                                 onPointer: true,
+              //                                 debugPrint: false,
+              //                                 fullScreen: true,
+              //                                 fitAndroidIos: BoxFit.cover,
+              //                                 fitWeb: BoxFitWeb.cover,
+              //                                 borderRadius:
+              //                                 BorderRadius.circular(5),
+              //                                 onLoading:
+              //                                 const CupertinoActivityIndicator(
+              //                                   color: Colors.indigoAccent,
+              //                                 ),
+              //                                 onError: const Icon(
+              //                                   Icons.error,
+              //                                   color: Colors.red,
+              //                                 ),
+              //                                 onTap: () {
+              //                                   debugPrint(
+              //                                       "©gabriel_patrick_souza");
+              //                                 },
+              //                               ),
+              //                               Text(
+              //                                 "${product['productName'] ?? ""}",
+              //                                 style: commonstyle(
+              //                                     color: Colors.black,
+              //                                     weight: FontWeight.w600,
+              //                                     size: 15),
+              //                               ),
+              //                               Row(
+              //                                 children: [
+              //                                   const Icon(Icons.currency_rupee,
+              //                                       color: Colors.black,
+              //                                       size: 15),
+              //                                   Text(
+              //                                     "${product['price'] ?? ""}",
+              //                                     style: commonstyle(
+              //                                         color: Colors.black,
+              //                                         size: 15),
+              //                                   ),
+              //                                 ],
+              //                               ),
+              //                             ],
+              //                           ),
+              //                         );
+              //                       },
+              //                     );
+              //                   }
+              //                 },
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              //     ),
+              //     Padding(
+              //       padding: const EdgeInsets.all(8.0),
+              //       child: Container(
+              //         width: displaywidth(context) * 0.26,
+              //         height: displayheight(context) * 0.50,
+              //         decoration: BoxDecoration(
+              //             color: Colors.white,
+              //             borderRadius: BorderRadius.circular(10)),
+              //         child: Column(
+              //           mainAxisAlignment: MainAxisAlignment.start,
+              //           crossAxisAlignment: CrossAxisAlignment.start,
+              //           children: [
+              //             Padding(
+              //               padding: const EdgeInsets.only(top: 8.0, left: 8.0),
+              //               child: Text(
+              //                 "Top Customers",
+              //                 style: commonstyleweb(
+              //                     color: Colors.black, weight: FontWeight.w700),
+              //               ),
+              //             ),
+              //             const Padding(
+              //               padding: const EdgeInsets.all(8.0),
+              //               child: Divider(
+              //                 color: Colors.black,
+              //                 thickness: 0.1,
+              //               ),
+              //             ),
+              //             SizedBox(
+              //               height: displayheight(context) * 0.41,
+              //               child: Obx(
+              //                     () =>
+              //                     ListView.builder(
+              //                         itemCount: min(
+              //                             getallusersController
+              //                                 .getallusersdata.length,
+              //                             5),
+              //                         itemBuilder:
+              //                             (BuildContext context, int index) {
+              //                           var data = getallusersController
+              //                               .getallusersdata[index];
+              //                           return Padding(
+              //                             padding: const EdgeInsets.symmetric(
+              //                                 horizontal: 12.0, vertical: 8.0),
+              //                             child: Row(
+              //                               mainAxisAlignment:
+              //                               MainAxisAlignment.spaceBetween,
+              //                               crossAxisAlignment:
+              //                               CrossAxisAlignment.center,
+              //                               children: [
+              //                                 data['productImages'] == null
+              //                                     ? const Icon(
+              //                                   Icons.info,
+              //                                   color: Colors.grey,
+              //                                   size: 50,
+              //                                 )
+              //                                     : ImageNetwork(
+              //                                   image:
+              //                                   "${data['productImages'] ??
+              //                                       ""}",
+              //                                   height: 40,
+              //                                   width: 40,
+              //                                   duration: 200,
+              //                                   curve: Curves.easeIn,
+              //                                   onPointer: true,
+              //                                   debugPrint: false,
+              //                                   fullScreen: true,
+              //                                   fitAndroidIos: BoxFit.cover,
+              //                                   fitWeb: BoxFitWeb.cover,
+              //                                   borderRadius:
+              //                                   BorderRadius.circular(5),
+              //                                   onLoading:
+              //                                   const CupertinoActivityIndicator(
+              //                                     color: Colors.indigoAccent,
+              //                                   ),
+              //                                   onError: const Icon(
+              //                                     Icons.error,
+              //                                     color: Colors.black,
+              //                                     size: 40,
+              //                                   ),
+              //                                   onTap: () {
+              //                                     debugPrint(
+              //                                         "©gabriel_patrick_souza");
+              //                                   },
+              //                                 ),
+              //                                 Text(
+              //                                   "${data['username'] ?? ""}",
+              //                                   style: commonstyle(
+              //                                       color: Colors.black,
+              //                                       weight: FontWeight.w600,
+              //                                       size: 15),
+              //                                 ),
+              //                                 Text(
+              //                                   "${data['phone'] ?? ""}",
+              //                                   style: commonstyle(
+              //                                       color: Colors.black,
+              //                                       weight: FontWeight.w600,
+              //                                       size: 15),
+              //                                 ),
+              //
+              //                                 // Row(
+              //                                 //   children: [
+              //                                 //     const Icon(Icons.currency_rupee,color: Colors.black,size: 15,),
+              //                                 //     Text("${data['price']??""}",style: commonstyle(color: Colors.black,size: 15),),
+              //                                 //   ],
+              //                                 // )
+              //                               ],
+              //                             ),
+              //                           );
+              //                         }),
+              //               ),
+              //             )
+              //           ],
+              //         ),
+              //       ),
+              //     ),
+              //     Padding(
+              //       padding: const EdgeInsets.all(8.0),
+              //       child: Container(
+              //         width: displaywidth(context) * 0.26,
+              //         height: displayheight(context) * 0.50,
+              //         decoration: BoxDecoration(
+              //             color: Colors.white,
+              //             borderRadius: BorderRadius.circular(10)),
+              //         child: Column(
+              //           mainAxisAlignment: MainAxisAlignment.start,
+              //           crossAxisAlignment: CrossAxisAlignment.start,
+              //           children: [
+              //             Padding(
+              //               padding: const EdgeInsets.only(top: 8.0, left: 8.0),
+              //               child: Text(
+              //                 "Top Deliver Partners",
+              //                 style: commonstyleweb(
+              //                     color: Colors.black, weight: FontWeight.w700),
+              //               ),
+              //             ),
+              //             const Padding(
+              //               padding: const EdgeInsets.all(8.0),
+              //               child: Divider(
+              //                 color: Colors.black,
+              //                 thickness: 0.1,
+              //               ),
+              //             ),
+              //             SizedBox(
+              //               height: displayheight(context) * 0.41,
+              //               child: Obx(
+              //                     () =>
+              //                     ListView.builder(
+              //                         itemCount: min(
+              //                             getalldeliveryController
+              //                                 .getalldeliverytdata.length,
+              //                             5),
+              //                         itemBuilder:
+              //                             (BuildContext context, int index) {
+              //                           var data = getalldeliveryController
+              //                               .getalldeliverytdata[index];
+              //                           return Padding(
+              //                             padding: const EdgeInsets.symmetric(
+              //                                 horizontal: 12.0, vertical: 8.0),
+              //                             child: Row(
+              //                               mainAxisAlignment:
+              //                               MainAxisAlignment.spaceBetween,
+              //                               crossAxisAlignment:
+              //                               CrossAxisAlignment.center,
+              //                               children: [
+              //                                 ImageNetwork(
+              //                                   image:
+              //                                   "${data['profileImage'] ?? ""}",
+              //                                   height: 50,
+              //                                   width: 50,
+              //                                   duration: 200,
+              //                                   curve: Curves.easeIn,
+              //                                   onPointer: true,
+              //                                   debugPrint: false,
+              //                                   fullScreen: true,
+              //                                   fitAndroidIos: BoxFit.cover,
+              //                                   fitWeb: BoxFitWeb.cover,
+              //                                   borderRadius:
+              //                                   BorderRadius.circular(5),
+              //                                   onLoading:
+              //                                   const CupertinoActivityIndicator(
+              //                                     color: Colors.indigoAccent,
+              //                                   ),
+              //                                   onError: const Icon(
+              //                                     Icons.error,
+              //                                     color: Colors.black,
+              //                                     size: 40,
+              //                                   ),
+              //                                   onTap: () {
+              //                                     debugPrint(
+              //                                         "©gabriel_patrick_souza");
+              //                                   },
+              //                                 ),
+              //                                 Text(
+              //                                   "${data['username'] ?? ""}",
+              //                                   style: commonstyle(
+              //                                       color: Colors.black,
+              //                                       weight: FontWeight.w600,
+              //                                       size: 15),
+              //                                 ),
+              //                                 Text(
+              //                                   "${data['phone'] ?? ""}",
+              //                                   style: commonstyle(
+              //                                       color: Colors.black,
+              //                                       weight: FontWeight.w600,
+              //                                       size: 15),
+              //                                 ),
+              //
+              //                                 // Row(
+              //                                 //   children: [
+              //                                 //     const Icon(Icons.currency_rupee,color: Colors.black,size: 15,),
+              //                                 //     Text("${data['price']??""}",style: commonstyle(color: Colors.black,size: 15),),
+              //                                 //   ],
+              //                                 // )
+              //                               ],
+              //                             ),
+              //                           );
+              //                         }),
+              //               ),
+              //             )
+              //           ],
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // )
             ],
           ),
         ),
@@ -2074,7 +2072,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                               const EdgeInsets.all(8.0),
                                               child: ImageNetwork(
                                                 image:
-                                                "${data['product']['productImages']}",
+                                                "${data['productImage']}",
                                                 height: 200,
                                                 width: 80,
                                                 duration: 1,
@@ -2115,9 +2113,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                           CrossAxisAlignment.center,
                                           children: [
                                             Text(
-                                              "${data['product']['productName'] ??
-                                                  ""} (${data['product']['stockQty'] ??
-                                                  ""})",
+                                              "${data['productName'] ??
+                                                  ""}" ,
                                               style: commonstyle(
                                                   color:
                                                   Colors.grey.shade600,
@@ -2514,7 +2511,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                     ),
                                                     data['isCompleted'] ==
                                                         "PENDING"
-                                                        ? SizedBox(
+                                                        ?
+                                                    SizedBox(
                                                       width: displaywidth(
                                                           context) *
                                                           0.20,
@@ -8316,7 +8314,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   ),
                   SizedBox(
-                      height: displayheight(context) * 0.69,
+                      height: displayheight(context) * 0.72,
                       width: double.infinity,
                       child: FutureBuilder<List<dynamic>>(
                         future: fetchstock(), // Your async function
@@ -8354,163 +8352,168 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                               vertical: 8.0),
                                           child: Column(
                                             children: [
-                                              Container(
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                  BorderRadius.circular(10),
-                                                ),
-                                                child: Padding(
-                                                  padding:
-                                                  const EdgeInsets.all(8.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                    crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                    children: [
-                                                      SizedBox(
-                                                        width:
-                                                        displaywidth(context) *
-                                                            0.08,
-                                                        child: Center(
-                                                          child: Padding(
-                                                            padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                            child: Text(
-                                                              "${index + 1}",
-                                                              style: commonstyleweb(
-                                                                  color:
-                                                                  Colors.black),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        width:
-                                                        displaywidth(context) *
-                                                            0.08,
-                                                        child: Center(
-                                                          child: Padding(
+                                              InkWell(
+                                                onTap:(){
+                                                  Get.to(HubstocksScreen(data: data));
+                                                },
+                                                child: Container(
+                                                  width: double.infinity,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                    BorderRadius.circular(10),
+                                                  ),
+                                                  child: Padding(
+                                                    padding:
+                                                    const EdgeInsets.all(8.0),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                      crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                      children: [
+                                                        SizedBox(
+                                                          width:
+                                                          displaywidth(context) *
+                                                              0.08,
+                                                          child: Center(
+                                                            child: Padding(
                                                               padding:
                                                               const EdgeInsets
                                                                   .all(8.0),
-                                                              child: ImageNetwork(
-                                                                image:
-                                                                "${data['product']['productImages']}",
-                                                                height: 50,
-                                                                width: 50,
-                                                                duration: 200,
-                                                                curve:
-                                                                Curves.easeIn,
-                                                                onPointer: true,
-                                                                debugPrint: false,
-                                                                fullScreen: true,
-                                                                fitAndroidIos:
-                                                                BoxFit.cover,
-                                                                fitWeb:
-                                                                BoxFitWeb.cover,
-                                                                borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                    5),
-                                                                onLoading:
-                                                                const CupertinoActivityIndicator(
-                                                                  color: Colors
-                                                                      .indigoAccent,
-                                                                ),
-                                                                onError: const Icon(
-                                                                  Icons.error,
-                                                                  color: Colors
-                                                                      .red,
-                                                                ),
-                                                                onTap: () {
-                                                                  debugPrint(
-                                                                      "©gabriel_patrick_souza");
-                                                                },
-                                                              )),
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        width:
-                                                        displaywidth(context) *
-                                                            0.10,
-                                                        child: Center(
-                                                          child: Padding(
-                                                            padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                            child: Text(
-                                                              "${data['product']['productName'] ??
-                                                                  ""}",
-                                                              style: commonstyleweb(
-                                                                  color:
-                                                                  Colors.black),
+                                                              child: Text(
+                                                                "${index + 1}",
+                                                                style: commonstyleweb(
+                                                                    color:
+                                                                    Colors.black),
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                      SizedBox(
-                                                        width:
-                                                        displaywidth(context) *
-                                                            0.10,
-                                                        child: Center(
-                                                          child: Padding(
-                                                            padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                            child: Text(
-                                                              "${data['reportDate'] ??
-                                                                  ""}",
-                                                              style: commonstyleweb(
-                                                                  color:
-                                                                  Colors.black),
+                                                        SizedBox(
+                                                          width:
+                                                          displaywidth(context) *
+                                                              0.08,
+                                                          child: Center(
+                                                            child: Padding(
+                                                                padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
+                                                                child: ImageNetwork(
+                                                                  image:
+                                                                  "${data['product']['productImages']}",
+                                                                  height: 50,
+                                                                  width: 50,
+                                                                  duration: 200,
+                                                                  curve:
+                                                                  Curves.easeIn,
+                                                                  onPointer: true,
+                                                                  debugPrint: false,
+                                                                  fullScreen: true,
+                                                                  fitAndroidIos:
+                                                                  BoxFit.cover,
+                                                                  fitWeb:
+                                                                  BoxFitWeb.cover,
+                                                                  borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                      5),
+                                                                  onLoading:
+                                                                  const CupertinoActivityIndicator(
+                                                                    color: Colors
+                                                                        .indigoAccent,
+                                                                  ),
+                                                                  onError: const Icon(
+                                                                    Icons.error,
+                                                                    color: Colors
+                                                                        .red,
+                                                                  ),
+                                                                  onTap: () {
+                                                                    debugPrint(
+                                                                        "©gabriel_patrick_souza");
+                                                                  },
+                                                                )),
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          width:
+                                                          displaywidth(context) *
+                                                              0.10,
+                                                          child: Center(
+                                                            child: Padding(
+                                                              padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                              child: Text(
+                                                                "${data['product']['productName'] ??
+                                                                    ""}",
+                                                                style: commonstyleweb(
+                                                                    color:
+                                                                    Colors.black),
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                      SizedBox(
-                                                        width:
-                                                        displaywidth(context) *
-                                                            0.20,
-                                                        child: Center(
-                                                          child: Padding(
-                                                            padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                            child: Text(
-                                                              "${data['product']['stockQty'] ??
-                                                                  ""}",
-                                                              style: commonstyleweb(
-                                                                  color:
-                                                                  Colors.black),
+                                                        SizedBox(
+                                                          width:
+                                                          displaywidth(context) *
+                                                              0.10,
+                                                          child: Center(
+                                                            child: Padding(
+                                                              padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                              child: Text(
+                                                                "${data['reportDate'] ??
+                                                                    ""}",
+                                                                style: commonstyleweb(
+                                                                    color:
+                                                                    Colors.black),
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                      SizedBox(
-                                                        width:
-                                                        displaywidth(context) *
-                                                            0.20,
-                                                        child: Center(
-                                                          child: Padding(
-                                                            padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                            child: Text(
-                                                              "${data['quantity'] ??
-                                                                  ""} Pieces",
-                                                              style: commonstyleweb(
-                                                                  color:
-                                                                  Colors.black),
+                                                        SizedBox(
+                                                          width:
+                                                          displaywidth(context) *
+                                                              0.20,
+                                                          child: Center(
+                                                            child: Padding(
+                                                              padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                              child: Text(
+                                                                "${data['product']['stockQty'] ??
+                                                                    ""}",
+                                                                style: commonstyleweb(
+                                                                    color:
+                                                                    Colors.black),
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                        SizedBox(
+                                                          width:
+                                                          displaywidth(context) *
+                                                              0.20,
+                                                          child: Center(
+                                                            child: Padding(
+                                                              padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                              child: Text(
+                                                                "${data['quantity'] ??
+                                                                    ""} Pieces",
+                                                                style: commonstyleweb(
+                                                                    color:
+                                                                    Colors.black),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
@@ -9505,6 +9508,454 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       },
                     ),
                   ),
+                ],
+              ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget Pendingdeliverywidget() {
+    getalldeliveryController.GetAllDeliveryApi(context);
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                  width: displaywidth(context) * 0.50,
+                  child: commontextfield(
+                      "Search By Id,Name..", hubsearchcontroller)),
+              InkWell(
+                onTap: () {
+                  adddeliverysidesheet();
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Color_Constant.secondarycolr,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.add,
+                            color: Colors.white,
+                          ),
+                          Text(
+                            "Add Delivery Partner",
+                            style: commonstyle(),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () async {
+                  showloadingdialog(context);
+                  await Printing.sharePdf(
+                      bytes: await _generatedeliveryPDFnew(context),
+                      filename: "Agaram Delivery Partners Details");
+                  Get.back();
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Color_Constant.secondarycolr,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.download_for_offline_outlined,
+                            color: Colors.white,
+                          ),
+                          Text(
+                            "EXPORT",
+                            style: commonstyle(),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(10)),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        color: Color_Constant.primarycolr,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: displaywidth(context) * 0.08,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "S.No",
+                                  style: commonstyleweb(
+                                      color: Colors.black,
+                                      weight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context) * 0.08,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Driver Profile",
+                                  style: commonstyleweb(
+                                      color: Colors.black,
+                                      weight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context) * 0.10,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Driver Name",
+                                  style: commonstyleweb(
+                                      color: Colors.black,
+                                      weight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context) * 0.12,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Email Id",
+                                  style: commonstyleweb(
+                                      color: Colors.black,
+                                      weight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context) * 0.10,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Mobile Number",
+                                  style: commonstyleweb(
+                                      color: Colors.black,
+                                      weight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context) * 0.12,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Driver Address",
+                                  style: commonstyleweb(
+                                      color: Colors.black,
+                                      weight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: displaywidth(context) * 0.21,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Assigned Status",
+                                  style: commonstyleweb(
+                                      color: Colors.black,
+                                      weight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: displayheight(context) * 0.69,
+                    width: double.infinity,
+                    child: FutureBuilder<List<dynamic>>(
+                      future: fetchDeliveryboy(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<List<dynamic>> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CupertinoActivityIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text('Error: ${snapshot.error}', style: commonstyleweb(color: Colors.red)));
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return EmptyContainer(context, "Delivery Profile Is Empty");
+                        }
+
+                        final deliveryData = snapshot.data!
+                            .where((data) => data['kycIsVerified'] == false)
+                            .toList();
+
+                        return ListView.builder(
+                          itemCount: deliveryData.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            var data = deliveryData[index];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.08,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text("${index + 1}", style: commonstyleweb(color: Colors.black)),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.08,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text("${data['deliveryAutoID']}", style: commonstyleweb(color: Colors.black)),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.10,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text("${data['username'] ?? ""}", style: commonstyleweb(color: Colors.black)),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.12,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text("${data['email'] ?? ""}", style: commonstyleweb(color: Colors.black)),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.10,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text("${data['phone'] ?? ""}", style: commonstyleweb(color: Colors.black)),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: displaywidth(context) * 0.12,
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text("${data['address'] ?? ""}", style: commonstyleweb(color: Colors.black)),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: displaywidth(
+                                                context) *
+                                                0.21,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment
+                                                  .spaceAround,
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment
+                                                  .center,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets
+                                                      .all(8.0),
+                                                  child: InkWell(
+                                                    onTap: () {
+
+                                                    },
+                                                    child:
+                                                    Container(
+                                                      decoration:
+                                                      BoxDecoration(
+                                                        borderRadius:
+                                                        BorderRadius
+                                                            .circular(
+                                                            5),
+                                                        color: Colors
+                                                            .green
+                                                            .shade100,
+                                                      ),
+                                                      child:
+                                                      Padding(
+                                                        padding:
+                                                        const EdgeInsets
+                                                            .all(
+                                                            8.0),
+                                                        child: Row(
+                                                          children: [
+                                                            Icon(
+                                                              Icons
+                                                                  .check,
+                                                              color: Colors
+                                                                  .green
+                                                                  .shade800,
+                                                              size:
+                                                              20,
+                                                            ),
+                                                            Padding(
+                                                              padding: const EdgeInsets
+                                                                  .only(
+                                                                  left: 8.0),
+                                                              child: Text(
+                                                                  "Approved",
+                                                                  style: commonstyleweb(
+                                                                      color: Colors
+                                                                          .green
+                                                                          .shade800,
+                                                                      weight: FontWeight
+                                                                          .w600)),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets
+                                                      .all(8.0),
+                                                  child: InkWell(
+                                                    onTap: () {
+
+                                                    },
+                                                    child:
+                                                    Container(
+                                                      decoration:
+                                                      BoxDecoration(
+                                                        borderRadius:
+                                                        BorderRadius
+                                                            .circular(
+                                                            5),
+                                                        color: Colors
+                                                            .red
+                                                            .shade100,
+                                                      ),
+                                                      child:
+                                                      Padding(
+                                                        padding:
+                                                        const EdgeInsets
+                                                            .all(
+                                                            8.0),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                          crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                          children: [
+                                                            Icon(
+                                                              Icons
+                                                                  .close,
+                                                              color: Colors
+                                                                  .red
+                                                                  .shade800,
+                                                              size:
+                                                              20,
+                                                            ),
+                                                            Padding(
+                                                              padding: const EdgeInsets
+                                                                  .only(
+                                                                  left: 8.0),
+                                                              child: Text(
+                                                                  "Cancelled",
+                                                                  style: commonstyleweb(
+                                                                      color: Colors
+                                                                          .red
+                                                                          .shade800,
+                                                                      weight: FontWeight
+                                                                          .w600)),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          )
+
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Divider(color: Colors.grey.shade200, thickness: 0.5),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  )
                 ],
               ),
             ),
