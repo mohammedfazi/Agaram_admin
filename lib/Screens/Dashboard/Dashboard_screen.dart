@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:math';
 import 'dart:html' as html;
+import 'package:agaram_admin/Screens/Driver/Approve_Driver_screen.dart';
 import 'package:agaram_admin/Screens/Hub_Stocks/HubStocks_screen.dart';
 import 'package:agaram_admin/Screens/Orders/Vieworderhistory_screen.dart';
 import 'package:agaram_admin/Service/Active&Inactive_service/ActiveInactive_Controller.dart';
@@ -525,7 +526,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final DeleteUserController deleteUserController =
   Get.find<DeleteUserController>();
 
-  int container = 19;
+  int container = 1;
 
   String? SelectedPaymentStatus;
   List<String> paymentlist = ['COMPLETED', 'PENDING', 'CANCELED'];
@@ -1541,373 +1542,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [deliveranduserchart(), expancechart()],
               ),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     Padding(
-              //       padding: const EdgeInsets.all(8.0),
-              //       child: Container(
-              //         width: displaywidth(context) * 0.26,
-              //         height: displayheight(context) * 0.50,
-              //         decoration: BoxDecoration(
-              //           color: Colors.white,
-              //           borderRadius: BorderRadius.circular(10),
-              //         ),
-              //         child: Column(
-              //           mainAxisAlignment: MainAxisAlignment.start,
-              //           crossAxisAlignment: CrossAxisAlignment.start,
-              //           children: [
-              //             Padding(
-              //               padding: const EdgeInsets.only(top: 8.0, left: 8.0),
-              //               child: Text(
-              //                 "Top Products",
-              //                 style: commonstyleweb(
-              //                     color: Colors.black, weight: FontWeight.w700),
-              //               ),
-              //             ),
-              //             const Padding(
-              //               padding: EdgeInsets.all(8.0),
-              //               child: Divider(
-              //                 color: Colors.black,
-              //                 thickness: 0.1,
-              //               ),
-              //             ),
-              //             SizedBox(
-              //               height: displayheight(context) * 0.41,
-              //               child: FutureBuilder<List<dynamic>>(
-              //                 future: fetchProducts(),
-              //                 builder: (BuildContext context,
-              //                     AsyncSnapshot<List<dynamic>> snapshot) {
-              //                   if (snapshot.connectionState ==
-              //                       ConnectionState.waiting) {
-              //                     // Loading state
-              //                     return const Center(
-              //                       child: CircularProgressIndicator(),
-              //                     );
-              //                   } else if (snapshot.hasError) {
-              //                     // Error state
-              //                     return Center(
-              //                       child: Text(
-              //                         "Error loading products",
-              //                         style: commonstyle(
-              //                             color: Colors.red,
-              //                             weight: FontWeight.bold),
-              //                       ),
-              //                     );
-              //                   } else if (!snapshot.hasData ||
-              //                       snapshot.data!.isEmpty) {
-              //                     // No data state
-              //                     return Center(
-              //                       child: Text(
-              //                         "No products available",
-              //                         style: commonstyle(color: Colors.black),
-              //                       ),
-              //                     );
-              //                   } else {
-              //                     // Success state
-              //                     final data = snapshot.data!;
-              //                     return ListView.builder(
-              //                       itemCount: data.length > 5
-              //                           ? 5
-              //                           : data.length, // Limit to 5 items
-              //                       itemBuilder:
-              //                           (BuildContext context, int index) {
-              //                         var product = data[index];
-              //                         return Padding(
-              //                           padding: const EdgeInsets.symmetric(
-              //                               horizontal: 12.0, vertical: 8.0),
-              //                           child: Row(
-              //                             mainAxisAlignment:
-              //                             MainAxisAlignment.spaceBetween,
-              //                             crossAxisAlignment:
-              //                             CrossAxisAlignment.center,
-              //                             children: [
-              //                               ImageNetwork(
-              //                                 image:
-              //                                 "${product['productImages'] ??
-              //                                     ""}",
-              //                                 height: 50,
-              //                                 width: 50,
-              //                                 duration: 200,
-              //                                 curve: Curves.easeIn,
-              //                                 onPointer: true,
-              //                                 debugPrint: false,
-              //                                 fullScreen: true,
-              //                                 fitAndroidIos: BoxFit.cover,
-              //                                 fitWeb: BoxFitWeb.cover,
-              //                                 borderRadius:
-              //                                 BorderRadius.circular(5),
-              //                                 onLoading:
-              //                                 const CupertinoActivityIndicator(
-              //                                   color: Colors.indigoAccent,
-              //                                 ),
-              //                                 onError: const Icon(
-              //                                   Icons.error,
-              //                                   color: Colors.red,
-              //                                 ),
-              //                                 onTap: () {
-              //                                   debugPrint(
-              //                                       "©gabriel_patrick_souza");
-              //                                 },
-              //                               ),
-              //                               Text(
-              //                                 "${product['productName'] ?? ""}",
-              //                                 style: commonstyle(
-              //                                     color: Colors.black,
-              //                                     weight: FontWeight.w600,
-              //                                     size: 15),
-              //                               ),
-              //                               Row(
-              //                                 children: [
-              //                                   const Icon(Icons.currency_rupee,
-              //                                       color: Colors.black,
-              //                                       size: 15),
-              //                                   Text(
-              //                                     "${product['price'] ?? ""}",
-              //                                     style: commonstyle(
-              //                                         color: Colors.black,
-              //                                         size: 15),
-              //                                   ),
-              //                                 ],
-              //                               ),
-              //                             ],
-              //                           ),
-              //                         );
-              //                       },
-              //                     );
-              //                   }
-              //                 },
-              //               ),
-              //             ),
-              //           ],
-              //         ),
-              //       ),
-              //     ),
-              //     Padding(
-              //       padding: const EdgeInsets.all(8.0),
-              //       child: Container(
-              //         width: displaywidth(context) * 0.26,
-              //         height: displayheight(context) * 0.50,
-              //         decoration: BoxDecoration(
-              //             color: Colors.white,
-              //             borderRadius: BorderRadius.circular(10)),
-              //         child: Column(
-              //           mainAxisAlignment: MainAxisAlignment.start,
-              //           crossAxisAlignment: CrossAxisAlignment.start,
-              //           children: [
-              //             Padding(
-              //               padding: const EdgeInsets.only(top: 8.0, left: 8.0),
-              //               child: Text(
-              //                 "Top Customers",
-              //                 style: commonstyleweb(
-              //                     color: Colors.black, weight: FontWeight.w700),
-              //               ),
-              //             ),
-              //             const Padding(
-              //               padding: const EdgeInsets.all(8.0),
-              //               child: Divider(
-              //                 color: Colors.black,
-              //                 thickness: 0.1,
-              //               ),
-              //             ),
-              //             SizedBox(
-              //               height: displayheight(context) * 0.41,
-              //               child: Obx(
-              //                     () =>
-              //                     ListView.builder(
-              //                         itemCount: min(
-              //                             getallusersController
-              //                                 .getallusersdata.length,
-              //                             5),
-              //                         itemBuilder:
-              //                             (BuildContext context, int index) {
-              //                           var data = getallusersController
-              //                               .getallusersdata[index];
-              //                           return Padding(
-              //                             padding: const EdgeInsets.symmetric(
-              //                                 horizontal: 12.0, vertical: 8.0),
-              //                             child: Row(
-              //                               mainAxisAlignment:
-              //                               MainAxisAlignment.spaceBetween,
-              //                               crossAxisAlignment:
-              //                               CrossAxisAlignment.center,
-              //                               children: [
-              //                                 data['productImages'] == null
-              //                                     ? const Icon(
-              //                                   Icons.info,
-              //                                   color: Colors.grey,
-              //                                   size: 50,
-              //                                 )
-              //                                     : ImageNetwork(
-              //                                   image:
-              //                                   "${data['productImages'] ??
-              //                                       ""}",
-              //                                   height: 40,
-              //                                   width: 40,
-              //                                   duration: 200,
-              //                                   curve: Curves.easeIn,
-              //                                   onPointer: true,
-              //                                   debugPrint: false,
-              //                                   fullScreen: true,
-              //                                   fitAndroidIos: BoxFit.cover,
-              //                                   fitWeb: BoxFitWeb.cover,
-              //                                   borderRadius:
-              //                                   BorderRadius.circular(5),
-              //                                   onLoading:
-              //                                   const CupertinoActivityIndicator(
-              //                                     color: Colors.indigoAccent,
-              //                                   ),
-              //                                   onError: const Icon(
-              //                                     Icons.error,
-              //                                     color: Colors.black,
-              //                                     size: 40,
-              //                                   ),
-              //                                   onTap: () {
-              //                                     debugPrint(
-              //                                         "©gabriel_patrick_souza");
-              //                                   },
-              //                                 ),
-              //                                 Text(
-              //                                   "${data['username'] ?? ""}",
-              //                                   style: commonstyle(
-              //                                       color: Colors.black,
-              //                                       weight: FontWeight.w600,
-              //                                       size: 15),
-              //                                 ),
-              //                                 Text(
-              //                                   "${data['phone'] ?? ""}",
-              //                                   style: commonstyle(
-              //                                       color: Colors.black,
-              //                                       weight: FontWeight.w600,
-              //                                       size: 15),
-              //                                 ),
-              //
-              //                                 // Row(
-              //                                 //   children: [
-              //                                 //     const Icon(Icons.currency_rupee,color: Colors.black,size: 15,),
-              //                                 //     Text("${data['price']??""}",style: commonstyle(color: Colors.black,size: 15),),
-              //                                 //   ],
-              //                                 // )
-              //                               ],
-              //                             ),
-              //                           );
-              //                         }),
-              //               ),
-              //             )
-              //           ],
-              //         ),
-              //       ),
-              //     ),
-              //     Padding(
-              //       padding: const EdgeInsets.all(8.0),
-              //       child: Container(
-              //         width: displaywidth(context) * 0.26,
-              //         height: displayheight(context) * 0.50,
-              //         decoration: BoxDecoration(
-              //             color: Colors.white,
-              //             borderRadius: BorderRadius.circular(10)),
-              //         child: Column(
-              //           mainAxisAlignment: MainAxisAlignment.start,
-              //           crossAxisAlignment: CrossAxisAlignment.start,
-              //           children: [
-              //             Padding(
-              //               padding: const EdgeInsets.only(top: 8.0, left: 8.0),
-              //               child: Text(
-              //                 "Top Deliver Partners",
-              //                 style: commonstyleweb(
-              //                     color: Colors.black, weight: FontWeight.w700),
-              //               ),
-              //             ),
-              //             const Padding(
-              //               padding: const EdgeInsets.all(8.0),
-              //               child: Divider(
-              //                 color: Colors.black,
-              //                 thickness: 0.1,
-              //               ),
-              //             ),
-              //             SizedBox(
-              //               height: displayheight(context) * 0.41,
-              //               child: Obx(
-              //                     () =>
-              //                     ListView.builder(
-              //                         itemCount: min(
-              //                             getalldeliveryController
-              //                                 .getalldeliverytdata.length,
-              //                             5),
-              //                         itemBuilder:
-              //                             (BuildContext context, int index) {
-              //                           var data = getalldeliveryController
-              //                               .getalldeliverytdata[index];
-              //                           return Padding(
-              //                             padding: const EdgeInsets.symmetric(
-              //                                 horizontal: 12.0, vertical: 8.0),
-              //                             child: Row(
-              //                               mainAxisAlignment:
-              //                               MainAxisAlignment.spaceBetween,
-              //                               crossAxisAlignment:
-              //                               CrossAxisAlignment.center,
-              //                               children: [
-              //                                 ImageNetwork(
-              //                                   image:
-              //                                   "${data['profileImage'] ?? ""}",
-              //                                   height: 50,
-              //                                   width: 50,
-              //                                   duration: 200,
-              //                                   curve: Curves.easeIn,
-              //                                   onPointer: true,
-              //                                   debugPrint: false,
-              //                                   fullScreen: true,
-              //                                   fitAndroidIos: BoxFit.cover,
-              //                                   fitWeb: BoxFitWeb.cover,
-              //                                   borderRadius:
-              //                                   BorderRadius.circular(5),
-              //                                   onLoading:
-              //                                   const CupertinoActivityIndicator(
-              //                                     color: Colors.indigoAccent,
-              //                                   ),
-              //                                   onError: const Icon(
-              //                                     Icons.error,
-              //                                     color: Colors.black,
-              //                                     size: 40,
-              //                                   ),
-              //                                   onTap: () {
-              //                                     debugPrint(
-              //                                         "©gabriel_patrick_souza");
-              //                                   },
-              //                                 ),
-              //                                 Text(
-              //                                   "${data['username'] ?? ""}",
-              //                                   style: commonstyle(
-              //                                       color: Colors.black,
-              //                                       weight: FontWeight.w600,
-              //                                       size: 15),
-              //                                 ),
-              //                                 Text(
-              //                                   "${data['phone'] ?? ""}",
-              //                                   style: commonstyle(
-              //                                       color: Colors.black,
-              //                                       weight: FontWeight.w600,
-              //                                       size: 15),
-              //                                 ),
-              //
-              //                                 // Row(
-              //                                 //   children: [
-              //                                 //     const Icon(Icons.currency_rupee,color: Colors.black,size: 15,),
-              //                                 //     Text("${data['price']??""}",style: commonstyle(color: Colors.black,size: 15),),
-              //                                 //   ],
-              //                                 // )
-              //                               ],
-              //                             ),
-              //                           );
-              //                         }),
-              //               ),
-              //             )
-              //           ],
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // )
             ],
           ),
         ),
@@ -8161,50 +7795,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     getallstockController.GetAllStockApi(context);
     return Column(
       children: [
-        // Padding(
-        //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //     crossAxisAlignment: CrossAxisAlignment.center,
-        //     children: [
-        //       SizedBox(
-        //           width:displaywidth(context)*0.30,
-        //           child: commontextfield("Search By Product Name ...", productsearchnamecontroller)),
-        //       SizedBox(
-        //           width:displaywidth(context)*0.30,
-        //           child: commontextfield("Search By Product Price ...", productsearchpricecontroller)),
-        //
-        //       Row(
-        //         children: [
-        //           InkWell(
-        //             onTap: (){
-        //               getallProductController.GetAllProductAPI(context, productsearchnamecontroller.text??"", productsearchpricecontroller.text??"");
-        //             },
-        //             child: Container(
-        //               decoration: BoxDecoration(
-        //                   color: Color_Constant.secondarycolr,
-        //                   borderRadius: BorderRadius.circular(10)
-        //               ),
-        //               child: Padding(
-        //                 padding: const EdgeInsets.all(8.0),
-        //                 child: Padding(
-        //                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
-        //                   child: Row(
-        //                     children: [
-        //                       const Icon(Icons.search,color: Colors.white,),
-        //                       Text("Search",style: commonstyle(),)
-        //                     ],
-        //                   ),
-        //                 ),
-        //               ),
-        //             ),
-        //           ),
-        //         ],
-        //       )
-        //
-        //     ],
-        //   ),
-        // ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
@@ -9531,66 +9121,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   width: displaywidth(context) * 0.50,
                   child: commontextfield(
                       "Search By Id,Name..", hubsearchcontroller)),
-              InkWell(
-                onTap: () {
-                  adddeliverysidesheet();
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Color_Constant.secondarycolr,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.add,
-                            color: Colors.white,
-                          ),
-                          Text(
-                            "Add Delivery Partner",
-                            style: commonstyle(),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: () async {
-                  showloadingdialog(context);
-                  await Printing.sharePdf(
-                      bytes: await _generatedeliveryPDFnew(context),
-                      filename: "Agaram Delivery Partners Details");
-                  Get.back();
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Color_Constant.secondarycolr,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.download_for_offline_outlined,
-                            color: Colors.white,
-                          ),
-                          Text(
-                            "EXPORT",
-                            style: commonstyle(),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
@@ -9741,214 +9271,219 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             var data = deliveryData[index];
                             return Padding(
                               padding: const EdgeInsets.symmetric(vertical: 8.0),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.08,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text("${index + 1}", style: commonstyleweb(color: Colors.black)),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.08,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text("${data['deliveryAutoID']}", style: commonstyleweb(color: Colors.black)),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.10,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text("${data['username'] ?? ""}", style: commonstyleweb(color: Colors.black)),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.12,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text("${data['email'] ?? ""}", style: commonstyleweb(color: Colors.black)),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.10,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text("${data['phone'] ?? ""}", style: commonstyleweb(color: Colors.black)),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: displaywidth(context) * 0.12,
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text("${data['address'] ?? ""}", style: commonstyleweb(color: Colors.black)),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: displaywidth(
-                                                context) *
-                                                0.21,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment
-                                                  .spaceAround,
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment
-                                                  .center,
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                  const EdgeInsets
-                                                      .all(8.0),
-                                                  child: InkWell(
-                                                    onTap: () {
-
-                                                    },
-                                                    child:
-                                                    Container(
-                                                      decoration:
-                                                      BoxDecoration(
-                                                        borderRadius:
-                                                        BorderRadius
-                                                            .circular(
-                                                            5),
-                                                        color: Colors
-                                                            .green
-                                                            .shade100,
-                                                      ),
-                                                      child:
-                                                      Padding(
-                                                        padding:
-                                                        const EdgeInsets
-                                                            .all(
-                                                            8.0),
-                                                        child: Row(
-                                                          children: [
-                                                            Icon(
-                                                              Icons
-                                                                  .check,
-                                                              color: Colors
-                                                                  .green
-                                                                  .shade800,
-                                                              size:
-                                                              20,
-                                                            ),
-                                                            Padding(
-                                                              padding: const EdgeInsets
-                                                                  .only(
-                                                                  left: 8.0),
-                                                              child: Text(
-                                                                  "Approved",
-                                                                  style: commonstyleweb(
-                                                                      color: Colors
-                                                                          .green
-                                                                          .shade800,
-                                                                      weight: FontWeight
-                                                                          .w600)),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
+                              child: InkWell(
+                                onTap:(){
+                                  Get.to(ApproveDriverScreen(data: deliveryData[index],));
+                                },
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.08,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Text("${index + 1}", style: commonstyleweb(color: Colors.black)),
                                                 ),
-                                                Padding(
-                                                  padding:
-                                                  const EdgeInsets
-                                                      .all(8.0),
-                                                  child: InkWell(
-                                                    onTap: () {
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.08,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Text("${data['deliveryAutoID']}", style: commonstyleweb(color: Colors.black)),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.10,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Text("${data['username'] ?? ""}", style: commonstyleweb(color: Colors.black)),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.12,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Text("${data['email'] ?? ""}", style: commonstyleweb(color: Colors.black)),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.10,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Text("${data['phone'] ?? ""}", style: commonstyleweb(color: Colors.black)),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: displaywidth(context) * 0.12,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Text("${data['address'] ?? ""}", style: commonstyleweb(color: Colors.black)),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: displaywidth(
+                                                  context) *
+                                                  0.21,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment
+                                                    .spaceAround,
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment
+                                                    .center,
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                    const EdgeInsets
+                                                        .all(8.0),
+                                                    child: InkWell(
+                                                      onTap: () {
 
-                                                    },
-                                                    child:
-                                                    Container(
-                                                      decoration:
-                                                      BoxDecoration(
-                                                        borderRadius:
-                                                        BorderRadius
-                                                            .circular(
-                                                            5),
-                                                        color: Colors
-                                                            .red
-                                                            .shade100,
-                                                      ),
+                                                      },
                                                       child:
-                                                      Padding(
-                                                        padding:
-                                                        const EdgeInsets
-                                                            .all(
-                                                            8.0),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                          crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                          children: [
-                                                            Icon(
-                                                              Icons
-                                                                  .close,
-                                                              color: Colors
-                                                                  .red
-                                                                  .shade800,
-                                                              size:
-                                                              20,
-                                                            ),
-                                                            Padding(
-                                                              padding: const EdgeInsets
-                                                                  .only(
-                                                                  left: 8.0),
-                                                              child: Text(
-                                                                  "Cancelled",
-                                                                  style: commonstyleweb(
-                                                                      color: Colors
-                                                                          .red
-                                                                          .shade800,
-                                                                      weight: FontWeight
-                                                                          .w600)),
-                                                            ),
-                                                          ],
+                                                      Container(
+                                                        decoration:
+                                                        BoxDecoration(
+                                                          borderRadius:
+                                                          BorderRadius
+                                                              .circular(
+                                                              5),
+                                                          color: Colors
+                                                              .green
+                                                              .shade100,
+                                                        ),
+                                                        child:
+                                                        Padding(
+                                                          padding:
+                                                          const EdgeInsets
+                                                              .all(
+                                                              8.0),
+                                                          child: Row(
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .check,
+                                                                color: Colors
+                                                                    .green
+                                                                    .shade800,
+                                                                size:
+                                                                20,
+                                                              ),
+                                                              Padding(
+                                                                padding: const EdgeInsets
+                                                                    .only(
+                                                                    left: 8.0),
+                                                                child: Text(
+                                                                    "Approved",
+                                                                    style: commonstyleweb(
+                                                                        color: Colors
+                                                                            .green
+                                                                            .shade800,
+                                                                        weight: FontWeight
+                                                                            .w600)),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
                                                   ),
-                                                )
-                                              ],
-                                            ),
-                                          )
+                                                  Padding(
+                                                    padding:
+                                                    const EdgeInsets
+                                                        .all(8.0),
+                                                    child: InkWell(
+                                                      onTap: () {
 
-                                        ],
+                                                      },
+                                                      child:
+                                                      Container(
+                                                        decoration:
+                                                        BoxDecoration(
+                                                          borderRadius:
+                                                          BorderRadius
+                                                              .circular(
+                                                              5),
+                                                          color: Colors
+                                                              .red
+                                                              .shade100,
+                                                        ),
+                                                        child:
+                                                        Padding(
+                                                          padding:
+                                                          const EdgeInsets
+                                                              .all(
+                                                              8.0),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                            crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .close,
+                                                                color: Colors
+                                                                    .red
+                                                                    .shade800,
+                                                                size:
+                                                                20,
+                                                              ),
+                                                              Padding(
+                                                                padding: const EdgeInsets
+                                                                    .only(
+                                                                    left: 8.0),
+                                                                child: Text(
+                                                                    "Cancelled",
+                                                                    style: commonstyleweb(
+                                                                        color: Colors
+                                                                            .red
+                                                                            .shade800,
+                                                                        weight: FontWeight
+                                                                            .w600)),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            )
+
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Divider(color: Colors.grey.shade200, thickness: 0.5),
-                                ],
+                                    Divider(color: Colors.grey.shade200, thickness: 0.5),
+                                  ],
+                                ),
                               ),
                             );
                           },
@@ -10987,52 +10522,52 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      container = 11;
-                    });
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: container == 11
-                          ? Colors.white.withOpacity(0.2)
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(
-                            CupertinoIcons.person,
-                            size: 15,
-                            color: container == 1
-                                ? Colors.white
-                                : Colors.white.withOpacity(0.5),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(
-                              "Change Password",
-                              style: commonstyleweb(
-                                weight: FontWeight.w600,
-                                color: container == 11
-                                    ? Colors.white
-                                    : Colors.white.withOpacity(0.5),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              )
+              // Padding(
+              //   padding: const EdgeInsets.all(8.0),
+              //   child: InkWell(
+              //     onTap: () {
+              //       setState(() {
+              //         container = 11;
+              //       });
+              //     },
+              //     child: Container(
+              //       decoration: BoxDecoration(
+              //         color: container == 11
+              //             ? Colors.white.withOpacity(0.2)
+              //             : Colors.transparent,
+              //         borderRadius: BorderRadius.circular(5),
+              //       ),
+              //       child: Padding(
+              //         padding: const EdgeInsets.all(8.0),
+              //         child: Row(
+              //           mainAxisAlignment: MainAxisAlignment.start,
+              //           crossAxisAlignment: CrossAxisAlignment.center,
+              //           children: [
+              //             Icon(
+              //               CupertinoIcons.person,
+              //               size: 15,
+              //               color: container == 1
+              //                   ? Colors.white
+              //                   : Colors.white.withOpacity(0.5),
+              //             ),
+              //             Padding(
+              //               padding: const EdgeInsets.only(left: 8.0),
+              //               child: Text(
+              //                 "Change Password",
+              //                 style: commonstyleweb(
+              //                   weight: FontWeight.w600,
+              //                   color: container == 11
+              //                       ? Colors.white
+              //                       : Colors.white.withOpacity(0.5),
+              //                 ),
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // )
             ],
           ),
         ),
